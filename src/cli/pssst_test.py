@@ -111,14 +111,12 @@ class TestName:
         Tests if name is parsed correctly.
 
         """
-        name = Pssst.Name(" pssst.UserName.Box:Pa55w0rd! ")
+        name = Pssst.Name(" pssst.UserName:Pa55w0rd! ")
 
-        assert name.path == "username/box/"
+        assert name.path == "username/"
         assert name.user == "username"
-        assert name.box == "box"
-        assert name.all == ("username", "box")
         assert name.password == "Pa55w0rd!"
-        assert str(name) == "pssst.username.box"
+        assert str(name) == "pssst.username"
 
     def test_name_minimum(self):
         """
@@ -129,8 +127,6 @@ class TestName:
 
         assert name.path == "me/"
         assert name.user == "me"
-        assert name.box == None
-        assert name.all == ("me", None)
         assert name.password == None
         assert str(name) == "pssst.me"
 
@@ -273,8 +269,6 @@ class TestUser:
         Tests if an user was deleted.
     test_find_user_not_found()
         Tests if an user is not found.
-    test_list()
-        Tests if an user boxes can be listed.
     test_user_name_invalid()
         Tests if an user name is invalid.
 
@@ -358,17 +352,6 @@ class TestUser:
 
         assert str(ex.value) == "User not found"
 
-    def test_list(self):
-        """
-        Tests if an user boxes can be listed.
-
-        """
-        pssst = Pssst(createUserName())
-        pssst.create()
-        pssst.create("test")
-
-        assert pssst.list() == ["box", "test"]
-
     def test_user_name_invalid(self):
         """
         Tests if an user name is invalid.
@@ -379,169 +362,6 @@ class TestUser:
             pssst.find("test !")
 
         assert str(ex.value) == "User name invalid"
-
-
-class TestBox:
-    """
-    Tests box commands with this test cases:
-
-    * Box create
-    * Box create failed, name reserved
-    * Box create failed, already exists
-    * Box delete
-    * Box delete failed, name reserved
-    * Box push
-    * Box pull
-    * Box was deleted
-    * Box not found
-    * Box name invalid
-
-    Methods
-    -------
-    test_create_box()
-        Tests if a box can be created.
-    test_create_box_name_reserved()
-        Tests if a box name is reserved.
-    test_create_box_already_exists()
-        Tests if a box already exists.
-    test_delete_box()
-        Tests if a box can be deleted.
-    test_delete_box_name_reserved()
-        Tests if a box name is reserved.
-    test_push_box()
-        Tests if message could be pushed.
-    test_pull_box()
-        Tests if message could be pulled.
-    test_box_was_deleted()
-        Tests if a box was deleted.
-    test_box_not_found()
-        Tests if a box is not found.
-    test_box_name_invalid()
-        Tests if a box name is invalid.
-
-    """
-    def test_create_box(self):
-        """
-        Tests if a box can be created.
-
-        """
-        pssst = Pssst(createUserName())
-        pssst.create()
-        pssst.create("test")
-
-    def test_create_box_name_reserved(self):
-        """
-        Tests if a box name is reserved.
-
-        """
-        with pytest.raises(Exception) as ex:
-            pssst = Pssst(createUserName())
-            pssst.create()
-            pssst.create("box")
-
-        assert str(ex.value) == "Box name reserved"
-
-    def test_create_box_already_exists(self):
-        """
-        Tests if a box already exists.
-
-        """
-        with pytest.raises(Exception) as ex:
-            pssst = Pssst(createUserName())
-            pssst.create()
-            pssst.create("test")
-            pssst.create("test")
-
-        assert str(ex.value) == "Box already exists"
-
-    def test_delete_box(self):
-        """
-        Tests if a box can be deleted.
-
-        """
-        pssst = Pssst(createUserName())
-        pssst.create()
-        pssst.create("test")
-        pssst.delete("test")
-
-    def test_delete_box_name_reserved(self):
-        """
-        Tests if a box name is reserved.
-
-        """
-        with pytest.raises(Exception) as ex:
-            pssst = Pssst(createUserName())
-            pssst.create()
-            pssst.delete("box")
-
-        assert str(ex.value) == "Box name reserved"
-
-    def test_push_box(self):
-        """
-        Tests if message could be pushed.
-
-        """
-        name1 = createUserName()
-        name2 = createUserName()
-
-        pssst1 = Pssst(name1)
-        pssst1.create()
-
-        pssst2 = Pssst(name2)
-        pssst2.create()
-        pssst2.push([name1], "test")
-
-    def test_pull_box(self):
-        """
-        Tests if message could be pulled.
-
-        """
-        pssst = Pssst(createUserName())
-        pssst.create()
-        pssst.pull()
-
-    def test_box_was_deleted(self):
-        """
-        Tests if a box was deleted.
-
-        """
-        with pytest.raises(Exception) as ex:
-            name1 = createUserName()
-            name2 = createUserName()
-
-            pssst1 = Pssst(name1)
-            pssst1.create()
-            pssst1.delete()
-
-            pssst2 = Pssst(name2)
-            pssst2.create()
-            pssst2.push([name1], "test")
-
-        assert str(ex.value) == "User was deleted"
-
-    def test_box_not_found(self):
-        """
-        Tests if a box is not found.
-
-        """
-        with pytest.raises(Exception) as ex:
-            pssst = Pssst(createUserName())
-            pssst.create()
-            pssst.pull("test")
-
-        assert str(ex.value) == "Box not found"
-
-    def test_box_name_invalid(self):
-        """
-        Tests if a box name is invalid.
-
-        """
-        with pytest.raises(Exception) as ex:
-            pssst = Pssst(createUserName())
-            pssst.create()
-            pssst.pull("test !")
-
-        assert str(ex.value) == "Box name invalid"
 
 
 class TestPssst:

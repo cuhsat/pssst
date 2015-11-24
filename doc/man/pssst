@@ -19,15 +19,11 @@ Show version
 .SH COMMANDS
 .B create
 .RS
-Creates an user or a box.
+Creates an user.
 .RE
 .B delete
 .RS
-Deletes an user or a box.
-.RE
-.B list
-.RS
-Lists all boxes.
+Deletes an user.
 .RE
 .B pull
 .RS

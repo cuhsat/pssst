@@ -24,12 +24,6 @@
  */
 module.exports = function Pssst(app, db, config) {
 
-  // Default box name
-  var BOX = 'box';
-
-  // Reserved box names (including commands)
-  var BOXES = [BOX, 'key', 'max', 'list'];
-
   // Use config default values if not found
   var allow = config.allow || '.*';
   var quota = config.quota || 536870912; // 512 MB
@@ -47,16 +41,10 @@ module.exports = function Pssst(app, db, config) {
      * @param {Mixed} authentication
      */
     request: function request(req, res, callback, auth) {
-      req.params.box = req.params.box || BOX; // Default box
 
       // Assert the user name is valid (error 400)
       if (!new RegExp('^[a-z0-9]{2,63}$').test(req.params.user)) {
         return res.sign(400, 'User name invalid');
-      }
-
-      // Assert the box name is valid (error 400)
-      if (!new RegExp('^[a-z0-9]{2,63}$').test(req.params.box)) {
-        return res.sign(400, 'Box name invalid');
       }
 
       // Bypass sender verification (for key requests only)
@@ -69,7 +57,7 @@ module.exports = function Pssst(app, db, config) {
       // Verify sender authentication for this request
       req.verify(auth || req.params.user, function verify() {
         db.get(req.params.user, function get(err, user) {
-          
+
           // Database error
           if (err) {
             return res.error(err);
@@ -83,13 +71,6 @@ module.exports = function Pssst(app, db, config) {
           // Assert the user is not deleted (error 410)
           if (user !== null && user.key === null) {
             return res.sign(410, 'User was deleted');
-          }
-
-          // Assert the box object exists (error 404)
-          if (user !== null && req.params.box) {
-            if (!user.box[req.params.box] && req.method !== 'POST') {
-              return res.sign(404, 'Box not found');
-            }
           }
 
           // Handle request
@@ -149,9 +130,7 @@ module.exports = function Pssst(app, db, config) {
       user = {
         key: req.body.key,
         max: quota,
-        box: {
-          box: []
-        }
+        box: []
       };
 
       return api.respond(req, res, user, 'User created');
@@ -191,84 +170,14 @@ module.exports = function Pssst(app, db, config) {
   });
 
   /**
-   * Returns the list of all user boxes (non persisting).
-   *
-   * Authentication:
-   *
-   *   Signed request
-   *   Signed response
-   */
-  app.get('/1/:user/list', function list(req, res) {
-    api.request(req, res, function request(user) {
-      return res.sign(200, Object.keys(user.box).sort());
-    });
-  });
-
-  /**
-   * Creates a new user box.
-   *
-   * Authentication:
-   *
-   *   Signed request
-   *   Signed response
-   */
-  app.post('/1/:user/:box?', function create(req, res) {
-    api.request(req, res, function request(user) {
-
-      // Assert the user is within its quota (error 413)
-      if (JSON.stringify(user).length >= user.max) {
-        return res.sign(413, 'User reached quota');
-      }
-
-      // Assert the box name is not reserved (error 403)
-      if (BOXES.indexOf(req.params.box) >= 0) {
-        return res.sign(403, 'Box name reserved');
-      }
-
-      // Assert the box does not already exist (error 409)
-      if (req.params.box in user.box) {
-        return res.sign(409, 'Box already exists');
-      }
-
-      // Create new user box
-      user.box[req.params.box] = [];
-
-      return api.respond(req, res, user, 'Box created');
-    });
-  });
-
-  /**
-   * Deletes an existing box.
-   *
-   * Authentication:
-   *
-   *   Signed request
-   *   Signed response
-   */
-  app.delete('/1/:user/:box?', function disable(req, res) {
-    api.request(req, res, function request(user) {
-
-      // Assert the box name is not reserved (error 403)
-      if (BOXES.indexOf(req.params.box) >= 0) {
-        return res.sign(403, 'Box name reserved');
-      }
-
-      // Delete user box
-      delete user.box[req.params.box];
-
-      return api.respond(req, res, user, 'Box deleted');
-    });
-  });
-
-  /**
-   * Pushes a new message into a box.
+   * Pushes a new message into the box.
    *
    * Authentication:
    *
    *   Signed request by sender
    *   Signed response
    */
-  app.put('/1/:user/:box?', function push(req, res) {
+  app.put('/1/:user', function push(req, res) {
     api.request(req, res, function request(user) {
 
       // Assert the user is within its quota (error 413)
@@ -280,23 +189,23 @@ module.exports = function Pssst(app, db, config) {
       req.body.head.time = req.timestamp;
 
       // Push message onto the box
-      user.box[req.params.box].push(req.body);
+      user.box.push(req.body);
 
       return api.respond(req, res, user, 'Message send');
     }, req.body.head.user);
   });
 
   /**
-   * Pulls a message from a box.
+   * Pulls a message from the box.
    *
    * Authentication:
    *
    *   Signed request
    *   Signed response
    */
-  app.get('/1/:user/:box?', function pull(req, res) {
+  app.get('/1/:user', function pull(req, res) {
     api.request(req, res, function request(user) {
-      var message = user.box[req.params.box].shift();
+      var message = user.box.shift();
 
       return api.respond(req, res, user, message);
     });

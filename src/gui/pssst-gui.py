@@ -50,10 +50,10 @@ class CLI:
     -------
     call(params)
         Calls the CLI and returns the result.
-    pull(box=None)
-        Pulls a message from a box.
+    pull()
+        Pulls a message from the box.
     push(receivers, message)
-        Pushes a message into a box.
+        Pushes a message into the box.
     login(username, password)
         Creates the Pssst instance.
     logout()
@@ -174,14 +174,9 @@ class CLI:
         finally:
             return self.__encrypt(response)
 
-    def pull(self, box=None):
+    def pull(self):
         """
-        Pulls messages from a box (override).
-
-        Parameters
-        ----------
-        param box : string, optional (default is None)
-            Name of the users box.
+        Pulls messages from the box (override).
 
         Returns
         -------
@@ -192,7 +187,7 @@ class CLI:
         messages = []
 
         while True:
-            data = self.pssst.pull(box)
+            data = self.pssst.pull()
 
             if not data:
                 break
@@ -206,7 +201,7 @@ class CLI:
 
     def push(self, receivers, message):
         """
-        Pushes a message into a box (override).
+        Pushes a message into the box (override).
 
         Parameters
         ----------
@@ -231,7 +226,7 @@ class CLI:
 
         """
         Pssst(username, password).create()
-        
+
     def login(self, username, password):
         """
         Creates the Pssst instance.

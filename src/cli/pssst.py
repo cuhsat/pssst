@@ -51,7 +51,7 @@ except ImportError:
     sys.exit("Requires PyCrypto (https://github.com/dlitz/pycrypto)")
 
 
-__all__, __version__ = ["Pssst"], "1.0.1"
+__all__, __version__ = ["Pssst"], "1.1.1"
 
 
 def _encode64(data): # Utility shortcut
@@ -68,18 +68,16 @@ class Pssst:
 
     Methods
     -------
-    create(box=None)
-        Creates an user or a box.
-    delete(box=None)
-        Deletes an user or a box.
+    create()
+        Creates an user.
+    delete()
+        Deletes an user.
     find(user)
         Returns the public key of an user.
-    list(user)
-        Returns all boxes of an user.
-    pull(box=None)
-        Pulls a message from a box.
+    pull()
+        Pulls a message from the box.
     push(receivers, message)
-        Pushes a message into a box.
+        Pushes a message into the box.
 
     """
     class Name:
@@ -87,7 +85,7 @@ class Pssst:
         Canonical name parser.
 
         """
-        def __init__(self, user, box=None, password=None):
+        def __init__(self, user, password=None):
             """
             Initializes the instance with the parsed name.
 
@@ -95,15 +93,13 @@ class Pssst:
             ----------
             param user : string
                 User name (full or partly).
-            param box : string, optional (default is None)
-                Box name.
             param password : string, optional (default is None)
                 User private key password.
 
             """
             user = user.strip()
 
-            if not re.match("^(pssst\.)?\w{2,63}(\.\w{2,63})?(:\S*)?$", user):
+            if not re.match("^(pssst\.)?\w{2,63}(:\S*)?$", user):
                 raise Exception("User name invalid")
 
             if user.startswith("pssst."):
@@ -112,28 +108,16 @@ class Pssst:
             if ":" in user and not password:
                 user, password = user.rsplit(":", 1)
 
-            if "." in user and not box:
-                user, box = user.rsplit(".", 1)
-
             self.user = user.lower()
-            self.box = box.lower() if box else box
-            self.all = (self.user, self.box)
+            self.path = "%s/" % self.user
             self.password = password
-
-            if self.box:
-                self.path = "%s/%s/" % self.all
-            else:
-                self.path = "%s/" % self.user
 
         def __repr__(self):
             """
             Returns the full name in canonical notation.
 
             """
-            if self.box:
-                return str("pssst.%s.%s" % self.all)
-            else:
-                return str("pssst.%s" % self.user)
+            return str("pssst.%s" % self.user)
 
 
     class _KeyStorage:
@@ -460,31 +444,18 @@ class Pssst:
 
         return response.text
 
-    def create(self, box=None):
+    def create(self):
         """
-        Creates an user or a box.
-
-        Parameters
-        ----------
-        param box : string, optional (default is None)
-            Name of the users box.
+        Creates an user.
 
         """
-        if not box:
-            body = {"key": self.keys.key.public()}
-        else:
-            body = None
+        body = {"key": self.keys.key.public()}
 
-        self.__api("POST", Pssst.Name(self.user, box).path, body)
+        self.__api("POST", Pssst.Name(self.user).path, body)
 
-    def delete(self, box=None):
+    def delete(self):
         """
-        Deletes an user or a box.
-
-        Parameters
-        ----------
-        param box : string, optional (default is None)
-            Name of the users box.
+        Deletes an user.
 
         Notes
         -----
@@ -492,10 +463,8 @@ class Pssst:
         any API call wil result in an error. The key storage is also deleted.
 
         """
-        self.__api("DELETE", Pssst.Name(self.user, box).path)
-
-        if not box:
-            self.keys.delete()
+        self.__api("DELETE", Pssst.Name(self.user).path)
+        self.keys.delete()
 
     def find(self, user):
         """
@@ -514,31 +483,9 @@ class Pssst:
         """
         return self.__api("GET", user + "/key")
 
-    def list(self):
+    def pull(self):
         """
-        Returns an alphabetical list of all boxes of an user.
-
-        Parameters
-        ----------
-        param user : string
-            Name of the user.
-
-        Returns
-        -------
-        list of strings
-            List of user boxes.
-
-        """
-        return self.__api("GET", self.user + "/list")
-
-    def pull(self, box=None):
-        """
-        Pulls a message from a box.
-
-        Parameters
-        ----------
-        param box : string, optional (default is None)
-            Name of the users box.
+        Pulls a message from the box.
 
         Returns
         -------
@@ -546,7 +493,7 @@ class Pssst:
             The user name, time and message, None if empty.
 
         """
-        data = self.__api("GET", Pssst.Name(self.user, box).path)
+        data = self.__api("GET", Pssst.Name(self.user).path)
 
         if data:
             head = data["head"]
@@ -573,7 +520,7 @@ class Pssst:
             The message.
 
         """
-        for user, box in [Pssst.Name(name).all for name in receivers]:
+        for user in [Pssst.Name(name).user for name in receivers]:
 
             # Cache public key
             if user not in self.keys.list():
@@ -587,7 +534,7 @@ class Pssst:
             head = {"user": self.user, "nonce": nonce}
             data = {"head": head, "body": body}
 
-            self.__api("PUT", Pssst.Name(user, box).path, data)
+            self.__api("PUT", Pssst.Name(user).path, data)
 
 
 def shell(intro, prompt="pssst"):
@@ -679,9 +626,8 @@ def main(script, command="--help", username=None, receiver=None, *message):
       -v --version   Shows version
 
     Available commands:
-      create   Create an user or a box
-      delete   Delete an user or a box
-      list     List all boxes
+      create   Create an user
+      delete   Delete an user
       pull     Pull a message
       push     Push a message
 
@@ -707,18 +653,15 @@ def main(script, command="--help", username=None, receiver=None, *message):
             shell("Pssst Shell " + __version__ + " for " + name.user)
 
         elif command in ("--create", "create") and username:
-            Pssst.cli.create(name.box)
+            Pssst.cli.create()
             print("Created %s" % name)
 
         elif command in ("--delete", "delete") and username:
-            Pssst.cli.delete(name.box)
+            Pssst.cli.delete()
             print("Deleted %s" % name)
 
-        elif command in ("--list", "list") and username:
-            print("\n".join(Pssst.cli.list()))
-
         elif command in ("--pull", "pull") and username:
-            data = Pssst.cli.pull(name.box)
+            data = Pssst.cli.pull()
 
             if data:
                 user, time, message = data

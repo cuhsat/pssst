@@ -28,23 +28,21 @@ Please be warned:
 
 ### User Names
 
-All user/box names are specified by this format:
+All user names are specified by this format:
 
-`pssst.<user>.<box>`
+`pssst.<user>`
 
-All user and box names must be between 2 and 63 characters long and must only
-contain of the lowercase letters a-z and numbers. The service prefix `pssst.`
-can be omitted, but should be specified for clarity reasons. If no box name
-is given, the users default box (named `box`) is used.
+All user names must be between 2 and 63 characters long and must only contain
+of the lowercase letters a-z and numbers. The service prefix `pssst.` can be
+omitted, but should be specified for clarity reasons.
 
 ### User Quota
 
 Every user has a fix limit of `512 MB` overall buffered data. This includes
-all user specific data, such as the public key, boxes and messages. Neither
-the number of the users boxes, nor the size of a message are limited
-separately. This is limit is hard coded by the Redis database and may change
-in future releases. Only messages not yet pulled by the user will count to
-this limit.
+all user specific data, such as the public key and messages. The size of a
+message is not limited separately. This is limit is hard coded by the Redis
+database and may change in future releases. Only messages not yet pulled by
+the user will count to this limit.
 
 > To lower the used default quota at the time of the user creation, the
 > `quota` config setting in the `src/server/config.json` file can be used.
@@ -208,15 +206,16 @@ List of implemented user actions:
 * Create user
 * Delete user
 * Find user key
-* List user boxes
+* Pull a message
+* Push a message
 
 All user actions, except `find`, must be signed with the senders private key.
 Only required HTTP headers are listed.
 
 ### Create
 
-Creates a new user with the given public key. Every user is created with the
-default box `box`. The given key must be in PEM format.
+Creates a new user with the given public key. The given key must be in PEM
+format.
 
 #### Request
 
@@ -242,10 +241,9 @@ User created
 
 ### Delete
 
-Deletes the user. All boxes of the user will also be deleted and all message
-in there will be lost. Messages pushed by the user will not be affected. The
-name of this user will be locked and can not be used afterwards for by other
-users.
+Deletes the user. All messages of the user will also be deleted. Messages
+pushed by the user will not be affected. The name of this user will be locked
+and can not be used afterwards for by other users.
 
 #### Request
 
@@ -288,101 +286,17 @@ content-hash: <timestamp>; <signature>
 <key>
 ```
 
-### List
-
-Returns a list of all user box names. This list is not accessible for other
-users.
-
-#### Request
-
-```
-GET /1/<user>/list HTTP/1.1
-host: api.pssst.name
-user-agent: <app>
-content-hash: <timestamp>; <signature>
-```
-
-#### Response
-
-```
-HTTP/1.1 200 OK
-content-type: application/json
-content-hash: <timestamp>; <signature>
-
-["box",<boxes>]
-```
-
-Box Actions
------------
-List of implemented box actions:
-
-* Create box
-* Delete box
-* Pull message
-* Push message
-
-All box actions must be signed with the senders private key. Only required
-HTTP headers are listed.
-
-### Create
-
-Creates a new empty box for the user. The box name `box`, `key` and `list`
-are restricted because of their protocol usage.
-
-#### Request
-
-```
-POST /1/<user>/<box> HTTP/1.1
-host: api.pssst.name
-user-agent: <app>
-content-hash: <timestamp>; <signature>
-```
-
-#### Response
-
-```
-HTTP/1.1 200 OK
-content-type: text/plain
-content-hash: <timestamp>; <signature>
-
-Box created
-```
-
-### Delete
-
-Deletes a box of the user. All messages in this box will be lost. The default
-box `box` can not be deleted.
-
-#### Request
-
-```
-DELETE /1/<user>/<box> HTTP/1.1
-host: api.pssst.name
-user-agent: <app>
-content-hash: <timestamp>; <signature>
-```
-
-#### Response
-
-```
-HTTP/1.1 200 OK
-content-type: text/plain
-content-hash: <timestamp>; <signature>
-
-Box deleted
-```
-
 ### Pull
 
 Returns the next message from the users box. Messages will be pulled in order
-from first to last. If no box is specified, the default box `box` is used.
-The `head.time` field of the message will be filled in by the server with
-the servers current EPOCH timestamp while processing the pushed message.
+from first to last. The `head.time` field of the message will be filled in by
+the server with the servers current EPOCH timestamp while processing the
+pushed message.
 
 #### Request
 
 ```
-GET /1/<user>/<box>/ HTTP/1.1
+GET /1/<user>/ HTTP/1.1
 host: api.pssst.name
 user-agent: <app>
 content-hash: <timestamp>; <signature>
@@ -400,13 +314,13 @@ content-hash: <timestamp>; <signature>
 
 ### Push
 
-Pushes a message into an users box. If no box is specified, the default box
-`box` is used. The sender will be authenticated with the `head.user` field.
+Pushes a message into the users box. The sender will be authenticated with the
+`head.user` field.
 
 #### Request
 
 ```
-PUT /1/<user>/<box>/ HTTP/1.1
+PUT /1/<user>/ HTTP/1.1
 host: api.pssst.name
 user-agent: <app>
 content-type: application/json

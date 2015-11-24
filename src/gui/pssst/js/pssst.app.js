@@ -30,13 +30,12 @@ define(['js/pssst.api.js'], function (api) {
    */
   return function (token) {
 
-    // Current user and box
+    // Current user
     var user = null;
-    var box = 'box';
 
     // Uses the local proxy server
     api = api(token);
-    
+
     /**
      * Pssst app instance.
      */
@@ -83,13 +82,14 @@ define(['js/pssst.api.js'], function (api) {
         if (username && password) {
           $('#login-dialog').removeClass('animated shake');
 
-          // Login user and loads its boxes list
+          // Login user
           app.call('login', [username, password], function call(data) {
             if (data) {
               user = data;
-              app.listBoxes();
               $('#login-dialog').modal('hide');
               $('#login-dialog button').prop('disabled', false);
+              $('#user').text('pssst.' + user);
+              document.title = 'Pssst | ' + user;
             } else {
               $('#login-dialog').addClass('animated shake');
             }
@@ -147,114 +147,12 @@ define(['js/pssst.api.js'], function (api) {
       },
 
       /**
-       * Changes the active box.
-       *
-       * @param {String} the box name
-       */
-      changeBox: function(box) {
-        document.title = 'Pssst | ' + user + '.' + box;
-
-        // Show active user and box
-        $('#user').html(user + '.' + box + ' <b class="caret"></b>');
-
-        // Toggle folder icons
-        $('.box span')
-          .removeClass('fa-folder-open')
-          .addClass('fa-folder');
-
-        $('#boxname-' + box + ' span')
-          .removeClass('fa-folder')
-          .addClass('fa-folder-open');
-
-        // Hide all boxes but one
-        $('section').hide();
-        $('#box-' + box).show();
-      },
-
-      /**
-       * Creates and selects a new box.
-       */
-      createBox: function createBox() {
-        var box = $.trim($('#boxname').val());
-
-        if (box) {
-          app.call('create', [box], function call() {
-            $('#boxname').val('');
-            app.listBoxes(box = box);
-          });
-        }
-      },
-
-      /**
-       * Deletes the active box.
-       */
-      deleteBox: function deleteBox() {
-        app.call('delete', [box], function call() {
-          $('#box-' + box).remove();
-          app.listBoxes(box = 'box');
-        });
-      },
-
-      /**
-       * Lists all boxes of an user.
-       *
-       * @param {String} the selected box
-       */
-      listBoxes: function listBoxes(selected) {
-        app.call('list', null, function call(boxes) {
-          $('#boxes').empty();
-
-          // Always lists the default box first
-          $('#boxes').append(
-            '<li>'
-          + '  <a id="boxname-box" class="box" href="">'
-          + '    <span class="fa fa-folder"></span>&nbsp;&nbsp;box'
-          + '  </a>'
-          + '</li>'
-          );
-
-          // Show divider if there are other boxes
-          if (boxes.length > 1) {
-            $('#boxes').append('<li class="divider"></li>');
-          }
-
-          // List remaining boxes alphabetically
-          boxes.forEach(function(box) {
-            if (box !== 'box') {
-              $('#boxes').append(Mustache.render(
-                '<li>'
-              + '  <a id="boxname-{{box}}" class="box" href="">'
-              + '    <span class="fa fa-folder"></span>&nbsp;&nbsp;{{box}}'
-              + '  </a>'
-              + '</li>', {box: box}
-              ));
-            }
-
-            // Add message section for all boxes
-            if ($('#box-' + box).length === 0) {
-              $('#content').append(Mustache.render(
-                '<section id="box-{{box}}"></section>', {box: box}
-              ));
-            }
-          });
-
-          // Bind event to select box
-          $('.box').click(function() {
-            app.changeBox(box = $.trim($(this).text()));
-          });
-
-          // Reload active box or default
-          app.changeBox(selected || box);
-        });
-      },
-
-      /**
-       * Pulls all new messages from a box.
+       * Pulls all new messages from the box.
        */
       pullMessages: function pullMessages() {
-        app.call('pull', [box], function call(messages) {
+        app.call('pull', function call(messages) {
           messages.forEach(function(data) {
-            $('#box-' + box).append(Mustache.render(
+            $('#box').append(Mustache.render(
               '<article class="panel panel-default">'
             + '  <div class="panel-body">'
             + '    {{#text}}'
@@ -272,7 +170,7 @@ define(['js/pssst.api.js'], function (api) {
             }));
 
             // Bind event to reply message
-            $('#box-' + box + ' article:last-child').click(function() {
+            $('#box article:last-child').click(function() {
               $('#receiver').val(data[0]);
               $('#write-dialog').modal('show');
             });
@@ -284,7 +182,7 @@ define(['js/pssst.api.js'], function (api) {
       },
 
       /**
-       * Pushes a new message into a box.
+       * Pushes a new message into the box.
        */
       pushMessage: function pushMessage() {
         var receiver = $.trim($('#receiver').val());
@@ -344,8 +242,6 @@ define(['js/pssst.api.js'], function (api) {
     $('#user-logout').click(app.logout);
     $('#user-create').click(app.createUser);
     $('#user-delete').click(app.deleteUser);
-    $('#box-create').click(app.createBox);
-    $('#box-delete').click(app.deleteBox);
     $('#push-message').click(app.pushMessage);
 
     // Show login dialog at first
