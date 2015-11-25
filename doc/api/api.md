@@ -120,8 +120,7 @@ using the SHA-1 hash. If they do not match, the client must terminate
 immediately.
 
 For further information about the used cryptographical methods, please consult
-the [RFCs](/doc/rfc) listed in the appendix, which can be found in `doc/rfc`
-directory.
+the RFCs listed in the appendix.
 
 Server Actions
 --------------

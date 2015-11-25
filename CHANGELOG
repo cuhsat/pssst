@@ -1,6 +1,7 @@
 1.1.1
 * Kicked off Travis CI testing
-* Removed multiple user boxes
+* Refactored tests
+* Removed RFCs
 * Removed GUI
 
 1.0.1

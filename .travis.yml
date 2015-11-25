@@ -2,7 +2,6 @@ language: python
 branches:
   only:
     - master
-    - develop
 python:
   - "3.4"
   - "3.3"
@@ -28,5 +27,5 @@ before_script:
   - cd ../..
   - sleep 30
 script:
-  - python src/cli/pssst_test.py
+  - python test/pssst_test.sh
 sudo: false
