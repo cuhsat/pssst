@@ -4,14 +4,9 @@ branches:
     - master
 python:
   - "3.4"
-  - "3.3"
   - "2.7"
 node_js:
   - "4.2"
-  - "4.1"
-  - "0.12"
-  - "0.10"
-  - "iojs"
 services:
   - redis-server
 install:
@@ -27,5 +22,5 @@ before_script:
   - cd ../..
   - sleep 30
 script:
-  - python test/pssst_test.sh
+  - ./test/pssst_test.sh
 sudo: false
