@@ -1,6 +1,7 @@
 1.1.1
 * Kicked off Travis CI testing
 * Removed multiple user boxes
+* Removed GUI
 
 1.0.1
 * Updated the servers key fingerprint
