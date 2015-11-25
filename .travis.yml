@@ -22,5 +22,6 @@ before_script:
   - cd ../..
   - sleep 30
 script:
-  - ./test/pssst_test.sh
+  - cd test
+  - ./pssst_test.sh
 sudo: false
