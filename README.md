@@ -17,10 +17,6 @@ $ curl -s https://get.pssst.name | bash
 $ pssst push me you "Hello"
 ```
 
-Usage
------
-Please use `pssst --help` for a full list of available commands.
-
 API
 ---
 Our full [API](/doc/api/api.md) documentation can be found under `doc/api/`.
@@ -31,12 +27,7 @@ No security advisories are known as of today.
 
 License
 -------
-Copyright (C) 2013-2015  Christian & Christian  <hello@pssst.name>
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Licensed under the terms of the [GPLv3](LICENSE).
 
 ----------
 Created by
