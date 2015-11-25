@@ -14,7 +14,7 @@ $ curl -s https://get.pssst.name | bash
 
 **How to use**
 ```
-$ pssst push me you "Hello"
+$ pssst push me world "Hello"
 ```
 
 API
