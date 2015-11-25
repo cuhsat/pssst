@@ -27,7 +27,7 @@ No security advisories are known as of today.
 
 License
 -------
-Released under the terms of the [GPLv3 license](LICENSE).
+Released under the terms of the [GPLv3](LICENSE) license.
 
 ----------
 Created by
