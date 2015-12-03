@@ -23,6 +23,6 @@ before_script:
   - sleep 30
 script:
   - cd test
-  - ln -s ../src/cli/pssst.py
-  - ./pssst_test.sh
+  - cp ../src/cli/pssst.py .
+  - ./pssst_test.py
 sudo: false
