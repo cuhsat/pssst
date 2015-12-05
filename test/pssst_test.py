@@ -405,10 +405,7 @@ class TestPssst:
         pssst.create()
         pssst.push([name], text)
 
-        data = pssst.pull()
-
-        assert data[0] == name
-        assert data[2] == text
+        assert pssst.pull() == text
 
     def test_push_single_user(self):
         """
@@ -426,36 +423,28 @@ class TestPssst:
         pssst2.create()
         pssst2.push([name1], text)
 
-        data = pssst1.pull()
-
-        assert data[0] == name2
-        assert data[2] == text
+        assert pssst1.pull() == text
 
     def test_push_multi_users(self):
         """
         Tests if a message could be pushed to many receivers.
 
         """
-        send = createUserName()
         text = b"Hello World !"
 
         names = [createUserName() for i in range(5)]
 
         for name in names:
-            pssst = Pssst(name)
-            pssst.create()
+            Pssst(name).create()
 
-        pssst = Pssst(send)
+        pssst = Pssst(createUserName())
         pssst.create()
         pssst.push(names, text)
 
         for name in names:
             pssst = Pssst(name)
-
-            data = pssst.pull()
-
-            assert data[0] == send
-            assert data[2] == text
+            
+            assert pssst.pull() == text
 
     def test_push_user_name_invalid(self):
         """
@@ -533,7 +522,7 @@ class TestFuzzy:
             pssst.create()
             pssst.push([name], blob)
 
-            assert blob == pssst.pull()[2]
+            assert blob == pssst.pull()
 
 
 def main(*args):
@@ -545,23 +534,7 @@ def main(*args):
     param args : tuple of strings, optional
         Arguments passed to py.test.
 
-    Notes
-    -----
-    Testing against the live API should not be done, because
-    it slows the server down and clutters up the database.
-
     """
-    master = api = "https://api.pssst.name"
-    config = os.path.join(os.path.expanduser("~"), ".pssst")
-
-    if os.path.exists(config):
-        api = io.open(config).read().strip()
-
-    if api == master:
-        return "Tests against the live API are not allowed"
-
-    print("Using API: " + api)
-
     return pytest.main(list(args))
 
 
