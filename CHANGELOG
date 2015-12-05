@@ -1,6 +1,7 @@
-1.1.1
+1.1.0
 * Kicked off Travis CI testing
 * Refactored tests
+* Removed metadata
 * Removed shell mode from CLI
 * Removed support for old versions
 * Removed RFCs
