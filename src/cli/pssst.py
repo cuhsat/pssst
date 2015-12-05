@@ -28,9 +28,9 @@ from getpass import getpass
 from zipfile import ZipFile
 
 try:
-	import readline
+    import readline
 except ImportError:
-	pass # Windows doesn't support this
+    pass # Windows doesn't support this
 
 
 try:
@@ -51,7 +51,7 @@ except ImportError:
     sys.exit("Requires PyCrypto (https://github.com/dlitz/pycrypto)")
 
 
-__all__, __version__ = ["Pssst"], "1.1.1"
+__all__, __version__ = ["Pssst"], "1.1.2"
 
 
 def _encode64(data): # Utility shortcut
@@ -496,17 +496,10 @@ class Pssst:
         data = self.__api("GET", Pssst.Name(self.user).path)
 
         if data:
-            head = data["head"]
-
-            user = str(head["user"])
-            time = int(head["time"])
-
-            nonce = _decode64(head["nonce"])
+            nonce = _decode64(data["head"]["nonce"])
             body = _decode64(data["body"])
 
-            message = self.keys.key.decrypt(body, nonce)
-
-            return (user, time, message)
+            return self.keys.key.decrypt(body, nonce)
 
     def push(self, receivers, message):
         """
@@ -531,7 +524,7 @@ class Pssst:
             nonce = _encode64(nonce)
             body = _encode64(data)
 
-            head = {"user": self.user, "nonce": nonce}
+            head = {"nonce": nonce, "user": self.user}
             data = {"head": head, "body": body}
 
             self.__api("PUT", Pssst.Name(user).path, data)
@@ -627,10 +620,7 @@ def main(script, command="--help", username=None, receiver=None, *message):
             data = pssst.pull()
 
             if data:
-                user, time, message = data
-                username = Pssst.Name(user)
-                print(message.decode("utf-8"))
-                print("%s, %s" % (username, datetime.fromtimestamp(time)))
+                print(data.decode("utf-8"))
 
         elif command in ("--push", "push") and username and receiver:
             pssst.push([receiver], " ".join(message))
