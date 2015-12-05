@@ -537,37 +537,6 @@ class Pssst:
             self.__api("PUT", Pssst.Name(user).path, data)
 
 
-def shell(intro, prompt="pssst"):
-    """
-    Starts an interactive shell.
-
-    Parameters
-    ----------
-    param intro : string
-        The shell intro.
-    param prompt : string, optional (default is pssst)
-        The shell prompt.
-
-    """
-    print(intro)
-    print('Use "exit" to close the shell.')
-
-    while True:
-        line = raw_input("> %s " % prompt)
-        args = line.split()
-
-        if not line:
-            continue
-
-        if args[0] in ("exit", "quit"):
-            break
-
-        result = main(prompt, *args)
-
-        if not isinstance(result or 0, int):
-            print(result)
-
-
 def usage(text, *args):
     """
     Prints the usage colored.
@@ -620,7 +589,6 @@ def main(script, command="--help", username=None, receiver=None, *message):
       %s [option|command] [username:password] [receiver message...]
 
     Options:
-      -s --shell     Run as interactive shell
       -h --help      Shows this text
       -l --license   Shows license
       -v --version   Shows version
@@ -636,9 +604,7 @@ def main(script, command="--help", username=None, receiver=None, *message):
     try:
         if username:
             name = Pssst.Name(username)
-
-        if username and not hasattr(Pssst, "cli"):
-            Pssst.cli = Pssst(name.user, name.password or getpass())
+            pssst = Pssst(name.user, name.password or getpass())
 
         if command in ("/?", "-h", "--help", "help"):
             usage(main.__doc__, __version__, os.path.basename(script))
@@ -649,19 +615,16 @@ def main(script, command="--help", username=None, receiver=None, *message):
         elif command in ("-v", "--version"):
             print("Pssst CLI " + __version__)
 
-        elif command in ("-s", "--shell") and username:
-            shell("Pssst Shell " + __version__ + " for " + name.user)
-
         elif command in ("--create", "create") and username:
-            Pssst.cli.create()
+            pssst.create()
             print("Created %s" % name)
 
         elif command in ("--delete", "delete") and username:
-            Pssst.cli.delete()
+            pssst.delete()
             print("Deleted %s" % name)
 
         elif command in ("--pull", "pull") and username:
-            data = Pssst.cli.pull()
+            data = pssst.pull()
 
             if data:
                 user, time, message = data
@@ -670,7 +633,7 @@ def main(script, command="--help", username=None, receiver=None, *message):
                 print("%s, %s" % (username, datetime.fromtimestamp(time)))
 
         elif command in ("--push", "push") and username and receiver:
-            Pssst.cli.push([receiver], " ".join(message))
+            pssst.push([receiver], " ".join(message))
             print("Message pushed")
 
         else:
