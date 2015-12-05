@@ -288,9 +288,7 @@ content-hash: <timestamp>; <signature>
 ### Pull
 
 Returns the next message from the users box. Messages will be pulled in order
-from first to last. The `head.time` field of the message will be filled in by
-the server with the servers current EPOCH timestamp while processing the
-pushed message.
+from first to last.
 
 #### Request
 
@@ -308,7 +306,7 @@ HTTP/1.1 200 OK
 content-type: application/json
 content-hash: <timestamp>; <signature>
 
-{"head":{"user":"<sender>","nonce":"<nonce>","time":"<time>"},"body":"<data>"}
+{"head":{"nonce":"<nonce>"},"body":"<data>"}
 ```
 
 ### Push
@@ -325,7 +323,7 @@ user-agent: <app>
 content-type: application/json
 content-hash: <timestamp>; <signature>
 
-{"head":{"user":"<sender>","nonce":"<nonce>"},"body":"<data>"}
+{"head":{"nonce":"<nonce>","user":"<sender>"},"body":"<data>"}
 ```
 
 #### Response
