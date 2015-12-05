@@ -84,9 +84,6 @@ module.exports = function Server(app, config, callback) {
       req.body = '';
     }
 
-    // Add current server timestamp to the request
-    req.timestamp = crypto.now();
-
     /**
      * Verifies a HTTP(S) request.
      *
@@ -200,7 +197,7 @@ module.exports = function Server(app, config, callback) {
 
       // Returns the current time (status 200)
       app.get('/time', function time(req, res) {
-        res.sign(200, req.timestamp);
+        res.sign(200, crypto.now());
       });
 
       // Returns a static file
