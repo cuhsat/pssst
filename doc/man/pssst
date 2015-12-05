@@ -8,8 +8,6 @@ pssst [option|command] [username:password] [receiver message...]
 .SH DESCRIPTION
 Pssst is a simple and secure way to exchange information.
 .SH OPTIONS
-.IP "-s --shell"
-Run as interactive shell
 .IP "-h --help"
 Show usage informations
 .IP "-l --license"
