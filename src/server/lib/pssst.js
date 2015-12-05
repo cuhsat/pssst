@@ -185,8 +185,8 @@ module.exports = function Pssst(app, db, config) {
         return res.sign(413, 'User reached quota');
       }
 
-      // Add request timestamp to message
-      req.body.head.time = req.timestamp;
+      // Delete request user from message
+      delete req.body.head.user;
 
       // Push message onto the box
       user.box.push(req.body);
