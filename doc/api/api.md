@@ -10,21 +10,17 @@ requested to send an unique `user-agent` header per implementation.
 
 Reference Implementation
 ------------------------
-If you want to test your implementation, please use these endpoints below:
+If you want to test your implementation, please use this endpoint below:
 
-* `https://api.pssst.name` (stable)
-* `https://dev.pssst.name` (unstable)
-
-Each endpoint uses its own separate Redis database. The database of the
-unstable branch will be reset each day at midnight and is not persisted.
+* `https://fxj.vela.uberspace.de:62422` (stable)
 
 We advise you to please setup your own local test server and database
 (which is _very easy_) and test your apps and/or bug fixes against them.
 
 Please be warned:
 
-> Do not rely on these endpoints. As we do not backup these nor will they
-> be available all the time. These are meant only for testing purposes.
+> Do not rely on this endpoint. As we do not backup it nor will it be 
+> available all the time. This is meant only for testing purposes.
 
 ### User Names
 
@@ -108,17 +104,6 @@ The grace period for requests / responses to be verified is 30 seconds. Which
 derives to -30 or +30 seconds from the actual EPOCH at the time of
 processing.
 
-### Fingerprint
-
-The public key of our reference API has the following SHA-1 fingerprint:
-
-`8d:69:72:85:95:22:27:70:6d:8a:8e:5f:a8:e4:de:b2:97:75:30:22`
-
-If a client connects to the reference APIs stable branch, it is required to
-match the APIs delivered public key in PEM format against this fingerprint
-using the SHA-1 hash. If they do not match, the client must terminate
-immediately.
-
 For further information about the used cryptographical methods, please consult
 the RFCs listed in the appendix.
 
@@ -128,7 +113,6 @@ List of implemented server actions:
 
 * Get server version
 * Get server key
-* Get server time
 
 All server action must never be signed. Only required HTTP headers are listed.
 
@@ -140,7 +124,7 @@ Returns the servers protocol version.
 
 ```
 GET / HTTP/1.1
-host: api.pssst.name
+host: <api>
 user-agent: <app>
 ```
 
@@ -162,7 +146,7 @@ Returns the servers public key in PEM format.
 
 ```
 GET /time HTTP/1.1
-host: api.pssst.name
+host: <api>
 user-agent: <app>
 ```
 
@@ -174,28 +158,6 @@ content-type: text/plain
 content-hash: <timestamp>; <signature>
 
 <key>
-```
-
-### Time
-
-Returns the servers actual time in EPOCH format.
-
-#### Request
-
-```
-GET /key HTTP/1.1
-host: api.pssst.name
-user-agent: <app>
-```
-
-#### Response
-
-```
-HTTP/1.1 200 OK
-content-type: text/plain
-content-hash: <timestamp>; <signature>
-
-<time>
 ```
 
 User Actions
@@ -220,7 +182,7 @@ format.
 
 ```
 POST /1/<user> HTTP/1.1
-host: api.pssst.name
+host: <api>
 user-agent: <app>
 content-type: application/json
 content-hash: <timestamp>; <signature>
@@ -248,7 +210,7 @@ and can not be used afterwards for by other users.
 
 ```
 DELETE /1/<user> HTTP/1.1
-host: api.pssst.name
+host: <api>
 user-agent: <app>
 content-hash: <timestamp>; <signature>
 ```
@@ -271,7 +233,7 @@ Returns the users public key in PEM format.
 
 ```
 GET /1/<user>/key HTTP/1.1
-host: api.pssst.name
+host: <api>
 user-agent: <app>
 ```
 
@@ -294,7 +256,7 @@ from first to last.
 
 ```
 GET /1/<user>/ HTTP/1.1
-host: api.pssst.name
+host: <api>
 user-agent: <app>
 content-hash: <timestamp>; <signature>
 ```
@@ -318,7 +280,7 @@ Pushes a message into the users box. The sender will be authenticated with the
 
 ```
 PUT /1/<user>/ HTTP/1.1
-host: api.pssst.name
+host: <api>
 user-agent: <app>
 content-type: application/json
 content-hash: <timestamp>; <signature>

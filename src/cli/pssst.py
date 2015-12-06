@@ -43,7 +43,7 @@ except ImportError:
 try:
     from Crypto import Random
     from Crypto.Cipher import AES, PKCS1_OAEP
-    from Crypto.Hash import HMAC, SHA, SHA256
+    from Crypto.Hash import HMAC, SHA256
     from Crypto.PublicKey import RSA
     from Crypto.Signature import PKCS1_v1_5
     from Crypto.Util.py3compat import bchr, bord, tobytes
@@ -51,7 +51,7 @@ except ImportError:
     sys.exit("Requires PyCrypto (https://github.com/dlitz/pycrypto)")
 
 
-__all__, __version__ = ["Pssst"], "1.1.0"
+__all__, __version__ = ["Pssst"], "2.0.0"
 
 
 def _encode64(data): # Utility shortcut
@@ -109,7 +109,6 @@ class Pssst:
                 user, password = user.rsplit(":", 1)
 
             self.user = user.lower()
-            self.path = "%s/" % self.user
             self.password = password
 
         def __repr__(self):
@@ -169,7 +168,7 @@ class Pssst:
             with ZipFile(self.file, "r") as file:
                 keys = []
 
-                # Filter API
+                # Filter out API
                 for key in file.namelist():
                     if key.startswith(self.scheme.rsplit("/")[0]):
                         keys.append(re.sub("^.+/(.+)\.pub$", "\g<1>", key))
@@ -209,7 +208,7 @@ class Pssst:
         This class is not meant to be called externally.
 
         """
-        RSA_SIZE, NONCE_SIZE = 2048, 32 + AES.block_size
+        RSA_SIZE, NONCE_SIZE, GRACE_TIME = 2048, 32 + AES.block_size, 30
 
         def __init__(self, key=None, password=None):
             try:
@@ -249,7 +248,7 @@ class Pssst:
             hmac = HMAC.new(str(timestamp).encode("ascii"), data, SHA256)
             hmac = SHA256.new(hmac.digest())
 
-            if abs(timestamp - current) <= 30:
+            if abs(timestamp - current) <= Pssst._Key.GRACE_TIME:
                 return PKCS1_v1_5.new(self.key).verify(hmac, signature)
             else:
                 return False
@@ -287,43 +286,24 @@ class Pssst:
 
         Notes
         -----
-        If a file in the current directory with the name '.pssst' exists, the
-        content of this file is parsed and used as the API server address and
-        port.
+        If the environment variable 'PSSST' exists, it will be used as the API
+        address and port.
 
         A valid password must consist of upper and lower case letters and also
-        numbers. The required minimum length of a password is 8 characters. If
-        you use the offical API, a password is mandatory.
-
-        The public key of the official API will be verified against the built-
-        in fingerprint.
+        numbers. The required minimum length of a password is 8 characters.
 
         """
-        FINGERPRINT, GRACE = "8d697285952227706d8a8e5fa8e4deb297753022", 30
+        API = "https://fxj.vela.uberspace.de:62422"
 
-        config = os.path.join(os.path.expanduser("~"), ".pssst")
-
-        if os.path.exists(config):
-            verify, self.api = False, io.open(config).read().strip()
-        else:
-            verify, self.api = True, "https://api.pssst.name"
-
-        key, sync = self.__url("key"), int(self.__url("time"))
-
-        if verify and not FINGERPRINT == SHA.new(key).hexdigest():
-            raise Exception("Server could not be authenticated")
-
-        if verify and abs(sync - int(round(time.time()))) > GRACE:
-            raise Exception("Server could not be authenticated")
-
-        if verify and not password:
+        if not password:
             raise Exception("Password is required")
 
+        self.api = os.environ.get("PSSST", API)
         self.user = Pssst.Name(username).user
         self.keys = Pssst._KeyStorage(self.api, self.user, password)
 
         if "id_api" not in self.keys.list():
-            self.keys.save("id_api", key)
+            self.keys.save("id_api", self.__url("key"))
 
     def __repr__(self):
         """
@@ -378,7 +358,7 @@ class Pssst:
 
         timestamp, signature = self.keys.key.sign(body)
 
-        response = request(method, "%s/1/%s" % (self.api, path), data=body,
+        response = request(method, "%s/2/%s" % (self.api, path), data=body,
             headers={
                 "content-hash": "%s; %s" % (timestamp, _encode64(signature)),
                 "content-type": "application/json" if data else "text/plain",
@@ -451,7 +431,7 @@ class Pssst:
         """
         body = {"key": self.keys.key.public()}
 
-        self.__api("POST", Pssst.Name(self.user).path, body)
+        self.__api("POST", self.user, body)
 
     def delete(self):
         """
@@ -463,7 +443,7 @@ class Pssst:
         any API call wil result in an error. The key storage is also deleted.
 
         """
-        self.__api("DELETE", Pssst.Name(self.user).path)
+        self.__api("DELETE", self.user)
         self.keys.delete()
 
     def find(self, user):
@@ -493,7 +473,7 @@ class Pssst:
             The user name, time and message, None if empty.
 
         """
-        data = self.__api("GET", Pssst.Name(self.user).path)
+        data = self.__api("GET", self.user)
 
         if data:
             nonce = _decode64(data["head"]["nonce"])
@@ -527,7 +507,7 @@ class Pssst:
             head = {"nonce": nonce, "user": self.user}
             data = {"head": head, "body": body}
 
-            self.__api("PUT", Pssst.Name(user).path, data)
+            self.__api("PUT", self.user, data)
 
 
 def usage(text, *args):
@@ -595,6 +575,14 @@ def main(script, command="--help", username=None, receiver=None, *message):
     Report bugs to <hello@pssst.name>
     """
     try:
+        login = os.path.join(os.path.expanduser("~"), ".pssst")
+
+        # Shift command line parameters
+        if os.path.exists(login):
+            message = tuple(receiver) + message
+            receiver = username
+            username = io.open(login).read()
+
         if username:
             name = Pssst.Name(username)
             pssst = Pssst(name.user, name.password or getpass())

@@ -1,11 +1,25 @@
-1.1.0
+2.0.0
 * Kicked off Travis CI testing
-* Refactored tests
+* Added user login credentials
+* Added command line shifting
+* Changed comments
+* Changed documentation
+* Changed API documentation
+* Changed API address
+* Changed API version
+* Changed API bypass
+* Changed README.md
+* Changed unit tests
+* Changed manpage
+* Removed startup verification
+* Removed time from server
 * Removed metadata
 * Removed shell mode from CLI
 * Removed support for old versions
 * Removed RFCs
 * Removed GUI
+* Refactored client
+* Refactored tests
 
 1.0.1
 * Updated the servers key fingerprint

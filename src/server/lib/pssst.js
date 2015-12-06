@@ -29,7 +29,7 @@ module.exports = function Pssst(app, db, config) {
   var quota = config.quota || 536870912; // 512 MB
 
   /**
-   * Pssst API (version 1).
+   * Pssst API (version 2).
    */
   var api = {
     /**
@@ -108,7 +108,7 @@ module.exports = function Pssst(app, db, config) {
    *   Signed request
    *   Signed response
    */
-  app.post('/1/:user', function create(req, res) {
+  app.post('/2/:user', function create(req, res) {
     api.request(req, res, function request(user) {
 
       // Assert the user name is allowed (error 403)
@@ -145,7 +145,7 @@ module.exports = function Pssst(app, db, config) {
    *   Signed request
    *   Signed response
    */
-  app.delete('/1/:user', function disable(req, res) {
+  app.delete('/2/:user', function disable(req, res) {
     api.request(req, res, function request(user) {
 
       // Zeroing all data, so the user exists but is invalidated
@@ -163,7 +163,7 @@ module.exports = function Pssst(app, db, config) {
    *   No verification
    *   Signed response
    */
-  app.get('/1/:user/key', function key(req, res) {
+  app.get('/2/:user/key', function key(req, res) {
     api.request(req, res, function request(user) {
       return res.sign(200, user.key);
     }, false);
@@ -177,7 +177,7 @@ module.exports = function Pssst(app, db, config) {
    *   Signed request by sender
    *   Signed response
    */
-  app.put('/1/:user', function push(req, res) {
+  app.put('/2/:user', function push(req, res) {
     api.request(req, res, function request(user) {
 
       // Assert the user is within its quota (error 413)
@@ -203,7 +203,7 @@ module.exports = function Pssst(app, db, config) {
    *   Signed request
    *   Signed response
    */
-  app.get('/1/:user', function pull(req, res) {
+  app.get('/2/:user', function pull(req, res) {
     api.request(req, res, function request(user) {
       var message = user.box.shift();
 

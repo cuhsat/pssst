@@ -17,11 +17,16 @@ $ pssst.py
 ```
 
 All user specific data is stored as zip files named `.pssst.<user>` in the
-users home directory. If you want to use any other than our test API, simply
-create a file named `.pssst` in your home directory with the desired address:
+users home directory.
+
+If the file `.pssst` exists in the users home directory, its contents will be
+used as the default username and password.
+
+If the environment variable `PSSST` exists, it will be used as the API address
+and port.
 
 ```
-$ echo http://localhost:62421 > ~/.pssst
+$ export PSSST=http://localhost:62421
 ```
 
 Install

@@ -113,7 +113,6 @@ class TestName:
         """
         name = Pssst.Name(" pssst.UserName:Pa55w0rd! ")
 
-        assert name.path == "username/"
         assert name.user == "username"
         assert name.password == "Pa55w0rd!"
         assert str(name) == "pssst.username"
@@ -125,7 +124,6 @@ class TestName:
         """
         name = Pssst.Name("me")
 
-        assert name.path == "me/"
         assert name.user == "me"
         assert name.password == None
         assert str(name) == "pssst.me"
@@ -250,7 +248,6 @@ class TestUser:
     * User find
     * User find failed, user was deleted
     * User find failed, user not found
-    * User list
     * User name invalid
 
     Methods
@@ -302,7 +299,7 @@ class TestUser:
         pssst.create()
         pssst.delete()
 
-    def test_delete_user(self):
+    def test_delete_user_was_deleted(self):
         """
         Tests if an user was deleted.
 
@@ -317,7 +314,7 @@ class TestUser:
 
     def test_find_user(self):
         """
-        Tests if an user public can be found.
+        Tests if an user public key can be found.
 
         """
         name = createUserName()

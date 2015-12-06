@@ -9,7 +9,7 @@ encryption.
 
 **How to get**
 ```
-$ curl -s https://get.pssst.name | bash
+$ curl -s https://raw.github.com/cuhsat/pssst/master/src/cli/pssst.py | bash
 ```
 
 **How to use**

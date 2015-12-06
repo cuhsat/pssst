@@ -9,7 +9,7 @@ pssst [option|command] [username:password] [receiver message...]
 Pssst is a simple and secure way to exchange information.
 .SH OPTIONS
 .IP "-h --help"
-Show usage informations
+Show usage
 .IP "-l --license"
 Show license
 .IP "-v --version"
@@ -34,7 +34,7 @@ Pushes a message.
 .SH FILES
 .I ~/.pssst
 .RS
-Configuration file. See
+Default user credentials. See
 .I README.md
 for further details.
 .RE

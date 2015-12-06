@@ -1,8 +1,7 @@
 #%RAML 0.8
 title: Pssst API
-baseUri: https://{server}/{version}
-server: localhost
-version: 1
+baseUri: https://fxj.vela.uberspace.de:62422/{version}
+version: 2
 mediaType: application/text
 securedBy: [x-content-hash]
 securitySchemes:
@@ -34,15 +33,6 @@ securitySchemes:
   description: Server public key
   get:
     description: This method will return the servers public key
-    responses:
-      200:
-        body:
-          application/text
-/time
-  displayName: Time
-  description: Server current time
-  get:
-    description: This method will return the servers current time
     responses:
       200:
         body:
