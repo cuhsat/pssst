@@ -85,7 +85,7 @@ def createUserName(length=16):
 
     files.append(os.path.join(os.path.expanduser("~"), ".pssst." + name))
 
-    return name
+    return name + ":password"
 
 
 class TestName:
