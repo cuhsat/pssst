@@ -293,7 +293,7 @@ class Pssst:
         numbers. The required minimum length of a password is 8 characters.
 
         """
-        API = "https://fxj.vela.uberspace.de:62422"
+        API = "https://vela.uberspace.de:61222"
 
         if not password:
             raise Exception("Password is required")

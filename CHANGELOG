@@ -4,6 +4,7 @@
 * Added command line shifting
 * Added help option to server
 * Fixed push user bug
+* Fixed server address
 * Changed comments
 * Changed documentation
 * Changed API documentation

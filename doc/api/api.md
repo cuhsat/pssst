@@ -12,14 +12,14 @@ Reference Implementation
 ------------------------
 If you want to test your implementation, please use this endpoint below:
 
-* `https://fxj.vela.uberspace.de:62422` (stable)
+* `https://vela.uberspace.de:61222` (stable)
 
 We advise you to please setup your own local test server and database
 (which is _very easy_) and test your apps and/or bug fixes against them.
 
 Please be warned:
 
-> Do not rely on this endpoint. As we do not backup it nor will it be 
+> Do not rely on this endpoint. As we do not backup it nor will it be
 > available all the time. This is meant only for testing purposes.
 
 ### User Names
