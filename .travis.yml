@@ -14,7 +14,6 @@ install:
 before_script:
   - export PSSST=http://localhost:62421
   - export PYTHON=`which python2`
-  - cd src/server
   - nvm install 4.2
   - nvm use 4.2
   - npm install
