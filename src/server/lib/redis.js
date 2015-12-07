@@ -27,29 +27,11 @@ module.exports = function Redis(config, callback) {
   var url = require('url');
   var redis = require('redis');
 
-  // Using the Heroku Open Redis add-on
-  if (process.env.OPENREDIS_URL) {
-    heroku = url.parse(process.env.OPENREDIS_URL);
-  }
-
-  // Using the Heroku Redis Cloud add-on
-  if (process.env.REDISCLOUD_URL) {
-    heroku = url.parse(process.env.REDISCLOUD_URL);
-  }
-
-  // Using the Heroku Redis Green add-on
-  if (process.env.REDISGREEN_URL) {
-    heroku = url.parse(process.env.REDISGREEN_URL);
-  }
-
-  // Using the Heroku Redis To Go add-on
-  if (process.env.REDISTOGO_URL) {
-    heroku = url.parse(process.env.REDISTOGO_URL);
-  }
-
   var client, self = this;
 
-  if (typeof(heroku) != "undefined") {
+  // Search for Heroku Redis add-on
+  if (process.env.REDIS_URL) {
+    heroku = url.parse(process.env.REDIS_URL);
     client = redis.createClient(heroku.port, heroku.hostname);
     client.auth(heroku.auth.split(':')[1]);
   } else {
