@@ -3,6 +3,7 @@
 * Added user login credentials
 * Added command line shifting
 * Added help option to server
+* Added ProcFile for Heroku
 * Fixed push user bug
 * Fixed server address
 * Changed default quota
