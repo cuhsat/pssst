@@ -1,13 +1,10 @@
 {
   "name": "pssst",
   "version": "2.0.0",
-  "homepage": "https://pssst.name",
+  "homepage": "https://github.com/cuhsat/pssst",
   "repository": {
     "type": "git",
     "url": "https://github.com/cuhsat/pssst.git"
-  },
-  "bugs": {
-    "url": "https://github.com/cuhsat/pssst/issues"
   },
   "dependencies": {
     "body-parser": "~1.14",
@@ -20,7 +17,7 @@
     "node": "4.2.*"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node src/server/index.js"
   },
   "license": "GPL-3.0+",
   "private": true
