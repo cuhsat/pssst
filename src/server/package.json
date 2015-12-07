@@ -17,7 +17,7 @@
     "node": "4.2.*"
   },
   "scripts": {
-    "start": "node src/server/index.js"
+    "start": "node index.js"
   },
   "license": "GPL-3.0+",
   "private": true
