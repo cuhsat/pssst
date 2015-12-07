@@ -31,9 +31,7 @@ module.exports = function Redis(config, callback) {
 
   // Search for Heroku Redis add-on
   if (process.env.REDIS_URL) {
-    heroku = url.parse(process.env.REDIS_URL);
-    client = redis.createClient(heroku.port, heroku.hostname);
-    client.auth(heroku.auth.split(':')[1]);
+    client = redis.createClient(process.env.REDIS_URL);
   } else {
     client = redis.createClient(config.source);
   }
