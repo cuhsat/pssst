@@ -507,7 +507,7 @@ class Pssst:
             head = {"nonce": nonce, "user": self.user}
             data = {"head": head, "body": body}
 
-            self.__api("PUT", self.user, data)
+            self.__api("PUT", user, data)
 
 
 def usage(text, *args):
@@ -579,7 +579,7 @@ def main(script, command="--help", username=None, receiver=None, *message):
 
         # Shift command line parameters
         if os.path.exists(login):
-            message = tuple(receiver) + message
+            message = (receiver,) + message
             receiver = username
             username = io.open(login).read()
 

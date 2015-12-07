@@ -2,6 +2,8 @@
 * Kicked off Travis CI testing
 * Added user login credentials
 * Added command line shifting
+* Added help option to server
+* Fixed push user bug
 * Changed comments
 * Changed documentation
 * Changed API documentation
@@ -19,6 +21,7 @@
 * Removed RFCs
 * Removed GUI
 * Refactored client
+* Refactored server
 * Refactored tests
 
 1.0.1

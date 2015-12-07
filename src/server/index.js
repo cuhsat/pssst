@@ -107,6 +107,7 @@ try {
         console.log([
           'Usage: node index [option]',
           '',
+          '  -h --help      Shows usage',
           '  -l --license   Shows license',
           '  -v --version   Shows version',
           '',

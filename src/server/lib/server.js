@@ -183,7 +183,7 @@ module.exports = function Server(app, config, callback) {
     });
   }
 
-  // 
+  //
   redis(config.db, function redis(err, db) {
     if (!err) {
 
@@ -194,11 +194,6 @@ module.exports = function Server(app, config, callback) {
 
       // Load custom app
       pssst(app, db, config.app);
-
-      // Returns the current time (status 200)
-      app.get('/time', function time(req, res) {
-        res.sign(200, crypto.now());
-      });
 
       // Returns a static file
       app.get('/:file', file);

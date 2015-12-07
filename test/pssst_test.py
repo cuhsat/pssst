@@ -63,29 +63,30 @@ def teardown_module(module):
                 os.remove(file)
 
 
-def createUserName(length=16):
+def createUser(length=16):
     """
-    Returns a random user name.
+    Returns a random username and password.
 
     Parameters
     ----------
     param length : int, optional (default is 16)
-        Length of the name in characters.
+        Length of the username and password in characters.
 
     Returns
     -------
-    string
-        A random user name.
+    tuple
+        A random username and password.
 
     """
     global files
 
     pool = string.ascii_lowercase + string.digits
-    name = "".join([random.choice(pool) for x in range(length)])
+    username = "".join([random.choice(pool) for x in range(length)])
+    password = "".join([random.choice(pool) for x in range(length)])
 
-    files.append(os.path.join(os.path.expanduser("~"), ".pssst." + name))
+    files.append(os.path.join(os.path.expanduser("~"), ".pssst." + username))
 
-    return name + ":password"
+    return (username, password)
 
 
 class TestName:
@@ -156,19 +157,21 @@ class TestKeyStorage:
         Tests if file is created correctly.
 
         """
-        name1 = createUserName()
-        name2 = createUserName()
+        username1, password1 = createUser()
+        username2, password2 = createUser()
 
-        pssst1 = Pssst(name1)
+        pssst1 = Pssst(username1, password1)
         pssst1.create()
 
-        pssst2 = Pssst(name2)
+        pssst2 = Pssst(username2, password2)
         pssst2.create()
 
-        pssst1.push([name1], "Hello World !")
-        pssst1.push([name2], "Hello World !")
+        pssst1.push([username1], "Hello World !")
+        pssst1.push([username2], "Hello World !")
 
-        assert sorted(pssst1.keys.list()) == sorted(["id_api", name1, name2])
+        keys = ["id_api", username1, username2]
+
+        assert sorted(pssst1.keys.list()) == sorted(keys)
 
 
 class TestCrypto:
@@ -195,7 +198,7 @@ class TestCrypto:
 
         """
         with pytest.raises(Exception) as ex:
-            pssst = Pssst(createUserName())
+            pssst = Pssst(*createUser())
             pssst.pull()
 
         assert str(ex.value) == "Verification failed"
@@ -210,7 +213,7 @@ class TestCrypto:
         with pytest.raises(Exception) as ex:
             Pssst._Key.sign = lambda self, data: ("!", b"!")
 
-            pssst = Pssst(createUserName())
+            pssst = Pssst(*createUser())
             pssst.create()
             pssst.pull()
 
@@ -228,7 +231,7 @@ class TestCrypto:
         with pytest.raises(Exception) as ex:
             Pssst._Key.sign = lambda self, data: original(self, "Test")
 
-            pssst = Pssst(createUserName())
+            pssst = Pssst(*createUser())
             pssst.create()
             pssst.pull()
 
@@ -275,7 +278,7 @@ class TestUser:
         Tests if an user can be created.
 
         """
-        pssst = Pssst(createUserName())
+        pssst = Pssst(*createUser())
         pssst.create()
 
     def test_create_user_already_exists(self):
@@ -284,7 +287,7 @@ class TestUser:
 
         """
         with pytest.raises(Exception) as ex:
-            pssst = Pssst(createUserName())
+            pssst = Pssst(*createUser())
             pssst.create()
             pssst.create()
 
@@ -295,7 +298,7 @@ class TestUser:
         Tests if an user can be deleted.
 
         """
-        pssst = Pssst(createUserName())
+        pssst = Pssst(*createUser())
         pssst.create()
         pssst.delete()
 
@@ -305,7 +308,7 @@ class TestUser:
 
         """
         with pytest.raises(Exception) as ex:
-            pssst = Pssst(createUserName())
+            pssst = Pssst(*createUser())
             pssst.create()
             pssst.delete()
             pssst.pull()
@@ -317,10 +320,10 @@ class TestUser:
         Tests if an user public key can be found.
 
         """
-        name = createUserName()
-        pssst = Pssst(name)
+        username, password = createUser()
+        pssst = Pssst(username, password)
         pssst.create()
-        pssst.find(name)
+        pssst.find(username)
 
     def test_find_user_was_deleted(self):
         """
@@ -328,13 +331,13 @@ class TestUser:
 
         """
         with pytest.raises(Exception) as ex:
-            name = createUserName()
-            pssst = Pssst(name)
+            username, password = createUser()
+            pssst = Pssst(username, password)
             pssst.create()
             pssst.delete()
 
-            pssst = Pssst(createUserName())
-            pssst.find(name)
+            pssst = Pssst(*createUser())
+            pssst.find(username)
 
         assert str(ex.value) == "User was deleted"
 
@@ -344,7 +347,7 @@ class TestUser:
 
         """
         with pytest.raises(Exception) as ex:
-            pssst = Pssst(createUserName())
+            pssst = Pssst(*createUser())
             pssst.find("usernotfound")
 
         assert str(ex.value) == "User not found"
@@ -355,7 +358,7 @@ class TestUser:
 
         """
         with pytest.raises(Exception) as ex:
-            pssst = Pssst(createUserName())
+            pssst = Pssst(*createUser())
             pssst.find("test !")
 
         assert str(ex.value) == "User name invalid"
@@ -395,53 +398,54 @@ class TestPssst:
         Tests if a message could be pushed to sender.
 
         """
-        name = createUserName()
-        text = b"Echo"
+        username, password = createUser()
+        message = b"Echo"
 
-        pssst = Pssst(name)
+        pssst = Pssst(username, password)
         pssst.create()
-        pssst.push([name], text)
+        pssst.push([username], message)
 
-        assert pssst.pull() == text
+        assert pssst.pull() == message
 
     def test_push_single_user(self):
         """
         Tests if a message could be pushed to one receiver.
 
         """
-        name1 = createUserName()
-        name2 = createUserName()
-        text = b"Hello World !"
+        username1, password1 = createUser()
+        username2, password2 = createUser()
+        message = b"Hello World!"
 
-        pssst1 = Pssst(name1)
+        pssst1 = Pssst(username1, password1)
         pssst1.create()
 
-        pssst2 = Pssst(name2)
+        pssst2 = Pssst(username2, password2)
         pssst2.create()
-        pssst2.push([name1], text)
+        pssst2.push([username1], message)
 
-        assert pssst1.pull() == text
+        assert pssst1.pull() == message
 
     def test_push_multi_users(self):
         """
         Tests if a message could be pushed to many receivers.
 
         """
-        text = b"Hello World !"
+        message = b"Hello World!"
 
-        names = [createUserName() for i in range(5)]
+        users = [createUser() for i in range(5)]
+        names = [username for username, password in users]
 
-        for name in names:
-            Pssst(name).create()
+        for user in users:
+            Pssst(*user).create()
 
-        pssst = Pssst(createUserName())
+        pssst = Pssst(*createUser())
         pssst.create()
-        pssst.push(names, text)
+        pssst.push(names, message)
 
-        for name in names:
-            pssst = Pssst(name)
-            
-            assert pssst.pull() == text
+        for user in users:
+            pssst = Pssst(*user)
+
+            assert pssst.pull() == message
 
     def test_push_user_name_invalid(self):
         """
@@ -449,7 +453,7 @@ class TestPssst:
 
         """
         with pytest.raises(Exception) as ex:
-            pssst = Pssst(createUserName())
+            pssst = Pssst(*createUser())
             pssst.push(["test !"], "test")
 
         assert str(ex.value) == "User name invalid"
@@ -459,12 +463,12 @@ class TestPssst:
         Tests if box is empty.
 
         """
-        name = createUserName()
-        text = b"Hello World !"
+        username, password = createUser()
+        message = b"Hello World!"
 
-        pssst = Pssst(name)
+        pssst = Pssst(username, password)
         pssst.create()
-        pssst.push([name], text)
+        pssst.push([username], message)
         pssst.pull()
 
         assert pssst.pull() == None
@@ -474,7 +478,7 @@ class TestPssst:
         Tests if box is empty.
 
         """
-        pssst = Pssst(createUserName())
+        pssst = Pssst(*createUser())
         pssst.create()
 
         assert pssst.pull() == None
@@ -485,9 +489,9 @@ class TestPssst:
 
         """
         with pytest.raises(Exception) as ex:
-            name = createUserName()
-            Pssst(name, "RightPassword1234")
-            Pssst(name, "WrongPassword0000")
+            username, password = createUser()
+            Pssst(username, "foobar")
+            Pssst(username, "xxxxxx")
 
         assert str(ex.value) == "Password wrong"
 
@@ -513,11 +517,11 @@ class TestFuzzy:
 
         """
         for size in [2 ** n for n in range(0, 13)]:
+            username, password = createUser()
             blob = os.urandom(size)
-            name = createUserName()
-            pssst = Pssst(name)
+            pssst = Pssst(username, password)
             pssst.create()
-            pssst.push([name], blob)
+            pssst.push([username], blob)
 
             assert blob == pssst.pull()
 

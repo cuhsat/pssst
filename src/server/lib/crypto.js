@@ -65,6 +65,15 @@ module.exports = function Crypto() {
   }
 
   /**
+   * Returns the current timestamp.
+   *
+   * @return {Number} the timestamp
+   */
+  function getTimestamp() {
+    return Number((new Date()).getTime() / 1000).toFixed(0);
+  }
+
+  /**
    * Returns the HMAC of the given data.
    *
    * @param {Object} the data
@@ -72,7 +81,7 @@ module.exports = function Crypto() {
    * @return {Object} timestamp and signature
    */
   function createHMAC(data, timestamp) {
-    var hmac, timestamp = timestamp || now();
+    var hmac, timestamp = timestamp || getTimestamp();
 
     // Calculate hash with final round
     hmac = crypto.createHmac(RSA_HASH, timestamp.toString());
@@ -83,15 +92,6 @@ module.exports = function Crypto() {
       signature: hmac.digest(ENCODING)
     };
   };
-
-  /**
-   * Returns the current timestamp.
-   *
-   * @return {Number} the timestamp
-   */
-  this.now = function now() {
-    return Number((new Date()).getTime() / 1000).toFixed(0);
-  }
 
   /**
    * Returns the signature of the given data.
@@ -129,7 +129,7 @@ module.exports = function Crypto() {
     var sig = hmac.signature;
 
     // Assert the timestamp is within grace time
-    if (Math.abs(time - now()) <= GRACE) {
+    if (Math.abs(time - getTimestamp()) <= GRACE) {
       var hmac = createHMAC(data, time);
 
       try {
