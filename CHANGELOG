@@ -5,6 +5,7 @@
 * Added help option to server
 * Fixed push user bug
 * Fixed server address
+* Changed default quota
 * Changed comments
 * Changed documentation
 * Changed API documentation

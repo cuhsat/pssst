@@ -25,14 +25,10 @@ omitted, but should be specified for clarity reasons.
 
 ### User Quota
 
-Every user has a fix limit of `512 MB` overall buffered data. This includes
-all user specific data, such as the public key and messages. The size of a
-message is not limited separately. This is limit is hard coded by the Redis
-database and may change in future releases. Only messages not yet pulled by
-the user will count to this limit.
-
-> To lower the used default quota at the time of the user creation, the
-> `quota` config setting in the `src/server/config.json` file can be used.
+Every user has a fix limit of `1 MB` overall buffered data. This includes all
+user specific data, such as the public key and messages. The size of a message
+is not limited separately. Only messages not yet pulled by the user will count
+to this limit.
 
 Cryptography
 ------------

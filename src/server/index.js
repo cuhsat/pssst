@@ -26,10 +26,6 @@ try {
     "db": {
       "source": 6379,
       "number": 0
-    },
-    "app": {
-      "allow": null,
-      "quota": null
     }
   }, null, 2);
 

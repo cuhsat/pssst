@@ -193,7 +193,7 @@ module.exports = function Server(app, config, callback) {
       });
 
       // Load custom app
-      pssst(app, db, config.app);
+      pssst(app, db);
 
       // Returns a static file
       app.get('/:file', file);

@@ -20,13 +20,11 @@
  *
  * @param {Object} express app
  * @param {Object} database wrapper
- * @param {Object} app config
  */
-module.exports = function Pssst(app, db, config) {
+module.exports = function Pssst(app, db) {
 
-  // Use config default values if not found
-  var allow = config.allow || '.*';
-  var quota = config.quota || 536870912; // 512 MB
+  // Required constants
+  var QUOTA = 1024 * 1024; // 1 MB
 
   /**
    * Pssst API (version 2).
@@ -111,11 +109,6 @@ module.exports = function Pssst(app, db, config) {
   app.post('/2/:user', function create(req, res) {
     api.request(req, res, function request(user) {
 
-      // Assert the user name is allowed (error 403)
-      if (!new RegExp(allow).test(req.params.user)) {
-        return res.sign(403, 'User name not allowed');
-      }
-
       // Assert the user does not already exist (error 409)
       if (user !== null) {
         return res.sign(409, 'User already exists');
@@ -129,7 +122,6 @@ module.exports = function Pssst(app, db, config) {
       // New user object
       user = {
         key: req.body.key,
-        max: quota,
         box: []
       };
 
@@ -149,7 +141,7 @@ module.exports = function Pssst(app, db, config) {
     api.request(req, res, function request(user) {
 
       // Zeroing all data, so the user exists but is invalidated
-      user.key = user.max = user.box = null;
+      user.key = user.box = null;
 
       return api.respond(req, res, user, 'User deleted');
     });
@@ -181,7 +173,7 @@ module.exports = function Pssst(app, db, config) {
     api.request(req, res, function request(user) {
 
       // Assert the user is within its quota (error 413)
-      if (JSON.stringify(user).length >= user.max) {
+      if (JSON.stringify(user).length >= QUOTA) {
         return res.sign(413, 'User reached quota');
       }
 
