@@ -1,6 +1,5 @@
 #!/bin/bash
-
-cd ${0%/*}
+cd src/server/
 
 npm install
 npm start &
