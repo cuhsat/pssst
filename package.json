@@ -1,9 +1,0 @@
-{
-  "engines": {
-    "node": "4.2.*"
-  },
-  "scripts": {
-    "start": "node src/server/index.js"
-  },
-  "private": true
-}
