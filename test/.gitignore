@@ -1,1 +1,6 @@
 pssst.py
+.cache/
+*.pyc
+*.pyd
+*.pyo
+env

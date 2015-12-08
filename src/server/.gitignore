@@ -1,7 +1,4 @@
-id_rsa
-id_rsa.cert
 *.log
+id_rsa*
 config.json
-npm-debug.log
 node_modules/
-www/

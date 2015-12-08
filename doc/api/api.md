@@ -8,11 +8,8 @@ requested to send an unique `user-agent` header per implementation.
 > A [RAML](http://raml.org) specification of the [API](api.raml) is available
 > under `doc/api/api.raml`.
 
-Reference Implementation
-------------------------
-We advise you to please setup your own local test server and database
-(which is _very easy_) and test your apps and/or bug fixes against them.
-
+Constraints
+-----------
 ### User Names
 
 All user names are specified by this format:
@@ -94,9 +91,9 @@ processing.
 For further information about the used cryptographical methods, please consult
 the RFCs listed in the appendix.
 
-Server Actions
---------------
-List of implemented server actions:
+Independent Actions
+-------------------
+List of implemented actions:
 
 * Get server version
 * Get server key
@@ -147,9 +144,9 @@ content-hash: <timestamp>; <signature>
 <key>
 ```
 
-User Actions
-------------
-List of implemented user actions:
+User Specific Actions
+---------------------
+List of implemented actions:
 
 * Create user
 * Delete user

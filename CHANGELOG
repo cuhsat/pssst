@@ -19,16 +19,20 @@
 * Changed README.md
 * Changed unit tests
 * Changed manpage
+* Changed gitignores
 * Removed startup verification
-* Removed time from server
+* Removed server public folder
+* Removed server time
 * Removed metadata
 * Removed shell mode from CLI
 * Removed support for old versions
 * Removed RFCs
 * Removed GUI
+* Hardened server
 * Refactored client
 * Refactored server
 * Refactored tests
+* Refactored documentations
 
 1.0.1
 * Updated the servers key fingerprint

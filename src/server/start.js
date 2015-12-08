@@ -31,7 +31,6 @@ try {
 
   // Required constants
   var CONFIG = __dirname + '/config.json';
-  var PUBLIC = __dirname + '/www';
 
   // Check given options
   if (process.argv.length <= 2) {
@@ -39,11 +38,6 @@ try {
     // Create the default config
     if (!fs.existsSync(CONFIG)) {
       fs.writeFileSync(CONFIG, config);
-    }
-
-    // Create the static directory
-    if (!fs.existsSync(PUBLIC)) {
-      fs.mkdirSync(PUBLIC);
     }
 
     // Required imports

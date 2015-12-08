@@ -26,10 +26,9 @@ module.exports = function Server(app, config, callback) {
 
   // Required imports
   var fs = require('fs');
+  var util = require('util');
   var http = require('http');
   var https = require('https');
-  var mime = require('mime');
-  var util = require('util');
 
   // Required libraries
   var info = require('../package.json');
@@ -38,13 +37,11 @@ module.exports = function Server(app, config, callback) {
   var crypto = require('../lib/crypto.js');
 
   // Required constants
-  var ENCODING = 'utf8';
   var HEADER = 'content-hash';
 
   var ID_RSA = __dirname + '/../id_rsa';
+  var ID_PUB = __dirname + '/../id_rsa.pub';
   var ID_CRT = __dirname + '/../id_rsa.cert';
-
-  mime.default_type = 'text/plain';
 
   /**
    * Returns the new header.
@@ -162,28 +159,6 @@ module.exports = function Server(app, config, callback) {
     next();
   }
 
-  /**
-   * Serves a signed static file.
-   *
-   * @param {Object} request
-   * @param {Object} response
-   */
-  function file(req, res) {
-    var file = req.params.file;
-    var path = util.format('%s/../www/%s', __dirname, file);
-
-    // Send signed file content with mime type
-    fs.readFile(path, ENCODING, function(err, data) {
-      if (!err) {
-        res.setHeader('content-type', mime.lookup(file));
-        res.sign(200, data);
-      } else {
-        res.sign(404, 'File not found');
-      }
-    });
-  }
-
-  //
   redis(config.db, function redis(err, db) {
     if (!err) {
 
@@ -195,8 +170,10 @@ module.exports = function Server(app, config, callback) {
       // Load custom app
       pssst(app, db);
 
-      // Returns a static file
-      app.get('/:file', file);
+      // Returns the public key (status 200)
+      app.get('/key', function key(req, res) {
+        res.sign(200, fs.readFileSync(ID_PUB));
+      });
 
       // Returns the protocol version (status 200)
       app.get('/', function index(req, res) {
@@ -215,8 +192,8 @@ module.exports = function Server(app, config, callback) {
         http.createServer(app).listen(port, callback);
       } else {
         https.createServer({
-          key: fs.readFileSync(ID_RSA, ENCODING),
-          cert: fs.readFileSync(ID_CRT, ENCODING)
+          key: fs.readFileSync(ID_RSA),
+          cert: fs.readFileSync(ID_CRT)
         }, app).listen(port, callback);
       }
     } else {

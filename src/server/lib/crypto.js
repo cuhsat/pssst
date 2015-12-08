@@ -36,7 +36,7 @@ module.exports = function Crypto() {
   var ENCODING = 'base64';
 
   var ID_RSA = __dirname + '/../id_rsa';
-  var ID_PUB = __dirname + '/../www/key';
+  var ID_PUB = __dirname + '/../id_rsa.pub';
 
   // Generate a reasonable strong RSA key
   if (!fs.existsSync(ID_RSA) || !fs.existsSync(ID_PUB)) {
