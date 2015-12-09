@@ -29,7 +29,5 @@ License
 -------
 Released under the terms of the [GPLv3](LICENSE) license.
 
-----------
-Created by
-[Christian](https://github.com/7-bit) & [Christian](https://github.com/cuhsat)
-just for the joy of it.
+-----
+Based on [Pssst](https://github.com/pssst/pssst) by Christian & Christian.
