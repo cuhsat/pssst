@@ -19,7 +19,7 @@ $ pssst push me world "Hello"
 
 API
 ---
-Our full [API](/doc/api/api.md) documentation can be found under `doc/api/`.
+Our full [API](/doc/api.md) documentation can be found under `doc`.
 
 CVE
 ---
