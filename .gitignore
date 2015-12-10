@@ -1,3 +1,8 @@
-.pssst
-.pssst.*
-npm-debug.log
+*.log
+*.pyc
+*.pyd
+*.pyo
+id_rsa*
+config.json
+test/pssst.py
+node_modules/

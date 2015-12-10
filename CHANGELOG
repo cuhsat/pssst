@@ -21,6 +21,7 @@
 * Changed manpage
 * Changed gitignores
 * Removed startup verification
+* Removed server sample config
 * Removed server public folder
 * Removed server time
 * Removed metadata
@@ -34,6 +35,7 @@
 * Refactored client
 * Refactored server heavily
 * Refactored documentations
+* Refactored Git ignore files
 
 1.0.1
 * Updated the servers key fingerprint

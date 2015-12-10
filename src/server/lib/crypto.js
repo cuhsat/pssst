@@ -31,8 +31,8 @@ module.exports = function Crypto() {
   var RSA_FORMAT = 'pkcs1';
   var RSA_SCHEME = 'pkcs1-sha256';
 
-  var ID_RSA = __dirname + '/../bin/id_rsa';
-  var ID_PUB = __dirname + '/../bin/id_rsa.pub';
+  var ID_RSA = __dirname + '/../id_rsa';
+  var ID_PUB = __dirname + '/../id_rsa.pub';
 
   if (!fs.existsSync(ID_RSA)) {
     var key = new rsa({b: RSA_SIZE});

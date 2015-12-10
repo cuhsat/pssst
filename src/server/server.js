@@ -14,6 +14,22 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ *
+ *
+ * Start script. Available config values:
+ *
+ *   Pssst
+ *
+ *   port  = server port
+ *   debug = server debug level (0 to 3)
+ *
+ *   Redis
+ *
+ *   source = database socket or port
+ *   number = database number
+ *
+ * @return {Number} exit code
  */
 try {
   var fs = require('fs');
@@ -33,7 +49,6 @@ try {
       }, null, 2));
     }
 
-    // Start server
     var server = require('./lib/index.js');
     var config = require('./config.json');
 

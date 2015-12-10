@@ -20,7 +20,7 @@ All user names must be between 2 and 63 characters long and must only contain
 of the lowercase letters a-z and numbers. The service prefix `pssst.` can be
 omitted, but should be specified for clarity reasons.
 
-### User Quota
+### User Limit
 
 Every user has a fix limit of `1 MB` overall buffered data. This includes all
 user specific data, such as the public key and messages. The size of a message

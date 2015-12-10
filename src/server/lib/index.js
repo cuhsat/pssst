@@ -35,7 +35,7 @@ module.exports = function Server(config, callback) {
   var crypto = require('./crypto.js');
 
   var HEADER = 'content-hash';
-  var PUBLIC = __dirname + '/../bin/id_rsa.pub';
+  var PUBLIC = __dirname + '/../id_rsa.pub';
 
   /**
    * Returns the new header.
