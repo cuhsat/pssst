@@ -23,14 +23,8 @@ import re
 import sys
 import time
 
-from datetime import datetime
 from getpass import getpass
 from zipfile import ZipFile
-
-try:
-    import readline
-except ImportError:
-    pass # Windows doesn't support this
 
 
 try:
@@ -315,7 +309,7 @@ class Pssst:
             The client identifier.
 
         """
-        return "Pssst " + __version__
+        return "Pssst CLI " + __version__
 
     def __api(self, method, path, data=None):
         """
@@ -579,12 +573,14 @@ def main(script, command="--help", username=None, receiver=None, *message):
 
         # Shift command line parameters
         if os.path.exists(login):
+            name = Pssst.Name(io.open(login).read())
             message = (receiver,) + message
             receiver = username
-            username = io.open(login).read()
-
-        if username:
+            username = TODO
+        else:
             name = Pssst.Name(username)
+
+        if username or login:
             pssst = Pssst(name.user, name.password or getpass())
 
         if command in ("/?", "-h", "--help", "help"):

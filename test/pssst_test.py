@@ -15,7 +15,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
-import io
 import os
 import random
 import string
@@ -533,7 +532,7 @@ def main(*args):
     Parameters
     ----------
     param args : tuple of strings, optional
-        Arguments passed to py.test.
+        Arguments passed to pytest.
 
     """
     return pytest.main(list(args))

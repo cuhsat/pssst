@@ -157,9 +157,9 @@ module.exports = function Pssst(app, db) {
   app.put('/2/:user', function push(req, res) {
     api.request(req, res, function request(user) {
 
-      // Assert the user is within the quota
+      // Assert the user is within the limit
       if (JSON.stringify(user).length >= LIMIT) {
-        return res.sign(413, 'User reached quota');
+        return res.sign(413, 'User reached limit');
       }
 
       // Delete user metadata

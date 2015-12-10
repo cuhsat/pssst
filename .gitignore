@@ -1,8 +1,9 @@
+node_modules/
+test/
 *.log
 *.pyc
 *.pyd
 *.pyo
 id_rsa*
 config.json
-test/pssst.py
-node_modules/
+!test/pssst_test.py
