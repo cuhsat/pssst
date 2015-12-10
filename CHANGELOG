@@ -25,13 +25,14 @@
 * Removed server time
 * Removed metadata
 * Removed shell mode from CLI
+* Removed support for local HTTPS
 * Removed support for old versions
 * Removed RFCs
 * Removed GUI
 * Hardened server
-* Refactored client
-* Refactored server
 * Refactored tests
+* Refactored client
+* Refactored server heavily
 * Refactored documentations
 
 1.0.1

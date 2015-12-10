@@ -16,32 +16,26 @@
  *
  *
  *
- * HTTP(S) server with authentication.
+ * HTTP server with authentication.
  *
- * @param {Object} express app
  * @param {Object} config JSON
  * @param {Function} callback
  */
-module.exports = function Server(app, config, callback) {
-
-  // Required imports
+module.exports = function Server(config, callback) {
   var fs = require('fs');
   var util = require('util');
   var http = require('http');
-  var https = require('https');
+  var parser = require('body-parser');
+  var express = require('express');
 
-  // Required libraries
   var info = require('../package.json');
-  var pssst = require('../lib/pssst.js');
-  var redis = require('../lib/redis.js');
-  var crypto = require('../lib/crypto.js');
+  var debug = require('./debug.js');
+  var redis = require('./redis.js');
+  var pssst = require('./pssst.js');
+  var crypto = require('./crypto.js');
 
-  // Required constants
   var HEADER = 'content-hash';
-
-  var ID_RSA = __dirname + '/../id_rsa';
-  var ID_PUB = __dirname + '/../id_rsa.pub';
-  var ID_CRT = __dirname + '/../id_rsa.cert';
+  var PUBLIC = __dirname + '/../bin/id_rsa.pub';
 
   /**
    * Returns the new header.
@@ -91,17 +85,17 @@ module.exports = function Server(app, config, callback) {
       function verify(key) {
         var header = req.headers[HEADER];
 
-        // Assert the public key is given (error 404)
+        // Assert a public key exists
         if (!key) {
           return res.sign(404, 'Verification failed');
         }
 
-        // Assert the signature format is valid (error 400)
+        // Assert the signature format is valid
         if (!new RegExp('^[0-9]+; ?[A-Za-z0-9\+/]+=*$').test(header)) {
           return res.sign(400, 'Verification failed');
         }
 
-        // Assert the signed body is valid (error 401)
+        // Assert the signature of the body is valid
         if (!crypto.verify(req.body, parseHeader(header), key)) {
           return res.sign(401, 'Verification failed');
         }
@@ -109,7 +103,7 @@ module.exports = function Server(app, config, callback) {
         callback();
       }
 
-      // Get the authentication public key from database if necessary
+      // Load public key if not given
       if (user.indexOf('PUBLIC KEY') < 0) {
         db.get(user, function get(err, val) {
           if (!err) {
@@ -159,43 +153,53 @@ module.exports = function Server(app, config, callback) {
     next();
   }
 
+  app = express();
+  app.set('json spaces', 0);
+
   redis(config.db, function redis(err, db) {
     if (!err) {
+      var port = Number(process.env.PORT || config.port);
+
+      app.use(parser.urlencoded({extended: true}))
+      app.use(parser.json())
+
+      // Debug hook
+      app.use(function hook(req, res, next) {
+        debug(config.debug, req, res, next);
+      });
+
+      // Error hook
+      app.use(function hook(err, req, res, next) {
+        if (res.error) {
+          res.error(err);
+        } else {
+          console.error(err);
+        }
+      });
 
       // Authentication hook
       app.use(function (req, res, next) {
         auth(db, req, res, next);
       });
 
-      // Load custom app
       pssst(app, db);
 
-      // Returns the public key (status 200)
+      // Return public key
       app.get('/key', function key(req, res) {
-        res.sign(200, fs.readFileSync(ID_PUB));
+        res.sign(200, fs.readFileSync(PUBLIC));
       });
 
-      // Returns the protocol version (status 200)
+      // Return protocol version
       app.get('/', function index(req, res) {
         res.sign(200, "Pssst " + info['version']);
       });
 
-      // For all other requests return nothing (error 404)
+      // Return file not found
       app.get('*', function other(req, res) {
         res.sign(404, 'Not found');
       });
 
-      var port = Number(process.env.PORT || config.port);
-
-      // Start HTTP(S) server
-      if (!fs.existsSync(ID_CRT)) {
-        http.createServer(app).listen(port, callback);
-      } else {
-        https.createServer({
-          key: fs.readFileSync(ID_RSA),
-          cert: fs.readFileSync(ID_CRT)
-        }, app).listen(port, callback);
-      }
+      http.createServer(app).listen(port, callback);
     } else {
       callback(err);
     }

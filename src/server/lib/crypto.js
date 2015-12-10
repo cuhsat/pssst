@@ -19,53 +19,44 @@
  * Cryptographical functions for signing and verifying data.
  */
 module.exports = function Crypto() {
-
-  // Required imports
   var fs = require('fs');
   var rsa = require('node-rsa');
   var crypto = require('crypto');
 
-  // Required constants
   var GRACE = 30;
+  var FORMAT = 'base64';
 
   var RSA_SIZE = 2048;
   var RSA_HASH = 'sha256';
   var RSA_FORMAT = 'pkcs1';
   var RSA_SCHEME = 'pkcs1-sha256';
 
-  var ENCODING = 'base64';
+  var ID_RSA = __dirname + '/../bin/id_rsa';
+  var ID_PUB = __dirname + '/../bin/id_rsa.pub';
 
-  var ID_RSA = __dirname + '/../id_rsa';
-  var ID_PUB = __dirname + '/../id_rsa.pub';
-
-  // Generate a reasonable strong RSA key
-  if (!fs.existsSync(ID_RSA) || !fs.existsSync(ID_PUB)) {
+  if (!fs.existsSync(ID_RSA)) {
     var key = new rsa({b: RSA_SIZE});
 
     fs.writeFileSync(ID_RSA, key.exportKey('private'));
     fs.writeFileSync(ID_PUB, key.exportKey('public'));
   }
 
-  // Load private server key
   var key = new rsa(fs.readFileSync(ID_RSA), RSA_FORMAT, RSA_SCHEME);
 
-  // Assert the key has a private part
   if (!key.isPrivate()){
     throw new Error('Key has no private part');
   }
 
-  // Assert the key has a public part
   if (!key.isPublic()) {
     throw new Error('Key has no public part');
   }
 
-  // Assert the key size is big enough
   if (key.getKeySize() < RSA_SIZE) {
     throw new Error('Key size too small');
   }
 
   /**
-   * Returns the current timestamp.
+   * Returns the current timestamp (EPOCH).
    *
    * @return {Number} the timestamp
    */
@@ -74,7 +65,7 @@ module.exports = function Crypto() {
   }
 
   /**
-   * Returns the HMAC of the given data.
+   * Returns the data HMAC.
    *
    * @param {Object} the data
    * @param {Number} timestamp
@@ -83,18 +74,17 @@ module.exports = function Crypto() {
   function createHMAC(data, timestamp) {
     var hmac, timestamp = timestamp || getTimestamp();
 
-    // Calculate hash with final round
     hmac = crypto.createHmac(RSA_HASH, timestamp.toString());
     hmac.update(data.toString());
 
     return {
       timestamp: timestamp,
-      signature: hmac.digest(ENCODING)
+      signature: hmac.digest(FORMAT)
     };
   };
 
   /**
-   * Returns the signature of the given data.
+   * Returns the data signature.
    *
    * @param {Object} the data
    * @return {Object} timestamp and signature
@@ -108,12 +98,12 @@ module.exports = function Crypto() {
 
     return {
       timestamp: hmac.timestamp,
-      signature: key.sign(hmac.signature, ENCODING, ENCODING)
+      signature: key.sign(hmac.signature, FORMAT, FORMAT)
     };
   };
 
   /**
-   * Returns if the given data could be verified.
+   * Returns if data could be verified.
    *
    * @param {Object} the data
    * @param {Object} the data HMAC
@@ -125,21 +115,21 @@ module.exports = function Crypto() {
       data = JSON.stringify(data);
     }
 
-    var time = parseInt(hmac.timestamp, 10);
-    var sig = hmac.signature;
+    var timestamp = parseInt(hmac.timestamp, 10);
+    var signature = hmac.signature;
 
-    // Assert the timestamp is within grace time
-    if (Math.abs(time - getTimestamp()) <= GRACE) {
-      var hmac = createHMAC(data, time);
-
-      try {
-        return new rsa(pem).verify(hmac.signature, sig, ENCODING, ENCODING);
-      } catch (err) {
-        return false; // Possibly an OpenSSL error
-      }
+    // Assert the timestamp is in grace time
+    if (Math.abs(timestamp - getTimestamp()) > GRACE) {
+      return false;
     }
 
-    return false;
+    var hmac = createHMAC(data, timestamp);
+
+    try {
+      return new rsa(pem).verify(hmac.signature, signature, FORMAT, FORMAT);
+    } catch (err) {
+      return false; // OpenSSL error
+    }
   };
 
   return this;

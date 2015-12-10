@@ -16,39 +16,37 @@
  *
  *
  *
- * A simple Redis wrapper with Heroku support.
+ * Simple Redis wrapper with Heroku support.
  *
  * @param {Object} the config
  * @param {Function} callback
  */
 module.exports = function Redis(config, callback) {
-
-  // Required imports
   var url = require('url');
   var redis = require('redis');
 
-  var client, self = this;
+  var client, that = this;
 
-  // Search for Heroku Redis add-on
+  // Heroku support
   if (process.env.REDIS_URL) {
     client = redis.createClient(process.env.REDIS_URL);
   } else {
     client = redis.createClient(config.source);
   }
 
-  // Error event handler
+  // Client error
   client.on('error', function error(err) {
     console.error(err.stack || err);
   });
 
-  // Ready event handler
+  // Client ready
   client.on('ready', function ready(err) {
     if (err) {
       return callback(err);
     }
 
     client.select(config.number, function select(err) {
-      return callback(err, self);
+      return callback(err, that);
     });
   });
 

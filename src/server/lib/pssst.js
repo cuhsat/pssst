@@ -22,9 +22,7 @@
  * @param {Object} database wrapper
  */
 module.exports = function Pssst(app, db) {
-
-  // Required constants
-  var QUOTA = 1024 * 1024; // 1 MB
+  var LIMIT = 1024 * 1024; // 1 MB
 
   /**
    * Pssst API (version 2).
@@ -40,7 +38,7 @@ module.exports = function Pssst(app, db) {
      */
     request: function request(req, res, callback, auth) {
 
-      // Assert the user name is valid (error 400)
+      // Assert the user name is valid
       if (!new RegExp('^[a-z0-9]{2,63}$').test(req.params.user)) {
         return res.sign(400, 'User name invalid');
       }
@@ -52,26 +50,23 @@ module.exports = function Pssst(app, db) {
         };
       }
 
-      // Verify sender authentication for this request
+      // Authenticate user of this request
       req.verify(auth || req.params.user, function verify() {
         db.get(req.params.user, function get(err, user) {
-
-          // Database error
           if (err) {
             return res.error(err);
           }
 
-          // Assert the user object exists (error 404)
+          // Assert the user exists
           if (user === null && req.method !== 'POST') {
             return res.sign(404, 'User not found');
           }
 
-          // Assert the user is not deleted (error 410)
+          // Assert the user is not deleted
           if (user !== null && user.key === null) {
             return res.sign(410, 'User was deleted');
           }
 
-          // Handle request
           callback(user);
         });
       });
@@ -99,27 +94,25 @@ module.exports = function Pssst(app, db) {
   };
 
   /**
-   * Creates an new user with the given public key.
+   * Creates an new user with the given key.
    *
-   * Authentication:
-   *
-   *   Signed request
-   *   Signed response
+   * @summary signed request
+   * @summary signed response
    */
   app.post('/2/:user', function create(req, res) {
     api.request(req, res, function request(user) {
 
-      // Assert the user does not already exist (error 409)
+      // Assert the user does not already exist
       if (user !== null) {
         return res.sign(409, 'User already exists');
       }
 
-      // Assert the given key is a public key (error 400)
+      // Assert the given key is a public key
       if (req.body.key.indexOf('PUBLIC KEY') < 0) {
         return res.sign(400, 'User key invalid');
       }
 
-      // New user object
+      // User object
       user = {
         key: req.body.key,
         box: []
@@ -130,17 +123,13 @@ module.exports = function Pssst(app, db) {
   });
 
   /**
-   * Disables an existing user.
+   * Deletes an existing user (disables only).
    *
-   * Authentication:
-   *
-   *   Signed request
-   *   Signed response
+   * @summary signed request
+   * @summary signed response
    */
   app.delete('/2/:user', function disable(req, res) {
     api.request(req, res, function request(user) {
-
-      // Zeroing all data, so the user exists but is invalidated
       user.key = user.box = null;
 
       return api.respond(req, res, user, 'User deleted');
@@ -150,10 +139,8 @@ module.exports = function Pssst(app, db) {
   /**
    * Returns the public key of an user (non persisting).
    *
-   * Authentication:
-   *
-   *   No verification
-   *   Signed response
+   * @summary normal request
+   * @summary signed response
    */
   app.get('/2/:user/key', function key(req, res) {
     api.request(req, res, function request(user) {
@@ -164,23 +151,19 @@ module.exports = function Pssst(app, db) {
   /**
    * Pushes a new message into the box.
    *
-   * Authentication:
-   *
-   *   Signed request by sender
-   *   Signed response
+   * @summary signed request
+   * @summary signed response
    */
   app.put('/2/:user', function push(req, res) {
     api.request(req, res, function request(user) {
 
-      // Assert the user is within its quota (error 413)
-      if (JSON.stringify(user).length >= QUOTA) {
+      // Assert the user is within the quota
+      if (JSON.stringify(user).length >= LIMIT) {
         return res.sign(413, 'User reached quota');
       }
 
-      // Delete request user from message
+      // Delete user metadata
       delete req.body.head.user;
-
-      // Push message onto the box
       user.box.push(req.body);
 
       return api.respond(req, res, user, 'Message send');
@@ -190,10 +173,8 @@ module.exports = function Pssst(app, db) {
   /**
    * Pulls a message from the box.
    *
-   * Authentication:
-   *
-   *   Signed request
-   *   Signed response
+   * @summary signed request
+   * @summary signed response
    */
   app.get('/2/:user', function pull(req, res) {
     api.request(req, res, function request(user) {
@@ -203,6 +184,5 @@ module.exports = function Pssst(app, db) {
     });
   });
 
-  // Return instance
   return this;
 }
