@@ -566,21 +566,16 @@ def main(script, command="--help", username=None, receiver=None, *message):
       pull     Pull a message
       push     Push a message
 
-    Report bugs to <hello@pssst.name>
+    Report bugs to <christian@uhsat.de>
     """
     try:
-        login = os.path.join(os.path.expanduser("~"), ".pssst")
+        profile = os.path.join(os.path.expanduser("~"), ".pssst")
 
-        # Shift command line parameters
-        if os.path.exists(login):
-            name = Pssst.Name(io.open(login).read())
-            message = (receiver,) + message
-            receiver = username
-            username = TODO
-        else:
+        if username == "-" and os.path.exists(profile):
+            username = io.open(profile).read()
+
+        if username:
             name = Pssst.Name(username)
-
-        if username or login:
             pssst = Pssst(name.user, name.password or getpass())
 
         if command in ("/?", "-h", "--help", "help"):

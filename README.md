@@ -1,5 +1,3 @@
-![Pssst](http://www.gravatar.org/avatar/2aae9030772d5b59240388522f91468f?s=96)
-
 Pssst [![](https://travis-ci.org/cuhsat/pssst.svg)](https://travis-ci.org/cuhsat/pssst)
 =====
 Pssst is a simple and secure way to exchange information. We do not provide

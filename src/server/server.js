@@ -85,7 +85,7 @@ try {
           '  -l --license   Shows license',
           '  -v --version   Shows version',
           '',
-          'Report bugs to <hello@pssst.name>'
+          'Report bugs to <christian@uhsat.de>'
         ].join('\n'));
         process.exit(2);
     }

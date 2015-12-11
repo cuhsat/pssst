@@ -1,15 +1,12 @@
 2.0.0
-* Kicked off Travis CI testing
-* Added user login credentials
-* Added command line shifting
+* Added default user profile
+* Added command line shortcut
 * Added help option to server
-* Added ProcFile for Heroku
 * Added Heroku deployment
-* Fixed push user bug
 * Fixed server address
 * Moved server package.json
 * Changed Heroku add-on support
-* Changed default quota
+* Changed default quota to 1 MB
 * Changed comments
 * Changed documentation
 * Changed API documentation
@@ -20,6 +17,7 @@
 * Changed unit tests
 * Changed manpage
 * Changed gitignores
+* Changed contact email address
 * Removed startup verification
 * Removed server sample config
 * Removed server public folder

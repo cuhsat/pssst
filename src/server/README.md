@@ -17,7 +17,7 @@ $ npm install
 $ npm start
 ```
 
-The default server port is `62421` and can be changed in `config.json`.
+> The default server port is `62421` and can be changed in `config.json`.
 
 Install
 -------
@@ -26,7 +26,7 @@ Install
 * Node.js 4.2
 * A Redis database
 
-> We also have built-in support for Heroku and the Redis database add-on.
+> Heroku and Heroku Redis has build-in support.
 
 ----
-Please use the `--help` option to show further help.
+Please use the `--help` option for further help.
