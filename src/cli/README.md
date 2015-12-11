@@ -8,7 +8,7 @@ Usage
 $ pssst [option|command] [username:password] [receiver message...]
 ```
 
-> The server address must be set via the `PSSST` environment variable.
+The server address must be set via the `PSSST` environment variable.
 
 Files
 -----
