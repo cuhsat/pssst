@@ -1,6 +1,6 @@
 CLI
 ===
-Pssst command line interface ([Requirements](pssst.pip)).
+Pssst command line interface. *[Requirements](pssst.pip)*.
 
 Usage
 -----
