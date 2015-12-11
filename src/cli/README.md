@@ -1,6 +1,6 @@
 CLI
 ===
-Pssst command line interface. [Requirements](pssst.pip)
+Pssst command line interface.
 
 Usage
 -----
@@ -16,4 +16,5 @@ If a user profile file named `~/.pssst` exists, its contents will be
 used for the username and password if you use the `-` user alias.
 
 ----
+[Requirements](pssst.pip) | 
 Please use the `--help` option for further help.
