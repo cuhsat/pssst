@@ -1,4 +1,4 @@
-Pssst [![](https://travis-ci.org/cuhsat/pssst.svg)](https://travis-ci.org/cuhsat/pssst)
+Pssst ![](https://travis-ci.org/cuhsat/pssst.svg)
 =====
 Pssst is a simple and secure way to exchange information. We do not provide
 services by our self, but we provide you with the tools to start your own
