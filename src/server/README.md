@@ -1,6 +1,6 @@
 Server
 ======
-Pssst server ([Requirements](package.json)).
+Pssst server. [Requirements](package.json)
 
 Usage
 -----
