@@ -9,7 +9,7 @@ It is based upon open-source software and uses strong end-to-end encryption.
 $ pssst push me you "Hello"
 ```
 
-> The full [API](doc/api.md) documentation is available under `doc`.
+The full [API](doc/api.md) documentation is available under `doc`.
 
 License
 -------
