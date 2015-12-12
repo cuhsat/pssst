@@ -11,7 +11,6 @@ Pssst comes with a [CLI](src/cli) and [Server](src/server) and can
 easily be deployed to [Heroku](https://www.heroku.com) using this 
 custom [Buildpack](https://github.com/cuhsat/heroku-buildpack-pssst).
 
-**Example:**
 ```
 $ pssst push me you "Hello"
 ```
