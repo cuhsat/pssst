@@ -7,7 +7,7 @@ services by our self, but we provide you with the tools to start your own
 service. These tools build upon open-source software and use strong end-to-end
 encryption.
 
-Pssst comes as a [CLI](src/cli) and [Server](src/server) which can easily be
+Pssst comes with a [CLI](src/cli) and [Server](src/server) and can easily be
 deployed to [Heroku](https://www.heroku.com) using this custom
 [Buildpack](https://github.com/cuhsat/heroku-buildpack-pssst).
 
@@ -18,7 +18,7 @@ $ pssst push me you "Hello"
 
 API
 ---
-Our full [API](/doc/api.md) documentation can be found under `doc`.
+Our full [API](/doc/api.md) specification can be found under `doc`.
 
 CVE
 ---
