@@ -7,11 +7,11 @@ services by our self, but we provide you with the tools to start your own
 service. These tools build upon open-source software and use strong end-to-end
 encryption.
 
+Pssst comes as a [command line interface](src/cli) and a [server](src/server).
+
 ```
 $ pssst push me you "Hello"
 ```
-
-Pssst comes as a [server](src/server) and a [CLI](src/cli).
 
 API
 ---
