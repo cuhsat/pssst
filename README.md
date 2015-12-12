@@ -7,11 +7,11 @@ services by our self, but we provide you with the tools to start your own
 service. These tools build upon open-source software and use strong end-to-end
 encryption.
 
-Pssst comes with a [CLI](src/cli) and [Server](src/server) and can easily be
-deployed to [Heroku](https://www.heroku.com) using this custom
-[Buildpack](https://github.com/cuhsat/heroku-buildpack-pssst).
+Pssst comes with a [CLI](src/cli) and [Server](src/server) and can
+easily be deployed to [Heroku](https://www.heroku.com) using this 
+custom [Buildpack](https://github.com/cuhsat/heroku-buildpack-pssst).
 
-**How to use**
+**Example:**
 ```
 $ pssst push me you "Hello"
 ```
