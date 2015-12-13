@@ -5,9 +5,7 @@ Pssst ![](https://travis-ci.org/cuhsat/pssst.svg)
 Pssst is a simple and secure way to exchange information. We do not provide
 services by our self, but we provide you with the tools to start your own
 service. These tools build upon open-source software and use strong end-to-end
-encryption.
-
-Pssst comes as a [command line interface](src/cli) and a [server](src/server).
+encryption. It comes as a [command line tool](src/cli) and a [server](src/server).
 
 ```
 $ pssst push me you "Hello"
@@ -15,7 +13,7 @@ $ pssst push me you "Hello"
 
 API
 ---
-Our full [API](/doc/api.md) specification can be found under `doc`.
+The full [API](/doc/api.md) specification can be found under `doc`.
 
 CVE
 ---
