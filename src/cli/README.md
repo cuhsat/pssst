@@ -1,8 +1,8 @@
 Pssst CLI
 =========
 All user specific data is stored in zip files named `~/.pssst.<user>`.
-If a user profile file named `~/.pssst` exists, its contents will be 
-used for the username and password if you use the `-` user alias.
+If also a user profile file named `~/.pssst` exists, its contents will
+be used for username and password if you use the `-` user alias.
 
 Usage
 -----
