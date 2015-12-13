@@ -553,7 +553,7 @@ def main(script, command="--help", username=None, receiver=None, *message):
       CLI version %s
 
     Usage:
-      %s [option|command] [username:password|-] [receiver message...]
+      %s [option|command] [-|username:password] [receiver message...]
 
     Options:
       -h --help      Shows this text
