@@ -1,7 +1,7 @@
 CLI
 ===
 If the user profile file `~/.pssst` exists, its contents will be used 
-for username and password by the `-` user alias.
+for username and password by the `-` alias.
 
 Usage
 -----
