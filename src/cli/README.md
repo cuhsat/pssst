@@ -1,13 +1,12 @@
 CLI
 ===
-All user specific data is stored in zip files named `~/.pssst.<user>`.
-If also a user profile file named `~/.pssst` exists, its contents will
-be used for username and password if you use the `-` user alias.
+If the user profile file `~/.pssst` exists, its contents will be used 
+for username and password by the `-` user alias.
 
 Usage
 -----
 ```
-$ pssst [option|command] [username:password|-] [receiver message...]
+$ pssst [option|command] [-|username:password] [receiver message...]
 ```
 
 The server address must be set via the `PSSST` environment variable.
