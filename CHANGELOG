@@ -3,17 +3,14 @@
 * Added command line shortcut
 * Added help option to server
 * Added Heroku deployment
-* Fixed server address
-* Moved server package.json
 * Changed Heroku add-on support
 * Changed default quota to 1 MB
 * Changed comments
-* Changed documentation
 * Changed API documentation
 * Changed API address
 * Changed API version
 * Changed API bypass
-* Changed README.md
+* Changed READMEs
 * Changed unit tests
 * Changed manpage
 * Changed gitignores
@@ -26,6 +23,7 @@
 * Removed shell mode from CLI
 * Removed support for local HTTPS
 * Removed support for old versions
+* Removed Git attributes file
 * Removed RFCs
 * Removed GUI
 * Hardened server
