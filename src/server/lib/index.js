@@ -18,7 +18,7 @@
  *
  * HTTP server with authentication.
  *
- * @param {Object} config JSON
+ * @param {Object} config object
  * @param {Function} callback
  */
 module.exports = function Server(config, callback) {
