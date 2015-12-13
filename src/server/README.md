@@ -1,5 +1,5 @@
-Pssst Server
-============
+Server
+======
 If you are using Heroku, the server can easily be deployed using this
 custom [buildpack](https://github.com/cuhsat/heroku-buildpack-pssst).
 
