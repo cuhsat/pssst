@@ -1,6 +1,6 @@
 Pssst Server
 ============
-If you are using Heroku, this server can easily be deployed using this
+If you are using Heroku, the server can easily be deployed using this
 custom [buildpack](https://github.com/cuhsat/heroku-buildpack-pssst).
 
 Usage
