@@ -162,12 +162,12 @@ module.exports = function Pssst(app, db) {
         return res.sign(413, 'User reached limit');
       }
 
-      // Delete user metadata
-      delete req.body.hash;
+      // Delete sender metadata
+      delete req.body.from;
       user.box.push(req.body);
 
       return api.respond(req, res, user, 'Message send');
-    }, req.body.hash);
+    }, req.body.from);
   });
 
   /**

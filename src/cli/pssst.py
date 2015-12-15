@@ -45,7 +45,7 @@ except ImportError:
     sys.exit("Requires PyCrypto (https://github.com/dlitz/pycrypto)")
 
 
-__all__, __version__ = ["Pssst"], "2.3.0"
+__all__, __version__ = ["Pssst"], "2.3.1"
 
 
 def _encode64(data): # Utility shortcut
@@ -103,7 +103,7 @@ class Pssst:
                 user, password = user.rsplit(":", 1)
 
             self.user = user.lower()
-            self.hash = SHA256.new(self.user).hexdigest()
+            self.hash = SHA256.new(repr(self).encode("ascii")).hexdigest()
             self.password = password
 
         def __repr__(self):
@@ -465,9 +465,9 @@ class Pssst:
 
         if data:
             nonce = _decode64(data["nonce"])
-            body = _decode64(data["data"])
+            data = _decode64(data["data"])
 
-            return self.keys.key.decrypt(body, nonce)
+            return self.keys.key.decrypt(data, nonce)
 
     def push(self, receivers, data):
         """
@@ -491,7 +491,7 @@ class Pssst:
             body = {
                 "nonce": _encode64(nonce),
                 "data": _encode64(body),
-                "hash": self.name.hash
+                "from": self.name.hash
             }
 
             self.__api("PUT", name.hash, body)

@@ -92,31 +92,20 @@ class TestName:
     """
     Tests name parsing with the test cases:
 
-    * User name parse maximum
     * User name parse minimum
+    * User name parse maximum
     * User name is invalid
 
     Methods
     -------
-    test_name_maximum()
-        Tests if a maximum name is parsed correctly.
     test_name_minimum()
         Tests if a minimum name is parsed correctly.
+    test_name_maximum()
+        Tests if a maximum name is parsed correctly.
     test_name_invalid()
         Tests if a name is invalid.
 
     """
-    def test_name_maximum(self):
-        """
-        Tests if name is parsed correctly.
-
-        """
-        name = Pssst.Name(" pssst.UserName:Pa55w0rd! ")
-
-        assert name.user == "username"
-        assert name.password == "Pa55w0rd!"
-        assert str(name) == "pssst.username"
-
     def test_name_minimum(self):
         """
         Tests if name is parsed correctly.
@@ -127,6 +116,17 @@ class TestName:
         assert name.user == "me"
         assert name.password == None
         assert str(name) == "pssst.me"
+
+    def test_name_maximum(self):
+        """
+        Tests if name is parsed correctly.
+
+        """
+        name = Pssst.Name(" pssst.UserName:Pa55w0rd! ")
+
+        assert name.user == "username"
+        assert name.password == "Pa55w0rd!"
+        assert str(name) == "pssst.username"
 
     def test_name_invalid(self):
         """
@@ -173,9 +173,9 @@ class TestKeyStorage:
         assert sorted(pssst1.keys.list()) == sorted(keys)
 
 
-class TestCrypto:
+class TestKey:
     """
-    Tests crypto methods with this test cases:
+    Tests key methods with this test cases:
 
     * Verification failed, user not found
     * Verification failed, signature invalid
@@ -239,7 +239,7 @@ class TestCrypto:
         assert str(ex.value) == "Verification failed"
 
 
-class TestUser:
+class TestPssst:
     """
     Tests user commands with this test cases:
 
@@ -250,7 +250,12 @@ class TestUser:
     * User find
     * User find failed, user was deleted
     * User find failed, user not found
-    * User name invalid
+    * User push self
+    * User push single user
+    * User push multiple users
+    * User pull empty before
+    * User pull empty after
+    * Password wrong
 
     Methods
     -------
@@ -268,8 +273,18 @@ class TestUser:
         Tests if an user was deleted.
     test_find_user_not_found()
         Tests if an user is not found.
-    test_user_name_invalid()
-        Tests if an user name is invalid.
+    test_push_user()
+        Tests if a message could be pushed to sender.
+    test_push_single_user()
+        Tests if a message could be pushed to a single receiver.
+    test_push_multiple_users()
+        Tests if a message could be pushed to multiple receivers.
+    test_pull_empty_before()
+        Tests if an user box is empty before pulling.
+    test_pull_empty_after()
+        Tests if an user box is empty after pulling.
+    test_password_wrong()
+        Tests if a password is wrong.
 
     """
     def test_create_user(self):
@@ -351,48 +366,7 @@ class TestUser:
 
         assert str(ex.value) == "User not found"
 
-    def test_user_name_invalid(self):
-        """
-        Tests if an user name is invalid.
-
-        """
-        with pytest.raises(Exception) as ex:
-            pssst = Pssst(*createUser())
-            pssst.find("test !")
-
-        assert str(ex.value) == "User name invalid"
-
-
-class TestPssst:
-    """
-    Tests client with this test cases:
-
-    * Push self
-    * Push single user
-    * Push multi users
-    * Push failed, user name invalid
-    * Pull empty
-    * Password wrong
-
-    Methods
-    -------
-    test_push_self()
-        Tests if a message could be pushed to sender.
-    test_push_single_user()
-        Tests if a message could be pushed to one receiver.
-    test_push_multi_users()
-        Tests if a message could be pushed to many receivers.
-    test_push_user_name_invalid()
-        Tests if user name is invalid.
-    test_push_pull_empty()
-        Tests if box is empty.
-    test_pull_empty()
-        Tests if box is empty.
-    test_password_wrong()
-        Tests if a password is wrong.
-
-    """
-    def test_push_self(self):
+    def test_push_user(self):
         """
         Tests if a message could be pushed to sender.
 
@@ -408,7 +382,7 @@ class TestPssst:
 
     def test_push_single_user(self):
         """
-        Tests if a message could be pushed to one receiver.
+        Tests if a message could be pushed to a single receiver.
 
         """
         username1, password1 = createUser()
@@ -424,9 +398,9 @@ class TestPssst:
 
         assert pssst1.pull() == message
 
-    def test_push_multi_users(self):
+    def test_push_multiple_users(self):
         """
-        Tests if a message could be pushed to many receivers.
+        Tests if a message could be pushed to multiple receivers.
 
         """
         message = b"Hello World!"
@@ -446,20 +420,19 @@ class TestPssst:
 
             assert pssst.pull() == message
 
-    def test_push_user_name_invalid(self):
+    def test_pull_empty_before(self):
         """
-        Tests if user name is invalid.
+        Tests if an user box is empty before pulling.
 
         """
-        with pytest.raises(Exception) as ex:
-            pssst = Pssst(*createUser())
-            pssst.push(["test !"], "test")
+        pssst = Pssst(*createUser())
+        pssst.create()
 
-        assert str(ex.value) == "User name invalid"
+        assert pssst.pull() == None
 
-    def test_push_pull_empty(self):
+    def test_push_empty_after(self):
         """
-        Tests if box is empty.
+        Tests if an user box is empty after pulling.
 
         """
         username, password = createUser()
@@ -472,16 +445,6 @@ class TestPssst:
 
         assert pssst.pull() == None
 
-    def test_pull_empty(self):
-        """
-        Tests if box is empty.
-
-        """
-        pssst = Pssst(*createUser())
-        pssst.create()
-
-        assert pssst.pull() == None
-
     def test_password_wrong(self):
         """
         Tests if a password is wrong.
@@ -489,8 +452,8 @@ class TestPssst:
         """
         with pytest.raises(Exception) as ex:
             username, password = createUser()
-            Pssst(username, "foobar")
-            Pssst(username, "xxxxxx")
+            Pssst(username, "right")
+            Pssst(username, "wrong")
 
         assert str(ex.value) == "Password wrong"
 

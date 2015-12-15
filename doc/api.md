@@ -2,7 +2,7 @@ API
 ===
 Our REST API is based on HTTP and designed to be lean and mean. All messages
 will be stored protocol agnostic. You can also add more fields to the HTTP
-body. The only field required by the server are `nonce`, `data` and `hash`.
+body. The only fields required by the server are `nonce`, `data` and `from`.
 All clients are requested to send an unique `user-agent` header per
 implementation.
 
@@ -38,8 +38,9 @@ HTTP `content-type` header to decide which format is returned. Server errors
 will always be returned in plain text. Line endings must only consists of a
 `Line Feed` character.
 
-All user names will be hashed using SHA-256 before communicated to the server.
-At no point, the server will process or know any plaintext user name.
+All user names will be hashed in the canonical form using SHA-256 before
+communicated to the server. At no point, the server will process or know
+any plaintext user name.
 
 ### Encryption
 
@@ -263,7 +264,7 @@ content-hash: <timestamp>; <signature>
 ### Push
 
 Pushes a message into the users box. The sender will be authenticated with the
-`hash` field.
+hashed user name in the `from` field.
 
 #### Request
 
@@ -274,7 +275,7 @@ user-agent: <app>
 content-type: application/json
 content-hash: <timestamp>; <signature>
 
-{"nonce":"<nonce>","data":"<data>","hash":"<sender>"}
+{"nonce":"<nonce>","data":"<data>","from":"<sender>"}
 ```
 
 #### Response
