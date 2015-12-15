@@ -1,3 +1,6 @@
+2.4.1
+* Fixed version number
+
 2.4.0
 * Fixed user name hashing
 * Changed message structure
