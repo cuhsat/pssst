@@ -38,12 +38,12 @@ securitySchemes:
       200:
         body:
           application/text
-/{user}:
+/{hash}:
   displayName: User
   description: A specific user
   uriParameters:
-    user:
-      displayName: User
+    hash:
+      displayName: Hashed user name
       type: string
   get:
     description: This method will pull a message
@@ -93,7 +93,7 @@ securitySchemes:
                   "required": true,
                   "type": "string"
                 },
-                "user": {
+                "hash": {
                   "required": true,
                   "type": "string"
                 },

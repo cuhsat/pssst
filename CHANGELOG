@@ -1,3 +1,11 @@
+2.1.0
+* Added user name hashing
+* Fixed API documentation
+* Fixed CLI documentation
+* Fixed password notice
+* Fixed init exceptions
+* Fixed typo
+
 2.0.0
 * Added default user profile
 * Added command line shortcut

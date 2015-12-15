@@ -45,7 +45,7 @@ except ImportError:
     sys.exit("Requires PyCrypto (https://github.com/dlitz/pycrypto)")
 
 
-__all__, __version__ = ["Pssst"], "2.0.0"
+__all__, __version__ = ["Pssst"], "2.1.0"
 
 
 def _encode64(data): # Utility shortcut
@@ -103,6 +103,7 @@ class Pssst:
                 user, password = user.rsplit(":", 1)
 
             self.user = user.lower()
+            self.hash = SHA256.new(repr(self)).hexdigest()
             self.password = password
 
         def __repr__(self):
@@ -272,19 +273,12 @@ class Pssst:
         Raises
         ------
         Exception
-            Because the server could not be authenticated.
-        Exception
-            Because the client time is not synchronized.
-        Exception
             Because the password is required.
 
         Notes
         -----
         If the environment variable 'PSSST' exists, it will be used as the API
         address and port.
-
-        A valid password must consist of upper and lower case letters and also
-        numbers. The required minimum length of a password is 8 characters.
 
         """
         API = "http://localhost:62421"
@@ -293,8 +287,8 @@ class Pssst:
             raise Exception("Password is required")
 
         self.api = os.environ.get("PSSST", API)
-        self.user = Pssst.Name(username).user
-        self.keys = Pssst._KeyStorage(self.api, self.user, password)
+        self.name = Pssst.Name(username)
+        self.keys = Pssst._KeyStorage(self.api, self.name.user, password)
 
         if "id_api" not in self.keys.list():
             self.keys.save("id_api", self.__url("key"))
@@ -425,7 +419,7 @@ class Pssst:
         """
         body = {"key": self.keys.key.public()}
 
-        self.__api("POST", self.user, body)
+        self.__api("POST", self.name.hash, body)
 
     def delete(self):
         """
@@ -434,10 +428,10 @@ class Pssst:
         Notes
         -----
         If the user was deleted, the object can not be used any further and
-        any API call wil result in an error. The key storage is also deleted.
+        any API call will result in an error. The key storage is also deleted.
 
         """
-        self.__api("DELETE", self.user)
+        self.__api("DELETE", self.name.hash)
         self.keys.delete()
 
     def find(self, user):
@@ -455,7 +449,7 @@ class Pssst:
             PEM formatted public key.
 
         """
-        return self.__api("GET", user + "/key")
+        return self.__api("GET", Pssst.Name(user).hash + "/key")
 
     def pull(self):
         """
@@ -463,11 +457,11 @@ class Pssst:
 
         Returns
         -------
-        tuple or None
-            The user name, time and message, None if empty.
+        byte string or None
+            The message data, None if empty.
 
         """
-        data = self.__api("GET", self.user)
+        data = self.__api("GET", self.name.hash)
 
         if data:
             nonce = _decode64(data["head"]["nonce"])
@@ -475,7 +469,7 @@ class Pssst:
 
             return self.keys.key.decrypt(body, nonce)
 
-    def push(self, receivers, message):
+    def push(self, receivers, data):
         """
         Pushes a message into a box.
 
@@ -483,25 +477,24 @@ class Pssst:
         ----------
         param receivers : list of strings
             List of user names.
-        param message : byte string
-            The message.
+        param data : byte string
+            The message data.
 
         """
-        for user in [Pssst.Name(name).user for name in receivers]:
+        for name in [Pssst.Name(receiver) for receiver in receivers]:
 
             # Cache public key
-            if user not in self.keys.list():
-                self.keys.save(user, self.find(user))
+            if name.user not in self.keys.list():
+                self.keys.save(name.user, self.find(name.user))
 
-            data, nonce = Pssst._Key(self.keys.load(user)).encrypt(message)
+            body, nonce = Pssst._Key(self.keys.load(name.user)).encrypt(data)
 
             nonce = _encode64(nonce)
-            body = _encode64(data)
+            body = _encode64(body)
 
-            head = {"nonce": nonce, "user": self.user}
-            data = {"head": head, "body": body}
+            head = {"nonce": nonce, "hash": self.name.hash}
 
-            self.__api("PUT", user, data)
+            self.__api("PUT", name.hash, {"head": head, "body": body})
 
 
 def usage(text, *args):
@@ -603,7 +596,7 @@ def main(script, command="--help", username=None, receiver=None, *message):
 
         elif command in ("--push", "push") and username and receiver:
             pssst.push([receiver], " ".join(message))
-            print("Message pushed")
+            print("Message send")
 
         else:
             print("Unknown command or username not given: " + command)

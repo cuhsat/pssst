@@ -38,9 +38,9 @@ module.exports = function Pssst(app, db) {
      */
     request: function request(req, res, callback, auth) {
 
-      // Assert the user name is valid
-      if (!new RegExp('^[a-z0-9]{2,63}$').test(req.params.user)) {
-        return res.sign(400, 'User name invalid');
+      // Assert the hashed user name is valid
+      if (!new RegExp('^[a-z0-9]{64}$').test(req.params.hash)) {
+        return res.sign(400, 'Hash invalid');
       }
 
       // Bypass sender verification (for key requests only)
@@ -51,8 +51,8 @@ module.exports = function Pssst(app, db) {
       }
 
       // Authenticate user of this request
-      req.verify(auth || req.params.user, function verify() {
-        db.get(req.params.user, function get(err, user) {
+      req.verify(auth || req.params.hash, function verify() {
+        db.get(req.params.hash, function get(err, user) {
           if (err) {
             return res.error(err);
           }
@@ -81,7 +81,7 @@ module.exports = function Pssst(app, db) {
      * @param {String} response body
      */
     respond: function respond(req, res, user, body) {
-      db.set(req.params.user, user, function set(err) {
+      db.set(req.params.hash, user, function set(err) {
         if (err) {
           return res.error(err);
         } else if (body) {
@@ -99,7 +99,7 @@ module.exports = function Pssst(app, db) {
    * @summary signed request
    * @summary signed response
    */
-  app.post('/2/:user', function create(req, res) {
+  app.post('/2/:hash', function create(req, res) {
     api.request(req, res, function request(user) {
 
       // Assert the user does not already exist
@@ -128,7 +128,7 @@ module.exports = function Pssst(app, db) {
    * @summary signed request
    * @summary signed response
    */
-  app.delete('/2/:user', function disable(req, res) {
+  app.delete('/2/:hash', function disable(req, res) {
     api.request(req, res, function request(user) {
       user.key = user.box = null;
 
@@ -142,7 +142,7 @@ module.exports = function Pssst(app, db) {
    * @summary normal request
    * @summary signed response
    */
-  app.get('/2/:user/key', function key(req, res) {
+  app.get('/2/:hash/key', function key(req, res) {
     api.request(req, res, function request(user) {
       return res.sign(200, user.key);
     }, false);
@@ -154,7 +154,7 @@ module.exports = function Pssst(app, db) {
    * @summary signed request
    * @summary signed response
    */
-  app.put('/2/:user', function push(req, res) {
+  app.put('/2/:hash', function push(req, res) {
     api.request(req, res, function request(user) {
 
       // Assert the user is within the limit
@@ -163,11 +163,11 @@ module.exports = function Pssst(app, db) {
       }
 
       // Delete user metadata
-      delete req.body.head.user;
+      delete req.body.head.hash;
       user.box.push(req.body);
 
       return api.respond(req, res, user, 'Message send');
-    }, req.body.head.user);
+    }, req.body.head.hash);
   });
 
   /**
@@ -176,7 +176,7 @@ module.exports = function Pssst(app, db) {
    * @summary signed request
    * @summary signed response
    */
-  app.get('/2/:user', function pull(req, res) {
+  app.get('/2/:hash', function pull(req, res) {
     api.request(req, res, function request(user) {
       var message = user.box.shift();
 

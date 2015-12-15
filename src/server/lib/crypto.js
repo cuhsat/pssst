@@ -107,7 +107,7 @@ module.exports = function Crypto() {
    *
    * @param {Object} the data
    * @param {Object} the data HMAC
-   * @param {String} the users public key (PEM format)
+   * @param {String} public key (PEM format)
    * @return {Boolean} true if verified
    */
   this.verify = function verify(data, hmac, pem) {

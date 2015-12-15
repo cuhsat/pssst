@@ -37,6 +37,9 @@ HTTP `content-type` header to decide which format is returned. Server errors
 will always be returned in plain text. Line endings must only consists of a
 `Line Feed` character.
 
+All user names will be hashed using SHA-256 before communicated to the server.
+At no point, the server will process or know any plaintext user name.
+
 ### Encryption
 
 Encryption of the message `nonce` and `body` is done in the following steps:
@@ -155,7 +158,8 @@ List of implemented actions:
 * Push a message
 
 All user actions, except `find`, must be signed with the senders private key.
-Only required HTTP headers are listed.
+For user referencing, only the hashed user name is used, real user names must
+never be used. Only required HTTP headers are listed.
 
 ### Create
 
@@ -165,7 +169,7 @@ format.
 #### Request
 
 ```
-POST /1/<user> HTTP/1.1
+POST /2/<hash> HTTP/1.1
 host: <api>
 user-agent: <app>
 content-type: application/json
@@ -193,7 +197,7 @@ and can not be used afterwards for by other users.
 #### Request
 
 ```
-DELETE /1/<user> HTTP/1.1
+DELETE /2/<hash> HTTP/1.1
 host: <api>
 user-agent: <app>
 content-hash: <timestamp>; <signature>
@@ -216,7 +220,7 @@ Returns the users public key in PEM format.
 #### Request
 
 ```
-GET /1/<user>/key HTTP/1.1
+GET /2/<hash>/key HTTP/1.1
 host: <api>
 user-agent: <app>
 ```
@@ -239,7 +243,7 @@ from first to last.
 #### Request
 
 ```
-GET /1/<user>/ HTTP/1.1
+GET /2/<hash>/ HTTP/1.1
 host: <api>
 user-agent: <app>
 content-hash: <timestamp>; <signature>
@@ -263,13 +267,13 @@ Pushes a message into the users box. The sender will be authenticated with the
 #### Request
 
 ```
-PUT /1/<user>/ HTTP/1.1
+PUT /2/<hash>/ HTTP/1.1
 host: <api>
 user-agent: <app>
 content-type: application/json
 content-hash: <timestamp>; <signature>
 
-{"head":{"nonce":"<nonce>","user":"<sender>"},"body":"<data>"}
+{"head":{"nonce":"<nonce>","hash":"<sender>"},"body":"<data>"}
 ```
 
 #### Response

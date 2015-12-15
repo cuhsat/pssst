@@ -78,10 +78,10 @@ module.exports = function Server(config, callback) {
     /**
      * Verifies a HTTP(S) request.
      *
-     * @param {String} user name or public key
+     * @param {String} hashed user name or public key
      * @param {Function} callback
      */
-    req.verify = function verify(user, callback) {
+    req.verify = function verify(hash, callback) {
       function verify(key) {
         var header = req.headers[HEADER];
 
@@ -104,8 +104,8 @@ module.exports = function Server(config, callback) {
       }
 
       // Load public key if not given
-      if (user.indexOf('PUBLIC KEY') < 0) {
-        db.get(user, function get(err, val) {
+      if (hash.indexOf('PUBLIC KEY') < 0) {
+        db.get(hash, function get(err, val) {
           if (!err) {
             verify(val ? val.key : null);
           } else {
@@ -113,7 +113,7 @@ module.exports = function Server(config, callback) {
           }
         });
       } else {
-        verify(user);
+        verify(hash);
       }
     };
 
