@@ -2,8 +2,9 @@ API
 ===
 Our REST API is based on HTTP and designed to be lean and mean. All messages
 will be stored protocol agnostic. You can also add more fields to the HTTP
-body. The only field required by the server is `head.user`. All clients are
-requested to send an unique `user-agent` header per implementation.
+body. The only field required by the server are `nonce`, `data` and `hash`.
+All clients are requested to send an unique `user-agent` header per
+implementation.
 
 A [RAML](http://raml.org) specification of the [API](api.raml) is available
 under `doc/api.raml`.
@@ -42,7 +43,7 @@ At no point, the server will process or know any plaintext user name.
 
 ### Encryption
 
-Encryption of the message `nonce` and `body` is done in the following steps:
+Encryption of the message `nonce` and `data` is done in the following steps:
 
 1. Generate cyptographically secure 48 random bytes as message code.
 2. Encrypt the data with AES-256 (CBC mode, PKCS#7 padding) using the first 32
@@ -57,14 +58,14 @@ RSA keys are requiered to be 2048 bit strong and encoded in PEM / PKCS#8.
 
 ### Decryption
 
-Decryption of the received `nonce` and `body` is done in the following steps:
+Decryption of the received `nonce` and `data` is done in the following steps:
 
 1. Decrypt the nonce with PKCS#1 OAEP and the receivers private key.
 2. Decrypt the data with AES-256 (CBC mode, PKCS#7 padding) using the first 32
    bytes from the decrypted message code as key and the last 16 bytes as IV.
 
 All encrypted data is exchanged as JSON object in the request / response body
-within `head` and `body` fields. The `head.nonce` and `body` fields are both
+within the `nonce` and `data` fields. The `nonce` and `data` fields are both
 encoded in standard Base64 with padding and omitted line breaks.
 
 ### Authentication
@@ -256,13 +257,13 @@ HTTP/1.1 200 OK
 content-type: application/json
 content-hash: <timestamp>; <signature>
 
-{"head":{"nonce":"<nonce>"},"body":"<data>"}
+{"nonce":"<nonce>","data":"<data>"}
 ```
 
 ### Push
 
 Pushes a message into the users box. The sender will be authenticated with the
-`head.user` field.
+`hash` field.
 
 #### Request
 
@@ -273,7 +274,7 @@ user-agent: <app>
 content-type: application/json
 content-hash: <timestamp>; <signature>
 
-{"head":{"nonce":"<nonce>","hash":"<sender>"},"body":"<data>"}
+{"nonce":"<nonce>","data":"<data>","hash":"<sender>"}
 ```
 
 #### Response

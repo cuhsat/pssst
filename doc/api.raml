@@ -55,15 +55,11 @@ securitySchemes:
               {
                 "$schema": "http://json-schema.org/schema",
                 "properties": {
-                  "head": {
-                    "nonce": {
-                      "required": true,
-                      "type": "string"
-                    },
+                  "nonce": {
                     "required": true,
-                    "type": "object"
+                    "type": "string"
                   },
-                  "body": {
+                  "data": {
                     "required": true,
                     "type": "string"
                   }
@@ -88,19 +84,15 @@ securitySchemes:
           {
             "$schema": "http://json-schema.org/schema",
             "properties": {
-              "head": {
-                "nonce": {
-                  "required": true,
-                  "type": "string"
-                },
-                "hash": {
-                  "required": true,
-                  "type": "string"
-                },
+              "nonce": {
                 "required": true,
-                "type": "object"
+                "type": "string"
               },
-              "body": {
+              "data": {
+                "required": true,
+                "type": "string"
+              },
+              "hash": {
                 "required": true,
                 "type": "string"
               }

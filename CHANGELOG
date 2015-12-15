@@ -1,3 +1,8 @@
+2.2.0
+* Fixed user name hashing
+* Fixed API documentation
+* Change message structure
+
 2.1.0
 * Added user name hashing
 * Fixed API documentation

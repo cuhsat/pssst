@@ -45,7 +45,7 @@ except ImportError:
     sys.exit("Requires PyCrypto (https://github.com/dlitz/pycrypto)")
 
 
-__all__, __version__ = ["Pssst"], "2.1.0"
+__all__, __version__ = ["Pssst"], "2.2.0"
 
 
 def _encode64(data): # Utility shortcut
@@ -103,7 +103,7 @@ class Pssst:
                 user, password = user.rsplit(":", 1)
 
             self.user = user.lower()
-            self.hash = SHA256.new(repr(self)).hexdigest()
+            self.hash = SHA256.new(self.user).hexdigest()
             self.password = password
 
         def __repr__(self):
@@ -464,8 +464,8 @@ class Pssst:
         data = self.__api("GET", self.name.hash)
 
         if data:
-            nonce = _decode64(data["head"]["nonce"])
-            body = _decode64(data["body"])
+            nonce = _decode64(data["nonce"])
+            body = _decode64(data["data"])
 
             return self.keys.key.decrypt(body, nonce)
 
@@ -488,13 +488,13 @@ class Pssst:
                 self.keys.save(name.user, self.find(name.user))
 
             body, nonce = Pssst._Key(self.keys.load(name.user)).encrypt(data)
+            body = {
+                "nonce": _encode64(nonce),
+                "data": _encode64(body),
+                "hash": self.name.hash
+            }
 
-            nonce = _encode64(nonce)
-            body = _encode64(body)
-
-            head = {"nonce": nonce, "hash": self.name.hash}
-
-            self.__api("PUT", name.hash, {"head": head, "body": body})
+            self.__api("PUT", name.hash, body)
 
 
 def usage(text, *args):

@@ -163,11 +163,11 @@ module.exports = function Pssst(app, db) {
       }
 
       // Delete user metadata
-      delete req.body.head.hash;
+      delete req.body.hash;
       user.box.push(req.body);
 
       return api.respond(req, res, user, 'Message send');
-    }, req.body.head.hash);
+    }, req.body.hash);
   });
 
   /**
