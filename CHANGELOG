@@ -1,3 +1,6 @@
+2.3.0
+* Updated Redis dependency
+
 2.2.0
 * Fixed user name hashing
 * Fixed API documentation

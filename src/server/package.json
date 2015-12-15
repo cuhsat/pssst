@@ -1,6 +1,6 @@
 {
   "name": "pssst",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "homepage": "https://github.com/cuhsat/pssst",
   "repository": {
     "type": "git",
@@ -10,7 +10,7 @@
     "body-parser": "~1.14",
     "express": "~4.13",
     "node-rsa": "~0.2",
-    "redis": "~2.3"
+    "redis": "~2.4"
   },
   "engines": {
     "node": "4.2.*"
