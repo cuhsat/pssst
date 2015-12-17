@@ -1,5 +1,9 @@
-Pssst ![](https://travis-ci.org/cuhsat/pssst.svg)
+Pssst
 =====
+[![](https://img.shields.io/badge/version-2.4.3-brightgreen.svg)](https://github.com/cuhsat/pssst)
+[![](https://img.shields.io/travis/cuhsat/pssst.svg)](https://travis-ci.org/cuhsat/pssst)
+[![](https://img.shields.io/badge/deploy-heroku-79589F.svg)](https://heroku.com/deploy)
+
 Pssst is a simple and secure way to exchange information. We do not provide
 services by our self, but we provide you with the tools to start your own
 service. These tools build upon open-source software and use strong end-to-end
@@ -24,5 +28,3 @@ Released under the terms of the [GPLv3](LICENSE) license.
 
 ----
 Based on [Pssst](https://github.com/pssst/pssst) by Christian & Christian.
-
-[![](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)

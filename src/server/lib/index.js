@@ -103,7 +103,7 @@ module.exports = function Server(config, callback) {
         callback();
       }
 
-      // Load public key if not given
+      // Load public key from database if not given
       if (hash.indexOf('PUBLIC KEY') < 0) {
         db.get(hash, function get(err, val) {
           if (!err) {

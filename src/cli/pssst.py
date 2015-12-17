@@ -45,7 +45,7 @@ except ImportError:
     sys.exit("Requires PyCrypto (https://github.com/dlitz/pycrypto)")
 
 
-__all__, __version__ = ["Pssst"], "2.4.2"
+__all__, __version__ = ["Pssst"], "2.4.3"
 
 
 def _encode64(data): # Utility shortcut
@@ -163,7 +163,7 @@ class Pssst:
             with ZipFile(self.file, "r") as file:
                 keys = []
 
-                # Filter out API
+                # Filter out APIs
                 for key in file.namelist():
                     if key.startswith(self.scheme.rsplit("/")[0]):
                         keys.append(re.sub("^.+/(.+)\.pub$", "\g<1>", key))
@@ -289,9 +289,7 @@ class Pssst:
         self.api = os.environ.get("PSSST", API)
         self.name = Pssst.Name(username)
         self.keys = Pssst._KeyStorage(self.api, self.name.user, password)
-
-        if "id_api" not in self.keys.list():
-            self.keys.save("id_api", self.__url("key"))
+        self.keys.save("id_api", self.__request_url("key"))
 
     def __repr__(self):
         """
@@ -305,7 +303,7 @@ class Pssst:
         """
         return "Pssst CLI " + __version__
 
-    def __api(self, method, path, data=None):
+    def __request_api(self, method, path, data=None):
         """
         Returns the result of an API request (signed and verified).
 
@@ -377,7 +375,7 @@ class Pssst:
 
         return body
 
-    def __url(self, path):
+    def __request_url(self, path):
         """
         Returns the result of an URL request (without any checks).
 
@@ -419,7 +417,7 @@ class Pssst:
         """
         body = {"key": self.keys.key.public()}
 
-        self.__api("POST", self.name.hash, body)
+        self.__request_api("POST", self.name.hash, body)
 
     def delete(self):
         """
@@ -431,7 +429,7 @@ class Pssst:
         any API call will result in an error. The key storage is also deleted.
 
         """
-        self.__api("DELETE", self.name.hash)
+        self.__request_api("DELETE", self.name.hash)
         self.keys.delete()
 
     def find(self, user):
@@ -449,7 +447,7 @@ class Pssst:
             PEM formatted public key.
 
         """
-        return self.__api("GET", Pssst.Name(user).hash + "/key")
+        return self.__request_api("GET", Pssst.Name(user).hash + "/key")
 
     def pull(self):
         """
@@ -461,7 +459,7 @@ class Pssst:
             The message data, None if empty.
 
         """
-        data = self.__api("GET", self.name.hash)
+        data = self.__request_api("GET", self.name.hash)
 
         if data:
             nonce = _decode64(data["nonce"])
@@ -494,7 +492,7 @@ class Pssst:
                 "from": self.name.hash
             }
 
-            self.__api("PUT", name.hash, body)
+            self.__request_api("PUT", name.hash, body)
 
 
 def usage(text, *args):
@@ -614,7 +612,6 @@ def main(script, command="--help", username=None, receiver=None, *message):
 
     except Exception as ex:
         return "Error: %s" % ex
-
 
 if __name__ == "__main__":
     sys.exit(main(*sys.argv))
