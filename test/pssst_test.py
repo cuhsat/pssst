@@ -168,7 +168,7 @@ class TestKeyStorage:
         pssst1.push([username1], "Hello World !")
         pssst1.push([username2], "Hello World !")
 
-        keys = ["id_api", username1, username2]
+        keys = ["id_rsa", username1, username2]
 
         assert sorted(pssst1.keys.list()) == sorted(keys)
 
