@@ -24,7 +24,6 @@
 module.exports = function Server(config, callback) {
   var fs = require('fs');
   var util = require('util');
-  var http = require('http');
   var parser = require('body-parser');
   var express = require('express');
 
@@ -158,8 +157,6 @@ module.exports = function Server(config, callback) {
 
   redis(config.db, function redis(err, db) {
     if (!err) {
-      var port = Number(process.env.PORT || config.port);
-
       app.use(parser.urlencoded({extended: true}))
       app.use(parser.json())
 
@@ -199,7 +196,7 @@ module.exports = function Server(config, callback) {
         res.sign(404, 'Not found');
       });
 
-      http.createServer(app).listen(port, callback);
+      app.listen(Number(process.env.PORT || config.port), callback);
     } else {
       callback(err);
     }

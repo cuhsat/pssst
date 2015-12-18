@@ -45,7 +45,7 @@ except ImportError:
     sys.exit("Requires PyCrypto (https://github.com/dlitz/pycrypto)")
 
 
-__all__, __version__ = ["Pssst"], "2.4.3"
+__all__, __version__ = ["Pssst"], "2.4.4"
 
 
 def _encode64(data): # Utility shortcut
@@ -70,7 +70,7 @@ class Pssst:
         Returns the public key of an user.
     pull()
         Pulls a message from the box.
-    push(receivers, message)
+    push(receivers, data)
         Pushes a message into the box.
 
     """
@@ -155,6 +155,15 @@ class Pssst:
 
         def __nonzero__(self):
             return os.path.exists(self.file)
+
+        def _has_api(self):
+            return "id_rsa" in self.list()
+
+        def _set_api(self, key):
+            if key:
+                self.save("id_rsa", key)
+
+            self.api = Pssst._Key(self.load("id_rsa"))
 
         def delete(self):
             os.remove(self.file)
@@ -284,12 +293,16 @@ class Pssst:
         API = "http://localhost:62421"
 
         if not password:
-            raise Exception("Password is required")
+            raise Exception("Password required")
 
         self.api = os.environ.get("PSSST", API)
         self.name = Pssst.Name(username)
         self.keys = Pssst._KeyStorage(self.api, self.name.user, password)
-        self.keys.save("id_api", self.__request_url("key"))
+
+        # Cache server public key
+        key = None if self.keys._has_api() else self.__request_url("key")
+
+        self.keys._set_api(key)
 
     def __repr__(self):
         """
@@ -362,9 +375,7 @@ class Pssst:
         timestamp, signature = head.split(";", 1)
         timestamp, signature = int(timestamp), _decode64(signature)
 
-        pssst = Pssst._Key(self.keys.load("id_api"))
-
-        if not pssst.verify(body, timestamp, signature):
+        if not self.keys.api.verify(body, timestamp, signature):
             raise Exception("Verification failed")
 
         if response.status_code not in [200, 204]:
@@ -481,7 +492,7 @@ class Pssst:
         """
         for name in [Pssst.Name(receiver) for receiver in receivers]:
 
-            # Cache public key
+            # Cache user public key
             if name.user not in self.keys.list():
                 self.keys.save(name.user, self.find(name.user))
 

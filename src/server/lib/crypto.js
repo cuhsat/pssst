@@ -35,7 +35,13 @@ module.exports = function Crypto() {
   var ID_PUB = __dirname + '/../id_rsa.pub';
 
   if (!fs.existsSync(ID_RSA)) {
-    var key = new rsa({b: RSA_SIZE});
+
+    // Heroku support
+    if (process.env.PSSST_KEY) {
+      var key = new rsa(new Buffer(process.env.PSSST_KEY, 'base64'));
+    } else {
+      var key = new rsa({b: RSA_SIZE});
+    }
 
     fs.writeFileSync(ID_RSA, key.exportKey('private'));
     fs.writeFileSync(ID_PUB, key.exportKey('public'));

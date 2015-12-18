@@ -1,3 +1,11 @@
+2.4.4
+* Added server support for Heroku keys
+* Added client API key pinning again
+* Fixed client documentation
+* Changed to Python naming conventions
+* Refactored HTTP server creation
+* Refactored CLI key handling
+
 2.4.3
 * Added shield.io badges
 * Changed all READMEs
