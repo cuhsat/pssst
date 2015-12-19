@@ -201,7 +201,7 @@ module.exports = function Server(config, callback) {
       server = app.listen(port);
       server.on('error', function error(err) {
         if (err.code == 'EADDRINUSE') {
-          console.error('Address in use');  
+          process.exit(0); // Already running 
         } else {
           console.error(err.stack || err);
         }
