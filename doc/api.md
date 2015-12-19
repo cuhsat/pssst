@@ -71,11 +71,11 @@ encoded in standard Base64 with padding and omitted line breaks.
 
 ### Authentication
 
-Authentication for client and server is done via the HTTP `content-hash`
+Authentication for client and server is done via the HTTP `x-pssst-hash`
 header. This header must be set for all client API request, except `find`.
 The format of this header is specified as:
 
-`content-hash: <timestamp>; <signature>`
+`x-pssst-hash: <timestamp>; <signature>`
 
 Where `timestamp` is the EPOCH without decimals of the request / response
 and `signature` the calculated and signed hash of the HTTP body encoded in
@@ -122,7 +122,7 @@ user-agent: <app>
 ```
 HTTP/1.1 200 OK
 content-type: text/plain
-content-hash: <timestamp>; <signature>
+x-pssst-hash: <timestamp>; <signature>
 
 Pssst <version>
 ```
@@ -144,7 +144,7 @@ user-agent: <app>
 ```
 HTTP/1.1 200 OK
 content-type: text/plain
-content-hash: <timestamp>; <signature>
+x-pssst-hash: <timestamp>; <signature>
 
 <key>
 ```
@@ -175,7 +175,7 @@ POST /2/<hash> HTTP/1.1
 host: <api>
 user-agent: <app>
 content-type: application/json
-content-hash: <timestamp>; <signature>
+x-pssst-hash: <timestamp>; <signature>
 
 {"key":"<key>"}
 ```
@@ -185,7 +185,7 @@ content-hash: <timestamp>; <signature>
 ```
 HTTP/1.1 200 OK
 content-type: text/plain
-content-hash: <timestamp>; <signature>
+x-pssst-hash: <timestamp>; <signature>
 
 User created
 ```
@@ -202,7 +202,7 @@ and can not be used afterwards for by other users.
 DELETE /2/<hash> HTTP/1.1
 host: <api>
 user-agent: <app>
-content-hash: <timestamp>; <signature>
+x-pssst-hash: <timestamp>; <signature>
 ```
 
 #### Response
@@ -210,7 +210,7 @@ content-hash: <timestamp>; <signature>
 ```
 HTTP/1.1 200 OK
 content-type: text/plain
-content-hash: <timestamp>; <signature>
+x-pssst-hash: <timestamp>; <signature>
 
 User disabled
 ```
@@ -232,7 +232,7 @@ user-agent: <app>
 ```
 HTTP/1.1 200 OK
 content-type: text/plain
-content-hash: <timestamp>; <signature>
+x-pssst-hash: <timestamp>; <signature>
 
 <key>
 ```
@@ -248,7 +248,7 @@ from first to last.
 GET /2/<hash>/ HTTP/1.1
 host: <api>
 user-agent: <app>
-content-hash: <timestamp>; <signature>
+x-pssst-hash: <timestamp>; <signature>
 ```
 
 #### Response
@@ -256,7 +256,7 @@ content-hash: <timestamp>; <signature>
 ```
 HTTP/1.1 200 OK
 content-type: application/json
-content-hash: <timestamp>; <signature>
+x-pssst-hash: <timestamp>; <signature>
 
 {"nonce":"<nonce>","data":"<data>"}
 ```
@@ -273,7 +273,7 @@ PUT /2/<hash>/ HTTP/1.1
 host: <api>
 user-agent: <app>
 content-type: application/json
-content-hash: <timestamp>; <signature>
+x-pssst-hash: <timestamp>; <signature>
 
 {"nonce":"<nonce>","data":"<data>","from":"<sender>"}
 ```
@@ -283,7 +283,7 @@ content-hash: <timestamp>; <signature>
 ```
 HTTP/1.1 200 OK
 content-type: text/plain
-content-hash: <timestamp>; <signature>
+x-pssst-hash: <timestamp>; <signature>
 
 Message pushed
 ```

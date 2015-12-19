@@ -1,3 +1,7 @@
+2.5.0
+* Changed header to `x-pssst-hash`
+* Changed server error handling
+
 2.4.5
 * Fixed unit test
 * Changed version link

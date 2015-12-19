@@ -33,8 +33,10 @@ module.exports = function Server(config, callback) {
   var pssst = require('./pssst.js');
   var crypto = require('./crypto.js');
 
-  var HEADER = 'content-hash';
+  var HEADER = 'x-pssst-hash';
   var PUBLIC = __dirname + '/../id_rsa.pub';
+
+  var server, port = Number(process.env.PORT || config.port);
 
   /**
    * Returns the new header.
@@ -196,7 +198,10 @@ module.exports = function Server(config, callback) {
         res.sign(404, 'Not found');
       });
 
-      app.listen(Number(process.env.PORT || config.port), callback);
+      server = app.listen(PORT, callback);
+      server.on('error', function error(err) {
+        console.error(err);
+      });
     } else {
       callback(err);
     }

@@ -8,10 +8,10 @@ securedBy: [x-content-hash]
 securitySchemes:
   - customHeader:
       description: Authentication header
-      type: x-content-hash
+      type: x-pssst-hash
       descriptedBy:
         headers:
-          content-hash:
+          x-pssst-hash:
             displayName: Content hash
             description: Timestamp; Signed base64 encoded hash of the body
             type: string

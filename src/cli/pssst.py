@@ -45,7 +45,7 @@ except ImportError:
     sys.exit("Requires PyCrypto (https://github.com/dlitz/pycrypto)")
 
 
-__all__, __version__ = ["Pssst"], "2.4.5"
+__all__, __version__ = ["Pssst"], "2.5.0"
 
 
 def _encode64(data): # Utility shortcut
@@ -359,14 +359,14 @@ class Pssst:
 
         response = request(method, "%s/2/%s" % (self.api, path), data=body,
             headers={
-                "content-hash": "%s; %s" % (timestamp, _encode64(signature)),
+                "x-pssst-hash": "%s; %s" % (timestamp, _encode64(signature)),
                 "content-type": "application/json" if data else "text/plain",
                 "user-agent": repr(self)
             }
         )
 
         mime = response.headers.get("content-type", "text/plain")
-        head = response.headers.get("content-hash")
+        head = response.headers.get("x-pssst-hash")
         body = response.text
 
         if not re.match("^[0-9]+; ?[A-Za-z0-9\+/]+=*$", head):

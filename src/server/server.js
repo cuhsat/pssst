@@ -41,7 +41,7 @@ try {
     if (!fs.existsSync(CONFIG)) {
       fs.writeFileSync(CONFIG, JSON.stringify({
         "port": 62421,
-        "debug": 3,
+        "debug": 0,
         "db": {
           "source": 6379,
           "number": 0
