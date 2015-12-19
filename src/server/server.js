@@ -52,11 +52,28 @@ try {
     var server = require('./lib/index.js');
     var config = require('./config.json');
 
-    server(config, function ready(err) {
-      if (!err) {
-        console.log('Ready');
+    server(config, function ready(err, server) {
+      if (err) {
+        console.error(err.stack || err);
       } else {
-        console.error(err);
+
+        // Handle error events
+        process.on('uncaughtException', function error(err) {
+          server.close(function close() {
+            console.error(err.stack || err);
+            process.exit(1);
+          });
+        });
+
+        // Handle exit events
+        process.on('SIGTERM', function exit() {
+          server.close(function close() {
+            console.log('Exit');
+            process.exit(0);
+          });
+        });
+
+        console.log('Ready');
       }
     });
   } else {

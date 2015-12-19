@@ -4,7 +4,7 @@ baseUri: {address}/{version}
 address: http://localhost:62421
 version: 2
 mediaType: application/text
-securedBy: [x-content-hash]
+securedBy: [x-pssst-hash]
 securitySchemes:
   - customHeader:
       description: Authentication header
@@ -12,7 +12,7 @@ securitySchemes:
       descriptedBy:
         headers:
           x-pssst-hash:
-            displayName: Content hash
+            displayName: Pssst hash
             description: Timestamp; Signed base64 encoded hash of the body
             type: string
             required: true

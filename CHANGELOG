@@ -1,3 +1,11 @@
+2.5.1
+* Added graceful exit to server
+* Added general server error handlerss
+* Added stack trace to server errors
+* Added Heroku debug flag `PSSST_DEBUG`
+* Fixed documentation
+* Refactored server error handling
+
 2.5.0
 * Changed header to `x-pssst-hash`
 * Changed server error handling

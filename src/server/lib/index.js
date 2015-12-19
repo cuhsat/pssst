@@ -159,12 +159,12 @@ module.exports = function Server(config, callback) {
 
   redis(config.db, function redis(err, db) {
     if (!err) {
-      app.use(parser.urlencoded({extended: true}))
-      app.use(parser.json())
+      app.use(parser.urlencoded({extended: true}));
+      app.use(parser.json());
 
       // Debug hook
       app.use(function hook(req, res, next) {
-        debug(config.debug, req, res, next);
+        debug(process.env.PSSST_DEBUG || config.debug, req, res, next);
       });
 
       // Error hook
@@ -172,7 +172,7 @@ module.exports = function Server(config, callback) {
         if (res.error) {
           res.error(err);
         } else {
-          console.error(err);
+          console.error(err.stack || err);
         }
       });
 
@@ -198,10 +198,12 @@ module.exports = function Server(config, callback) {
         res.sign(404, 'Not found');
       });
 
-      server = app.listen(port, callback);
+      server = app.listen(port);
       server.on('error', function error(err) {
-        console.error(err);
+        console.error(err.stack || err);          
       });
+
+      callback(null, server);
     } else {
       callback(err);
     }
