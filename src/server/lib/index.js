@@ -200,7 +200,11 @@ module.exports = function Server(config, callback) {
 
       server = app.listen(port);
       server.on('error', function error(err) {
-        console.error(err.stack || err);          
+        if (err.code == 'EADDRINUSE') {
+          console.error('Address in use');  
+        } else {
+          console.error(err.stack || err);
+        }
       });
 
       callback(null, server);
