@@ -198,7 +198,7 @@ module.exports = function Server(config, callback) {
         res.sign(404, 'Not found');
       });
 
-      server = app.listen(PORT, callback);
+      server = app.listen(port, callback);
       server.on('error', function error(err) {
         console.error(err);
       });
