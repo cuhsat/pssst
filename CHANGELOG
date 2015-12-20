@@ -1,3 +1,14 @@
+2.6.0
+* Added Heroku config vars to `app.json`
+* Fixed Heroku debug level config var
+* Fixed server running warning
+* Changed README locations
+* Changed CLI logo
+* Changed CLI password prompt
+* Changed profile unit tests
+* Security improvements
+* Refactored server for performance
+
 2.5.1
 * Added graceful exit to server
 * Added general server error handlerss

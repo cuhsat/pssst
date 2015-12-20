@@ -62,7 +62,7 @@ def teardown_module(module):
                 os.remove(file)
 
 
-def create_user(length=16):
+def create_profile(length=16):
     """
     Returns a random username and password.
 
@@ -113,8 +113,7 @@ class TestName:
         """
         name = Pssst.Name("me")
 
-        assert name.user == "me"
-        assert name.password == None
+        assert name.profile == ("me", None)
         assert str(name) == "pssst.me"
 
     def test_name_maximum(self):
@@ -124,8 +123,7 @@ class TestName:
         """
         name = Pssst.Name(" pssst.UserName:Pa55w0rd! ")
 
-        assert name.user == "username"
-        assert name.password == "Pa55w0rd!"
+        assert name.profile == ("username", "Pa55w0rd!")
         assert str(name) == "pssst.username"
 
     def test_name_invalid(self):
@@ -156,8 +154,8 @@ class TestKeyStorage:
         Tests if file is created correctly.
 
         """
-        username1, password1 = create_user()
-        username2, password2 = create_user()
+        username1, password1 = create_profile()
+        username2, password2 = create_profile()
 
         pssst1 = Pssst(username1, password1)
         pssst1.create()
@@ -197,7 +195,7 @@ class TestKey:
 
         """
         with pytest.raises(Exception) as ex:
-            pssst = Pssst(*create_user())
+            pssst = Pssst(*create_profile())
             pssst.pull()
 
         assert str(ex.value) == "Verification failed"
@@ -212,7 +210,7 @@ class TestKey:
         with pytest.raises(Exception) as ex:
             Pssst._Key.sign = lambda self, data: ("!", b"!")
 
-            pssst = Pssst(*create_user())
+            pssst = Pssst(*create_profile())
             pssst.create()
             pssst.pull()
 
@@ -230,7 +228,7 @@ class TestKey:
         with pytest.raises(Exception) as ex:
             Pssst._Key.sign = lambda self, data: original(self, "Test")
 
-            pssst = Pssst(*create_user())
+            pssst = Pssst(*create_profile())
             pssst.create()
             pssst.pull()
 
@@ -259,9 +257,9 @@ class TestPssst:
 
     Methods
     -------
-    test_create_user()
+    test_create_profile()
         Tests if an user can be created.
-    test_create_user_already_exists()
+    test_create_profile_already_exists()
         Tests if an user already exists.
     test_delete_user()
         Tests if an user can be deleted.
@@ -287,21 +285,21 @@ class TestPssst:
         Tests if a password is wrong.
 
     """
-    def test_create_user(self):
+    def test_create_profile(self):
         """
         Tests if an user can be created.
 
         """
-        pssst = Pssst(*create_user())
+        pssst = Pssst(*create_profile())
         pssst.create()
 
-    def test_create_user_already_exists(self):
+    def test_create_profile_already_exists(self):
         """
         Tests if an user already exists.
 
         """
         with pytest.raises(Exception) as ex:
-            pssst = Pssst(*create_user())
+            pssst = Pssst(*create_profile())
             pssst.create()
             pssst.create()
 
@@ -312,7 +310,7 @@ class TestPssst:
         Tests if an user can be deleted.
 
         """
-        pssst = Pssst(*create_user())
+        pssst = Pssst(*create_profile())
         pssst.create()
         pssst.delete()
 
@@ -322,7 +320,7 @@ class TestPssst:
 
         """
         with pytest.raises(Exception) as ex:
-            pssst = Pssst(*create_user())
+            pssst = Pssst(*create_profile())
             pssst.create()
             pssst.delete()
             pssst.pull()
@@ -334,7 +332,7 @@ class TestPssst:
         Tests if an user public key can be found.
 
         """
-        username, password = create_user()
+        username, password = create_profile()
         pssst = Pssst(username, password)
         pssst.create()
         pssst.find(username)
@@ -345,12 +343,12 @@ class TestPssst:
 
         """
         with pytest.raises(Exception) as ex:
-            username, password = create_user()
+            username, password = create_profile()
             pssst = Pssst(username, password)
             pssst.create()
             pssst.delete()
 
-            pssst = Pssst(*create_user())
+            pssst = Pssst(*create_profile())
             pssst.find(username)
 
         assert str(ex.value) == "User was deleted"
@@ -361,7 +359,7 @@ class TestPssst:
 
         """
         with pytest.raises(Exception) as ex:
-            pssst = Pssst(*create_user())
+            pssst = Pssst(*create_profile())
             pssst.find("usernotfound")
 
         assert str(ex.value) == "User not found"
@@ -371,7 +369,7 @@ class TestPssst:
         Tests if a message could be pushed to sender.
 
         """
-        username, password = create_user()
+        username, password = create_profile()
         message = b"Echo"
 
         pssst = Pssst(username, password)
@@ -385,8 +383,8 @@ class TestPssst:
         Tests if a message could be pushed to a single receiver.
 
         """
-        username1, password1 = create_user()
-        username2, password2 = create_user()
+        username1, password1 = create_profile()
+        username2, password2 = create_profile()
         message = b"Hello World!"
 
         pssst1 = Pssst(username1, password1)
@@ -405,13 +403,13 @@ class TestPssst:
         """
         message = b"Hello World!"
 
-        users = [create_user() for i in range(5)]
+        users = [create_profile() for i in range(5)]
         names = [username for username, password in users]
 
         for user in users:
             Pssst(*user).create()
 
-        pssst = Pssst(*create_user())
+        pssst = Pssst(*create_profile())
         pssst.create()
         pssst.push(names, message)
 
@@ -425,7 +423,7 @@ class TestPssst:
         Tests if an user box is empty before pulling.
 
         """
-        pssst = Pssst(*create_user())
+        pssst = Pssst(*create_profile())
         pssst.create()
 
         assert pssst.pull() == None
@@ -435,7 +433,7 @@ class TestPssst:
         Tests if an user box is empty after pulling.
 
         """
-        username, password = create_user()
+        username, password = create_profile()
         message = b"Hello World!"
 
         pssst = Pssst(username, password)
@@ -451,7 +449,7 @@ class TestPssst:
 
         """
         with pytest.raises(Exception) as ex:
-            username, password = create_user()
+            username, password = create_profile()
             Pssst(username, "right")
             Pssst(username, "wrong")
 
@@ -479,7 +477,7 @@ class TestFuzzy:
 
         """
         for size in [2 ** n for n in range(0, 13)]:
-            username, password = create_user()
+            username, password = create_profile()
             blob = os.urandom(size)
             pssst = Pssst(username, password)
             pssst.create()

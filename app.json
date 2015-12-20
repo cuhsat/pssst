@@ -2,12 +2,22 @@
   "name": "Pssst",
   "repository": "https://github.com/cuhsat/pssst",
   "success_url": "/",
-  "addons": [
-    "heroku-redis:hobby-dev"
-  ],
   "buildpacks": [
     {
       "url": "https://github.com/cuhsat/heroku-buildpack-pssst"
     }
-  ]
+  ],
+  "addons": [
+    "heroku-redis:hobby-dev"
+  ],
+  "env": {
+    "PSSST_KEY": {
+      "description": "Pssst private key (Base64).",
+      "value": ""
+    },
+    "PSSST_DEBUG": {
+      "description": "Pssst debug level (0-3).",
+      "value": "0"
+    }
+  }
 }

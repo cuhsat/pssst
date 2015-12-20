@@ -34,9 +34,10 @@ module.exports = function Server(config, callback) {
   var crypto = require('./crypto.js');
 
   var HEADER = 'x-pssst-hash';
-  var PUBLIC = __dirname + '/../id_rsa.pub';
 
   var server, port = Number(process.env.PORT || config.port);
+  var server_key = fs.readFileSync(crypto.id_pub);
+  var server_ver = "Pssst " + info['version'];
 
   /**
    * Returns the new header.
@@ -156,15 +157,15 @@ module.exports = function Server(config, callback) {
 
   app = express();
   app.set('json spaces', 0);
+  app.use(parser.json());
 
   redis(config.db, function redis(err, db) {
     if (!err) {
-      app.use(parser.urlencoded({extended: true}));
-      app.use(parser.json());
+      var level = Number(process.env.PSSST_DEBUG || config.debug);
 
       // Debug hook
       app.use(function hook(req, res, next) {
-        debug(process.env.PSSST_DEBUG || config.debug, req, res, next);
+        debug(level, req, res, next);
       });
 
       // Error hook
@@ -181,16 +182,17 @@ module.exports = function Server(config, callback) {
         auth(db, req, res, next);
       });
 
+      // Add routes
       pssst(app, db);
 
-      // Return public key
+      // Return server public key
       app.get('/key', function key(req, res) {
-        res.sign(200, fs.readFileSync(PUBLIC));
+        res.sign(200, server_key);
       });
 
-      // Return protocol version
+      // Return server version
       app.get('/', function index(req, res) {
-        res.sign(200, "Pssst " + info['version']);
+        res.sign(200, server_ver);
       });
 
       // Return file not found
@@ -200,9 +202,7 @@ module.exports = function Server(config, callback) {
 
       server = app.listen(port);
       server.on('error', function error(err) {
-        if (err.code == 'EADDRINUSE') {
-          console.error('Address in use'); 
-        } else {
+        if (err.code != 'EADDRINUSE') {
           console.error(err.stack || err);
         }
       });

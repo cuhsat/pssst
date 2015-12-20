@@ -45,7 +45,7 @@ except ImportError:
     sys.exit("Requires PyCrypto (https://github.com/dlitz/pycrypto)")
 
 
-__all__, __version__ = ["Pssst"], "2.5.1"
+__all__, __version__ = ["Pssst"], "2.6.0"
 
 
 def _encode64(data): # Utility shortcut
@@ -104,7 +104,7 @@ class Pssst:
 
             self.user = user.lower()
             self.hash = SHA256.new(repr(self).encode("ascii")).hexdigest()
-            self.password = password
+            self.profile = (self.user, password)
 
         def __repr__(self):
             """
@@ -194,7 +194,7 @@ class Pssst:
 
         Methods
         -------
-        private(password=None)
+        private(password)
             Returns the users private key (PEM format).
         public()
             Returns the users public key (PEM format).
@@ -224,7 +224,7 @@ class Pssst:
             except (IndexError, TypeError, ValueError) as ex:
                 raise Exception("Password wrong")
 
-        def private(self, password=None):
+        def private(self, password):
             return self.key.exportKey("PEM", password, 8).decode("ascii")
 
         def public(self):
@@ -268,7 +268,7 @@ class Pssst:
             return (current, signature)
 
 
-    def __init__(self, username, password=None):
+    def __init__(self, username, password):
         """
         Initializes the instance with an user object.
 
@@ -276,7 +276,7 @@ class Pssst:
         ----------
         param username : string
             User name.
-        param password : string, optional (default is None)
+        param password : string
             User private key password.
 
         Raises
@@ -546,11 +546,11 @@ def usage(text, *args):
 
 def main(script, command="--help", username=None, receiver=None, *message):
     """
-          ________               ___
-         /  ___  /______________/  /__
-        /  /__/ / ___/ ___/ ___/  ___/
-       /  _____/__  /__  /__  /  /__
-      /__/    /____/____/____/\____/
+          _________                  ___
+         /  ____  /_________________/  /__
+        /  /___/ / ____/ ____/ ____/  ___/
+       /  ______/___  /___  /___  /  /__
+      /__/     /_____/_____/_____/_____/
 
       CLI version %s
 
@@ -577,8 +577,8 @@ def main(script, command="--help", username=None, receiver=None, *message):
             username = io.open(profile).read()
 
         if username:
-            name = Pssst.Name(username)
-            pssst = Pssst(name.user, name.password or getpass())
+            user, password = Pssst.Name(username).profile
+            pssst = Pssst(user, password or getpass("Password (hidden): "))
 
         if command in ("/?", "-h", "--help", "help"):
             usage(main.__doc__, __version__, os.path.basename(script))

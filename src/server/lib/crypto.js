@@ -34,20 +34,17 @@ module.exports = function Crypto() {
   var ID_RSA = __dirname + '/../id_rsa';
   var ID_PUB = __dirname + '/../id_rsa.pub';
 
-  if (!fs.existsSync(ID_RSA)) {
-
-    // Heroku support
-    if (process.env.PSSST_KEY) {
-      var key = new rsa(new Buffer(process.env.PSSST_KEY, 'base64'));
-    } else {
-      var key = new rsa({b: RSA_SIZE});
-    }
+  // Heroku support
+  if (process.env.PSSST_KEY) {
+    var key = new rsa(new Buffer(process.env.PSSST_KEY, 'base64'));
+  } else if (fs.existsSync(ID_RSA)) {
+    var key = new rsa(fs.readFileSync(ID_RSA), RSA_FORMAT, RSA_SCHEME);
+  } else {
+    var key = new rsa({b: RSA_SIZE});
 
     fs.writeFileSync(ID_RSA, key.exportKey('private'));
     fs.writeFileSync(ID_PUB, key.exportKey('public'));
   }
-
-  var key = new rsa(fs.readFileSync(ID_RSA), RSA_FORMAT, RSA_SCHEME);
 
   if (!key.isPrivate()){
     throw new Error('Key has no private part');
@@ -137,6 +134,10 @@ module.exports = function Crypto() {
       return false; // OpenSSL error
     }
   };
+
+  // Key files
+  this.id_rsa = ID_RSA;
+  this.id_pub = ID_PUB;
 
   return this;
 }()
