@@ -106,7 +106,7 @@ module.exports = function Crypto() {
   };
 
   /**
-   * Returns if data could be verified.
+   * Returns if the data could be verified.
    *
    * @param {Object} the data
    * @param {Object} the data HMAC
@@ -135,7 +135,9 @@ module.exports = function Crypto() {
     }
   };
 
-  // Public key
+  /**
+   * The public key (PEM format).
+   */
   this.key = key.exportKey('public');
 
   return this;
