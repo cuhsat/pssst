@@ -207,6 +207,15 @@ module.exports = function Server(config, callback) {
         }
       });
 
+
+      server.on('clientError', function() { console.log('clientError'); });
+      server.on('checkContinue', function() { console.log('checkContinue'); });
+      server.on('close', function() { console.log('close'); });
+      server.on('connect', function() { console.log('connect'); });
+      server.on('connection', function() { console.log('connection'); });
+      server.on('request', function() { console.log('request'); });
+      server.on('upgrade', function() { console.log('upgrade'); });
+
       callback(null, server);
     } else {
       callback(err);
