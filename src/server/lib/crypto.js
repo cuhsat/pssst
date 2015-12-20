@@ -135,9 +135,8 @@ module.exports = function Crypto() {
     }
   };
 
-  // Key files
-  this.id_rsa = ID_RSA;
-  this.id_pub = ID_PUB;
+  // Public key
+  this.key = key.exportKey('public');
 
   return this;
 }()

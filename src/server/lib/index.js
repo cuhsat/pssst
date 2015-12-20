@@ -36,8 +36,6 @@ module.exports = function Server(config, callback) {
   var HEADER = 'x-pssst-hash';
 
   var server, port = Number(process.env.PORT || config.port);
-  var server_key = fs.readFileSync(crypto.id_pub);
-  var server_ver = "Pssst " + info['version'];
 
   /**
    * Returns the new header.
@@ -187,12 +185,12 @@ module.exports = function Server(config, callback) {
 
       // Return server public key
       app.get('/key', function key(req, res) {
-        res.sign(200, server_key);
+        res.sign(200, crypto.key);
       });
 
       // Return server version
       app.get('/', function index(req, res) {
-        res.sign(200, server_ver);
+        res.sign(200, "Pssst " + info['version']);
       });
 
       // Return file not found

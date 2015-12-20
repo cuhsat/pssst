@@ -13,4 +13,5 @@ $ pssst [option|command] [-|username:password] [receiver message...]
 The server address must be set via the `PSSST` environment variable.
 
 ----
-[Required](pssst.pip) | Please use the `--help` option for further help.
+[Requirements](../src/cli/pssst.pip) | Please use the `--help` option for 
+further help.

@@ -1,3 +1,7 @@
+2.6.1
+* Fixed server public key path
+* Fixed documentation links
+
 2.6.0
 * Added Heroku config vars to `app.json`
 * Fixed Heroku debug level config var

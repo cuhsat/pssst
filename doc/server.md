@@ -17,4 +17,5 @@ $ npm start [option]
 The default server port is `62421` and can be changed via `config.json`.
 
 ----
-[Required](package.json) | Please use the `--help` option for further help.
+[Requirements](../src/server/package.json) | Please use the `--help` option 
+for further help.
