@@ -45,7 +45,7 @@ except ImportError:
     sys.exit("Requires PyCrypto (https://github.com/dlitz/pycrypto)")
 
 
-__all__, __version__ = ["Pssst"], "2.6.1"
+__all__, __version__ = ["Pssst"], "2.6.2"
 
 
 def _encode64(data): # Utility shortcut
@@ -591,11 +591,11 @@ def main(script, command="--help", username=None, receiver=None, *message):
 
         elif command in ("--create", "create") and username:
             pssst.create()
-            print("Created %s" % name)
+            print("Created %s" % pssst.name)
 
         elif command in ("--delete", "delete") and username:
             pssst.delete()
-            print("Deleted %s" % name)
+            print("Deleted %s" % pssst.name)
 
         elif command in ("--pull", "pull") and username:
             data = pssst.pull()

@@ -1,3 +1,6 @@
+2.6.2
+* Fixed CLI user name bug
+
 2.6.1
 * Fixed server public key path
 * Fixed documentation links
