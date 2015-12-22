@@ -45,7 +45,7 @@ except ImportError:
     sys.exit("Requires PyCrypto (https://github.com/dlitz/pycrypto)")
 
 
-__all__, __version__ = ["Pssst"], "2.6.2"
+__all__, __version__ = ["Pssst"], "2.6.3"
 
 
 def _encode64(data): # Utility shortcut
@@ -290,7 +290,7 @@ class Pssst:
         address and port.
 
         """
-        API = "http://localhost:62421"
+        API = "http://localhost:62221"
 
         if not password:
             raise Exception("Password required")
@@ -546,11 +546,11 @@ def usage(text, *args):
 
 def main(script, command="--help", username=None, receiver=None, *message):
     """
-          _________                  ___
-         /  ____  /_________________/  /__
-        /  /___/ / ____/ ____/ ____/  ___/
-       /  ______/___  /___  /___  /  /__
-      /__/     /_____/_____/_____/_____/
+          __________                  ___
+         /  ____   /_________________/  /__
+        /  /___/  / ____/ ____/ ____/  ___/
+       /  _______/___  /___  /___  /  /__
+      /__/      /_____/_____/_____/_____/
 
       CLI version %s
 

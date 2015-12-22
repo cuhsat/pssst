@@ -12,11 +12,9 @@
   ],
   "env": {
     "PSSST_KEY": {
-      "description": "Pssst private key (Base64).",
       "value": ""
     },
     "PSSST_DEBUG": {
-      "description": "Pssst debug level (0-3).",
       "value": "0"
     }
   }

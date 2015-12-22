@@ -1,6 +1,6 @@
 Pssst
 =====
-[![](https://img.shields.io/badge/version-2.6.2-brightgreen.svg)](https://github.com/cuhsat/pssst/archive/master.zip)
+[![](https://img.shields.io/badge/version-2.6.3-brightgreen.svg)](https://github.com/cuhsat/pssst/archive/master.zip)
 [![](https://img.shields.io/travis/cuhsat/pssst.svg)](https://travis-ci.org/cuhsat/pssst)
 [![](https://img.shields.io/badge/deploy-heroku-79589F.svg)](https://heroku.com/deploy)
 

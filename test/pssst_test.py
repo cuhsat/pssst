@@ -473,10 +473,10 @@ class TestFuzzy:
         Notes
         -----
         The data will be generated with random content in sizes from zero
-        bytes up to 8 kilobytes.
+        bytes up to 1 megabyte.
 
         """
-        for size in [2 ** n for n in range(0, 13)]:
+        for size in [2 ** n for n in range(0, 20)]:
             username, password = create_profile()
             blob = os.urandom(size)
             pssst = Pssst(username, password)

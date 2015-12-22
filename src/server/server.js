@@ -21,13 +21,13 @@
  *
  *   Pssst
  *
- *   port  = server port
- *   debug = server debug level (0 to 3)
+ *   port  = pssst server port
+ *   debug = pssst server debug level (0 to 3)
  *
  *   Redis
  *
- *   source = database socket or port
- *   number = database number
+ *   source = redis database socket or port
+ *   number = redis database number
  *
  * @return {Number} exit code
  */
@@ -40,7 +40,7 @@ try {
     // Create default config
     if (!fs.existsSync(CONFIG)) {
       fs.writeFileSync(CONFIG, JSON.stringify({
-        "port": 62421,
+        "port": 62221,
         "debug": 0,
         "db": {
           "source": 6379,

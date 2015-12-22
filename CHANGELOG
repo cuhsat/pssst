@@ -1,3 +1,12 @@
+2.6.3
+* Fixed gitignore
+* Limit max request size to 1 MB
+* Changed CLI logo
+* Changed READMEs
+* Changed server debug output
+* Changed default server port
+* Changed fuzzy unit test size
+
 2.6.2
 * Fixed CLI user name bug
 

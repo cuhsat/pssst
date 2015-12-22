@@ -1,9 +1,10 @@
-node_modules/
-test/
 *.log
 *.pyc
 *.pyd
 *.pyo
-id_rsa*
-config.json
+.pssst*
+test/
 !test/pssst_test.py
+src/server/node_modules/
+src/server/config*
+src/server/id_rsa*

@@ -37,7 +37,7 @@
  * @param {Object} next handler
  */
 module.exports = function debug(level, req, res, next) {
-  var time = new Date().getTime();
+  var time = String(new Date().getTime()) + ' >>>';
 
   if (level > 0) {
     console.info(time, req.method, req.url);
@@ -54,7 +54,7 @@ module.exports = function debug(level, req, res, next) {
   // Monkey patching
   var end = res.end;
   res.end = function patch(chunk, encoding) {
-    var time = new Date().getTime();
+    var time = String(new Date().getTime()) + ' <<<';
 
     if (level > 0) {
       console.info(time, res.statusCode);
