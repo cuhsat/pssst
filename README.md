@@ -27,4 +27,4 @@ License
 Released under the terms of the [GPLv3](LICENSE) license.
 
 ----
-The NSA has not been here | Based on Pssst by Christian & Christian.
+*The NSA has not been here*
