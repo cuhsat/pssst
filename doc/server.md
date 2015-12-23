@@ -6,7 +6,7 @@ If you are using Heroku, the server can easily be deployed using this custom
 
 > Please note, if running on Heroku, the servers private key must be set via
 > the `PSSST_KEY` config variable as Base64 encoded string. If not, the key
-> will be generated each time the *Dyno* restarts anew.
+> will be generated each time the code is deployed.
 
 Usage
 -----
