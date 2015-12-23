@@ -16,7 +16,7 @@ $ pssst push me you "Hello"
 
 API
 ---
-The full [API](/doc/api.md) specification can be found in the `doc` folder.
+The full [API](/doc/api.md) specification can be found under `doc`.
 
 CVE
 ---
@@ -24,9 +24,8 @@ No security advisories or bugs are known as of today.
 
 License
 -------
-Released under the terms of the [GPLv3](LICENSE) license. Based on
-the original [Pssst](https://github.com/pssst/pssst) by Christian &
-Christian.
+Released under the terms of the [GPLv3](LICENSE) license.
 
 ----
+Based on [Pssst](https://github.com/pssst/pssst) by Christian & Christian.
 *The NSA has not been here*
