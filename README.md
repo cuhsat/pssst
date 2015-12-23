@@ -20,11 +20,12 @@ The full [API](/doc/api.md) specification can be found in the `doc` folder.
 
 CVE
 ---
-No security advisories or bugs are known. The NSA has not been here.
+No security advisories or bugs are known as of today.
 
 License
 -------
 Released under the terms of the [GPLv3](LICENSE) license.
 
 ----
+The NSA has not been here.
 Based on [Pssst](https://github.com/pssst/pssst) by Christian & Christian.
