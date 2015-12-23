@@ -28,4 +28,3 @@ Released under the terms of the [GPLv3](LICENSE) license.
 
 ----
 Based on [Pssst](https://github.com/pssst/pssst) by Christian & Christian.
-*The NSA has not been here*
