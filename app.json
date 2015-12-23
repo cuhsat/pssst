@@ -12,12 +12,10 @@
   ],
   "env": {
     "PSSST_KEY": {
-      "required": false,
-      "value": ""
+      "required": false
     },
     "PSSST_DEBUG": {
-      "required": false,
-      "value": "0"
+      "required": false
     }
   }
 }
