@@ -7,10 +7,11 @@ be stored in the users home directory.
 Usage
 -----
 ```
-$ pssst [option|command] [-|username:password] [receiver message...]
+$ pssst [option|command] [-|username:password@server] [receiver message...]
 ```
 
-The server address must be set via the `PSSST` environment variable.
+The server address must be specified with the user name or set via the `PSSST`
+environment variable.
 
 ----
 [Requirements](../src/cli/pssst.pip) | Please use the `--help` option for 

@@ -1,5 +1,6 @@
 /**
- * Copyright (C) 2013-2015  Christian & Christian  <hello@pssst.name>
+ * Copyright (C) 2013-2015  Christian & Christian <hello@pssst.name>
+ * Copyright (C) 2015-2016  Christian Uhsat <christian@uhsat.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

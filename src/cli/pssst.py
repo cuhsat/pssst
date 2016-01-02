@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """
-Copyright (C) 2013-2015  Christian & Christian  <hello@pssst.name>
+Copyright (C) 2013-2015  Christian & Christian <hello@pssst.name>
+Copyright (C) 2015-2016  Christian Uhsat <christian@uhsat.de>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -45,7 +46,7 @@ except ImportError:
     sys.exit("Requires PyCrypto (https://github.com/dlitz/pycrypto)")
 
 
-__all__, __version__ = ["Pssst"], "2.6.5"
+__all__, __version__ = ["Pssst"], "2.6.6"
 
 
 def _encode64(data): # Utility shortcut
@@ -79,32 +80,37 @@ class Pssst:
         Canonical name parser.
 
         """
-        def __init__(self, user, password=None):
+        def __init__(self, user, password=None, server=None):
             """
             Initializes the instance with the parsed name.
 
             Parameters
             ----------
             param user : string
-                User name (full or partly).
+                User name (full or partial).
             param password : string, optional (default is None)
                 User private key password.
+            param server : string, optional (default is None)
+                Server address.
 
             """
             user = user.strip()
 
-            if not re.match("^(pssst\.)?\w{2,63}(:\S*)?$", user):
+            if not re.match("^(pssst\.)?\w{2,63}(:\S+)?(@\S+)?$", user):
                 raise Exception("User name invalid")
 
             if user.startswith("pssst."):
                 user = user[6:]
 
+            if "@" in user and not server:
+                user, server = user.split("@", 1) 
+
             if ":" in user and not password:
-                user, password = user.rsplit(":", 1)
+                user, password = user.split(":", 1)
 
             self.user = user.lower()
             self.hash = SHA256.new(repr(self).encode("ascii")).hexdigest()
-            self.profile = (self.user, password)
+            self.profile = (self.user, password, server)
 
         def __repr__(self):
             """
@@ -268,7 +274,7 @@ class Pssst:
             return (current, signature)
 
 
-    def __init__(self, username, password):
+    def __init__(self, username, password, server=None):
         """
         Initializes the instance with an user object.
 
@@ -278,6 +284,8 @@ class Pssst:
             User name.
         param password : string
             User private key password.
+        param server : string, optional (default is None)
+            Server address.
 
         Raises
         ------
@@ -287,7 +295,7 @@ class Pssst:
         Notes
         -----
         If the environment variable 'PSSST' exists, it will be used as the API
-        address and port.
+        address and port. If a server is given, it will override the API.
 
         """
         API = "http://localhost:62221"
@@ -295,7 +303,10 @@ class Pssst:
         if not password:
             raise Exception("Password required")
 
-        self.api = os.environ.get("PSSST", API)
+        if not server:
+            server = os.environ.get("PSSST", API)
+
+        self.api = server
         self.name = Pssst.Name(username)
         self.keys = Pssst._KeyStorage(self.api, self.name.user, password)
 
@@ -555,7 +566,7 @@ def main(script, command="--help", username=None, receiver=None, *message):
       CLI version %s
 
     Usage:
-      %s [option|command] [-|username:password] [receiver message...]
+      %s [option|command] [-|username:password@server] [receiver message...]
 
     Options:
       -h --help      Shows this text
@@ -577,8 +588,12 @@ def main(script, command="--help", username=None, receiver=None, *message):
             username = io.open(profile).read()
 
         if username:
-            user, password = Pssst.Name(username).profile
-            pssst = Pssst(user, password or getpass("Password (hidden): "))
+            user, password, server = Pssst.Name(username).profile
+
+            if not password:
+                password = getpass("Password (hidden): ")
+
+            pssst = Pssst(user, password, server)
 
         if command in ("/?", "-h", "--help", "help"):
             usage(main.__doc__, __version__, os.path.basename(script))

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """
-Copyright (C) 2013-2015  Christian & Christian  <hello@pssst.name>
+Copyright (C) 2013-2015  Christian & Christian <hello@pssst.name>
+Copyright (C) 2015-2016  Christian Uhsat <christian@uhsat.de>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -113,7 +114,7 @@ class TestName:
         """
         name = Pssst.Name("me")
 
-        assert name.profile == ("me", None)
+        assert name.profile == ("me", None, None)
         assert str(name) == "pssst.me"
 
     def test_name_maximum(self):
@@ -121,10 +122,10 @@ class TestName:
         Tests if name is parsed correctly.
 
         """
-        name = Pssst.Name(" pssst.UserName:Pa55w0rd! ")
+        name = Pssst.Name(" pssst.Test:Pa55w0rd!@https://server.org:80 ")
 
-        assert name.profile == ("username", "Pa55w0rd!")
-        assert str(name) == "pssst.username"
+        assert name.profile == ("test", "Pa55w0rd!", "https://server.org:80")
+        assert str(name) == "pssst.test"
 
     def test_name_invalid(self):
         """
