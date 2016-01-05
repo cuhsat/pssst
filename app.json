@@ -12,12 +12,7 @@
   ],
   "env": {
     "PSSST_KEY": {
-      "required": false,
-      "value": ""
-    },
-    "PSSST_DEBUG": {
-      "required": false,
-      "value": "0"
+      "description": "Private key (PEM format, Base64 encoded)."
     }
   }
 }

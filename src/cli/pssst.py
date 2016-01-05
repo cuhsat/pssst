@@ -29,13 +29,6 @@ from zipfile import ZipFile
 
 
 try:
-    from requests import request
-    from requests.exceptions import ConnectionError, Timeout
-except ImportError:
-    sys.exit("Requires Requests (https://github.com/kennethreitz/requests)")
-
-
-try:
     from Crypto import Random
     from Crypto.Cipher import AES, PKCS1_OAEP
     from Crypto.Hash import HMAC, SHA256
@@ -46,14 +39,21 @@ except ImportError:
     sys.exit("Requires PyCrypto (https://github.com/dlitz/pycrypto)")
 
 
-__all__, __version__ = ["Pssst"], "2.6.6"
+try:
+    from requests import request
+    from requests.exceptions import ConnectionError, Timeout
+except ImportError:
+    sys.exit("Requires Requests (https://github.com/kennethreitz/requests)")
 
 
-def _encode64(data): # Utility shortcut
+__all__, __version__ = ["Pssst"], "2.6.7"
+
+
+def _encode(data): # Utility shortcut
     return base64.b64encode(data).decode("utf-8")
 
 
-def _decode64(data): # Utility shortcut
+def _decode(data): # Utility shortcut
     return base64.b64decode(data.encode("utf-8"))
 
 
@@ -370,7 +370,7 @@ class Pssst:
 
         response = request(method, "%s/2/%s" % (self.api, path), data=body,
             headers={
-                "x-pssst-hash": "%s; %s" % (timestamp, _encode64(signature)),
+                "x-pssst-hash": "%s; %s" % (timestamp, _encode(signature)),
                 "content-type": "application/json" if data else "text/plain",
                 "user-agent": repr(self)
             }
@@ -384,7 +384,7 @@ class Pssst:
             raise Exception("Verification failed")
 
         timestamp, signature = head.split(";", 1)
-        timestamp, signature = int(timestamp), _decode64(signature)
+        timestamp, signature = int(timestamp), _decode(signature)
 
         if not self.keys.api.verify(body, timestamp, signature):
             raise Exception("Verification failed")
@@ -484,8 +484,8 @@ class Pssst:
         data = self.__request_api("GET", self.name.hash)
 
         if data:
-            nonce = _decode64(data["nonce"])
-            data = _decode64(data["data"])
+            nonce = _decode(data["nonce"])
+            data = _decode(data["data"])
 
             return self.keys.key.decrypt(data, nonce)
 
@@ -509,8 +509,8 @@ class Pssst:
 
             body, nonce = Pssst._Key(self.keys.load(name.user)).encrypt(data)
             body = {
-                "nonce": _encode64(nonce),
-                "data": _encode64(body),
+                "nonce": _encode(nonce),
+                "data": _encode(body),
                 "from": self.name.hash
             }
 

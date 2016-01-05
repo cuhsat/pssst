@@ -156,15 +156,14 @@ module.exports = function Server(config, callback) {
 
   app = express();
   app.set('json spaces', 0);
-  app.use(parser.json({limit: '1MB'}));
 
   redis(config.db, function redis(err, db) {
     if (!err) {
-      var level = Number(process.env.PSSST_DEBUG || config.debug);
+      app.use(parser.json({limit: '1MB'}));
 
       // Debug hook
       app.use(function hook(req, res, next) {
-        debug(level, req, res, next);
+        debug(config.debug, req, res, next);
       });
 
       // Error hook
