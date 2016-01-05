@@ -7,8 +7,7 @@ Pssst
 Pssst is a simple and secure way to exchange information. We do not provide
 services by our self, but we provide you with the tools to start your own
 service. These tools build upon open-source software and use strong end-to-end
-encryption. Pssst comes with a [command line tool](doc/cli.md) and
-[server](doc/server.md).
+encryption. Pssst comes with a [cli](doc/cli.md) and [server](doc/server.md).
 
 ```
 $ pssst push me you "Hello"
@@ -16,7 +15,7 @@ $ pssst push me you "Hello"
 
 API
 ---
-The full [API](/doc/api.md) specification can be found under `doc`.
+The full [API](/doc/api.md) specification can be found under [`doc`](doc/).
 
 CVE
 ---
