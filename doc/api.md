@@ -6,8 +6,8 @@ body. The only fields required by the server are `nonce`, `data` and `from`.
 All clients are requested to send an unique `user-agent` header per
 implementation.
 
-A [RAML](http://raml.org) specification of the [API](api.raml) is available
-under `doc/api.raml`.
+A [RAML](http://raml.org) specification of the API is available under
+[`api.raml`](api.raml).
 
 Constraints
 -----------
