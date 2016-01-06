@@ -29,6 +29,13 @@ from zipfile import ZipFile
 
 
 try:
+    from requests import request
+    from requests.exceptions import ConnectionError, Timeout
+except ImportError:
+    sys.exit("Requires Requests (https://github.com/kennethreitz/requests)")
+
+
+try:
     from Crypto import Random
     from Crypto.Cipher import AES, PKCS1_OAEP
     from Crypto.Hash import HMAC, SHA256
@@ -39,14 +46,7 @@ except ImportError:
     sys.exit("Requires PyCrypto (https://github.com/dlitz/pycrypto)")
 
 
-try:
-    from requests import request
-    from requests.exceptions import ConnectionError, Timeout
-except ImportError:
-    sys.exit("Requires Requests (https://github.com/kennethreitz/requests)")
-
-
-__all__, __version__ = ["Pssst"], "2.6.7"
+__all__, __version__ = ["Pssst"], "2.6.8"
 
 
 def _encode(data): # Utility shortcut
@@ -103,7 +103,7 @@ class Pssst:
                 user = user[6:]
 
             if "@" in user and not server:
-                user, server = user.split("@", 1) 
+                user, server = user.split("@", 1)
 
             if ":" in user and not password:
                 user, password = user.split(":", 1)
@@ -511,7 +511,7 @@ class Pssst:
             body = {
                 "nonce": _encode(nonce),
                 "data": _encode(body),
-                "from": self.name.hash
+                "key": self.keys.key.public()
             }
 
             self.__request_api("PUT", name.hash, body)

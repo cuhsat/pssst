@@ -2,7 +2,7 @@ API
 ===
 Our REST API is based on HTTP and designed to be lean and mean. All messages
 will be stored protocol agnostic. You can also add more fields to the HTTP
-body. The only fields required by the server are `nonce`, `data` and `from`.
+body. The only fields required by the server are `nonce`, `data` and `key`.
 All clients are requested to send an unique `user-agent` header per
 implementation.
 
@@ -264,7 +264,7 @@ x-pssst-hash: <timestamp>; <signature>
 ### Push
 
 Pushes a message into the users box. The sender will be authenticated with the
-hashed user name in the `from` field.
+senders public key in the `key` field.
 
 #### Request
 
@@ -275,7 +275,7 @@ user-agent: <app>
 content-type: application/json
 x-pssst-hash: <timestamp>; <signature>
 
-{"nonce":"<nonce>","data":"<data>","from":"<sender>"}
+{"nonce":"<nonce>","data":"<data>","key":"<key>"}
 ```
 
 #### Response

@@ -164,11 +164,11 @@ module.exports = function Pssst(app, db) {
       }
 
       // Delete sender metadata
-      delete req.body.from;
+      delete req.body.key;
       user.box.push(req.body);
 
       return api.respond(req, res, user, 'Message send');
-    }, req.body.from);
+    }, req.body.key);
   });
 
   /**
