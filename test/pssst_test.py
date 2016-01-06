@@ -89,9 +89,9 @@ def create_profile(length=16):
     return (username, password)
 
 
-class TestName:
+class TestPssstName:
     """
-    Tests name parsing with the test cases:
+    Tests Pssst name parsing with the test cases:
 
     * User name parse minimum
     * User name parse maximum
@@ -122,9 +122,9 @@ class TestName:
         Tests if name is parsed correctly.
 
         """
-        name = Pssst.Name(" pssst.Test:Pa55w0rd!@https://server.org:80 ")
+        name = Pssst.Name(" pssst.Test:Pa55w0rd!@http://server.org:8080 ")
 
-        assert name.profile == ("test", "Pa55w0rd!", "https://server.org:80")
+        assert name.profile == ("test", "Pa55w0rd!", "http://server.org:8080")
         assert str(name) == "pssst.test"
 
     def test_name_invalid(self):
@@ -138,43 +138,9 @@ class TestName:
         assert str(ex.value) == "User name invalid"
 
 
-class TestKeyStorage:
+class TestPsssstKey:
     """
-    Tests key storage with the test cases:
-
-    * Key list
-
-    Methods
-    -------
-    test_key_list()
-        Tests if file is created correctly.
-
-    """
-    def test_key_list(self):
-        """
-        Tests if file is created correctly.
-
-        """
-        username1, password1 = create_profile()
-        username2, password2 = create_profile()
-
-        pssst1 = Pssst(username1, password1)
-        pssst1.create()
-
-        pssst2 = Pssst(username2, password2)
-        pssst2.create()
-
-        pssst1.push([username1], "Hello World !")
-        pssst1.push([username2], "Hello World !")
-
-        keys = ["id_rsa", username1, username2]
-
-        assert sorted(pssst1.keys.list()) == sorted(keys)
-
-
-class TestKey:
-    """
-    Tests key methods with this test cases:
+    Tests Pssst key methods with this test cases:
 
     * Verification failed, user not found
     * Verification failed, signature invalid
@@ -238,9 +204,43 @@ class TestKey:
         assert str(ex.value) == "Verification failed"
 
 
+class TestPsssstKeyStorage:
+    """
+    Tests Pssst key storage with the test cases:
+
+    * Key list
+
+    Methods
+    -------
+    test_key_list()
+        Tests if file is created correctly.
+
+    """
+    def test_key_list(self):
+        """
+        Tests if file is created correctly.
+
+        """
+        username1, password1 = create_profile()
+        username2, password2 = create_profile()
+
+        pssst1 = Pssst(username1, password1)
+        pssst1.create()
+
+        pssst2 = Pssst(username2, password2)
+        pssst2.create()
+
+        pssst1.push([username1], "Hello World !")
+        pssst1.push([username2], "Hello World !")
+
+        keys = ["id_rsa", username1, username2]
+
+        assert sorted(pssst1.keys.list()) == sorted(keys)
+
+
 class TestPssst:
     """
-    Tests user commands with this test cases:
+    Tests Pssst user commands with this test cases:
 
     * User create
     * User create failed, already exists
@@ -392,7 +392,6 @@ class TestPssst:
         pssst1.create()
 
         pssst2 = Pssst(username2, password2)
-        pssst2.create()
         pssst2.push([username1], message)
 
         assert pssst1.pull() == message
@@ -411,7 +410,6 @@ class TestPssst:
             Pssst(*user).create()
 
         pssst = Pssst(*create_profile())
-        pssst.create()
         pssst.push(names, message)
 
         for user in users:

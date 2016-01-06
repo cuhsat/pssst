@@ -120,6 +120,89 @@ class Pssst:
             return str("pssst.%s" % self.user)
 
 
+    class _Key:
+        """
+        Internal key class providing cryptographic methods.
+
+        Methods
+        -------
+        private(password)
+            Returns the users private key (PEM format).
+        public()
+            Returns the users public key (PEM format).
+        encrypt(data)
+            Returns the encrypted data and nonce.
+        decrypt(data, nonce)
+            Returns the decrypted data.
+        verify(data, timestamp, signature)
+            Returns if data could be verified with timestamp and signature.
+        sign(data)
+            Returns the data timestamp and signature.
+
+        Notes
+        -----
+        This class is not meant to be called externally.
+
+        """
+        RSA_SIZE, NONCE_SIZE, GRACE_TIME = 2048, 32 + AES.block_size, 30
+
+        def __init__(self, key=None, password=None):
+            try:
+                if key:
+                    self.key = RSA.importKey(key, password)
+                else:
+                    self.key = RSA.generate(Pssst._Key.RSA_SIZE)
+
+            except (IndexError, TypeError, ValueError) as ex:
+                raise Exception("Password wrong")
+
+        def _epoch(self):
+            return int(round(time.time()))
+
+        def private(self, password):
+            return self.key.exportKey("PEM", password, 8).decode("ascii")
+
+        def public(self):
+            return self.key.publickey().exportKey("PEM").decode("ascii")
+
+        def encrypt(self, data):
+            nonce = Random.get_random_bytes(Pssst._Key.NONCE_SIZE)
+            size = AES.block_size - (len(data) % AES.block_size)
+            data = tobytes(data) + (bchr(size) * size)
+
+            data = AES.new(nonce[:32], AES.MODE_CBC, nonce[32:]).encrypt(data)
+            nonce = PKCS1_OAEP.new(self.key).encrypt(nonce)
+
+            return (data, nonce)
+
+        def decrypt(self, data, nonce):
+            nonce = PKCS1_OAEP.new(self.key).decrypt(nonce)
+            data = AES.new(nonce[:32], AES.MODE_CBC, nonce[32:]).decrypt(data)
+
+            return data[:-bord(data[-1])]
+
+        def verify(self, data, timestamp, signature):
+            current, data = self._epoch(), data.encode("utf-8")
+
+            hmac = HMAC.new(str(timestamp).encode("ascii"), data, SHA256)
+            hmac = SHA256.new(hmac.digest())
+
+            if abs(timestamp - current) <= Pssst._Key.GRACE_TIME:
+                return PKCS1_v1_5.new(self.key).verify(hmac, signature)
+            else:
+                return False
+
+        def sign(self, data):
+            current, data = self._epoch(), data.encode("utf-8")
+
+            hmac = HMAC.new(str(current).encode("ascii"), data, SHA256)
+            hmac = SHA256.new(hmac.digest())
+
+            signature = PKCS1_v1_5.new(self.key).sign(hmac)
+
+            return (current, signature)
+
+
     class _KeyStorage:
         """
         Internal storage class for public and private keys.
@@ -192,86 +275,6 @@ class Pssst:
         def save(self, entry, key):
             with ZipFile(self.file, "a") as file:
                 file.writestr(self.scheme % entry, key)
-
-
-    class _Key:
-        """
-        Internal key class providing cryptographic methods.
-
-        Methods
-        -------
-        private(password)
-            Returns the users private key (PEM format).
-        public()
-            Returns the users public key (PEM format).
-        encrypt(data)
-            Returns the encrypted data and nonce.
-        decrypt(data, nonce)
-            Returns the decrypted data.
-        verify(data, timestamp, signature)
-            Returns if data could be verified with timestamp and signature.
-        sign(data)
-            Returns the data timestamp and signature.
-
-        Notes
-        -----
-        This class is not meant to be called externally.
-
-        """
-        RSA_SIZE, NONCE_SIZE, GRACE_TIME = 2048, 32 + AES.block_size, 30
-
-        def __init__(self, key=None, password=None):
-            try:
-                if key:
-                    self.key = RSA.importKey(key, password)
-                else:
-                    self.key = RSA.generate(Pssst._Key.RSA_SIZE)
-
-            except (IndexError, TypeError, ValueError) as ex:
-                raise Exception("Password wrong")
-
-        def private(self, password):
-            return self.key.exportKey("PEM", password, 8).decode("ascii")
-
-        def public(self):
-            return self.key.publickey().exportKey("PEM").decode("ascii")
-
-        def encrypt(self, data):
-            nonce = Random.get_random_bytes(Pssst._Key.NONCE_SIZE)
-            size = AES.block_size - (len(data) % AES.block_size)
-            data = tobytes(data) + (bchr(size) * size)
-
-            data = AES.new(nonce[:32], AES.MODE_CBC, nonce[32:]).encrypt(data)
-            nonce = PKCS1_OAEP.new(self.key).encrypt(nonce)
-
-            return (data, nonce)
-
-        def decrypt(self, data, nonce):
-            nonce = PKCS1_OAEP.new(self.key).decrypt(nonce)
-            data = AES.new(nonce[:32], AES.MODE_CBC, nonce[32:]).decrypt(data)
-
-            return data[:-bord(data[-1])]
-
-        def verify(self, data, timestamp, signature):
-            current, data = int(round(time.time())), data.encode("utf-8")
-
-            hmac = HMAC.new(str(timestamp).encode("ascii"), data, SHA256)
-            hmac = SHA256.new(hmac.digest())
-
-            if abs(timestamp - current) <= Pssst._Key.GRACE_TIME:
-                return PKCS1_v1_5.new(self.key).verify(hmac, signature)
-            else:
-                return False
-
-        def sign(self, data):
-            current, data = int(round(time.time())), data.encode("utf-8")
-
-            hmac = HMAC.new(str(current).encode("ascii"), data, SHA256)
-            hmac = SHA256.new(hmac.digest())
-
-            signature = PKCS1_v1_5.new(self.key).sign(hmac)
-
-            return (current, signature)
 
 
     def __init__(self, username, password, server=None):
