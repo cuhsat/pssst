@@ -545,7 +545,7 @@ def update(script):
 
     try:
         compile(response.text, "<string>", "exec")
-    except:
+    except (SyntaxError, TypeError):
         raise Exception("Update failed")
 
     with io.open(script, "w") as file:
