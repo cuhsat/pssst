@@ -46,7 +46,11 @@ except ImportError:
     sys.exit("Requires PyCrypto (https://github.com/dlitz/pycrypto)")
 
 
-__all__, __version__ = ["Pssst"], "2.6.8"
+__all__, __version__ = ["Pssst"], "2.6.9"
+
+
+# This script is original hosted here:
+GIT = "https://raw.githubusercontent.com/cuhsat/pssst/master/src/cli/pssst.py"
 
 
 def _encode(data): # Utility shortcut
@@ -520,6 +524,34 @@ class Pssst:
             self.__request_api("PUT", name.hash, body)
 
 
+def update(script):
+    """
+    Updates the script to the latest version.
+
+    Parameters
+    ----------
+    param script : string
+        Absolute script path.
+
+    Notes
+    -----
+    Warning: The update will overwrite the current file!
+
+    """
+    response = request("GET", GIT)
+
+    if response.status_code != 200:
+        raise Exception("Update failed")
+
+    try:
+        compile(response.text, "<string>", "exec")
+    except SyntaxError, TypeError:
+        raise Exception("Update failed")
+
+    with io.open(script, "w") as file:
+        file.write(response.text)
+
+
 def usage(text, *args):
     """
     Prints the usage colored.
@@ -572,9 +604,9 @@ def main(script, command="--help", username=None, receiver=None, *message):
       %s [option|command] [-|username:password@server] [receiver message...]
 
     Options:
-      -h --help      Shows this text
-      -l --license   Shows license
-      -v --version   Shows version
+      -u, --update    Updates the CLI
+      -l, --license   Shows the license
+      -v, --version   Shows the version
 
     Available commands:
       create   Create an user
@@ -600,6 +632,9 @@ def main(script, command="--help", username=None, receiver=None, *message):
 
         if command in ("/?", "-h", "--help", "help"):
             usage(main.__doc__, __version__, os.path.basename(script))
+
+        elif command in ("-u", "--update"):
+            update(os.path.abspath(script))
 
         elif command in ("-l", "--license"):
             print(__doc__.strip())
@@ -641,6 +676,7 @@ def main(script, command="--help", username=None, receiver=None, *message):
 
     except Exception as ex:
         return "Error: %s" % ex
+
 
 if __name__ == "__main__":
     sys.exit(main(*sys.argv))

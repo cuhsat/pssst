@@ -8,11 +8,13 @@ pssst [option|command] [-|username:password@server] [receiver message...]
 .SH DESCRIPTION
 Pssst is a simple and secure way to exchange information.
 .SH OPTIONS
-.IP "-h --help"
+.IP "-u, --update"
+Update script
+.IP "-h, --help"
 Show usage
-.IP "-l --license"
+.IP "-l, --license"
 Show license
-.IP "-v --version"
+.IP "-v, --version"
 Show version
 .SH COMMANDS
 .B create
