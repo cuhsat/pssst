@@ -46,11 +46,7 @@ except ImportError:
     sys.exit("Requires PyCrypto (https://github.com/dlitz/pycrypto)")
 
 
-__all__, __version__ = ["Pssst"], "2.6.9"
-
-
-# This script is original hosted here:
-GIT = "https://raw.githubusercontent.com/cuhsat/pssst/master/src/cli/pssst.py"
+__all__, __version__ = ["Pssst"], "2.6.10"
 
 
 def _encode(data): # Utility shortcut
@@ -524,9 +520,9 @@ class Pssst:
             self.__request_api("PUT", name.hash, body)
 
 
-def update(script):
+def upgrade(script):
     """
-    Updates the script to the latest version.
+    Upgrades the script to the latest version.
 
     Parameters
     ----------
@@ -535,21 +531,33 @@ def update(script):
 
     Notes
     -----
-    Warning: The update will overwrite the current file!
+    Warning: The upgrade will overwrite the current file!
 
     """
-    response = request("GET", GIT)
+    API = "https://api.github.com/repos/cuhsat/pssst/tags"
+    RAW = "https://raw.github.com/cuhsat/pssst/master/src/cli/pssst.py"
 
-    if response.status_code != 200:
-        raise Exception("Update failed")
+    def fetch(url):
+        response = request("GET", url)
+
+        if response.status_code != 200:
+            raise Exception("Response invalid")
+
+        return response
 
     try:
-        compile(response.text, "<string>", "exec")
-    except (SyntaxError, TypeError):
-        raise Exception("Update failed")
+        version = fetch(API).json()[0]["name"][1:]
 
-    with io.open(script, "w") as file:
-        file.write(response.text)
+        if (version != __version__):
+            print("Upgrade to version " + version)
+
+            content = fetch(RAW).text
+            compile(content, "<string>", "exec")
+
+            with io.open(script, "w") as file:
+                file.write(content)
+    except Exception as ex:
+        return "Upgrade failed: %s" % ex
 
 
 def usage(text, *args):
@@ -604,9 +612,9 @@ def main(script, command="--help", username=None, receiver=None, *message):
       %s [option|command] [-|username:password@server] [receiver message...]
 
     Options:
-      -u, --update    Updates the CLI
       -l, --license   Shows the license
       -v, --version   Shows the version
+      -u, --upgrade   Upgrades the script
 
     Available commands:
       create   Create an user
@@ -633,8 +641,8 @@ def main(script, command="--help", username=None, receiver=None, *message):
         if command in ("/?", "-h", "--help", "help"):
             usage(main.__doc__, __version__, os.path.basename(script))
 
-        elif command in ("-u", "--update"):
-            update(os.path.abspath(script))
+        elif command in ("-u", "--upgrade"):
+            upgrade(os.path.abspath(script))
 
         elif command in ("-l", "--license"):
             print(__doc__.strip())
