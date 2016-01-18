@@ -19,7 +19,7 @@ before_script:
   - npm install
   - npm start &
   - cd ../..
-  - sleep 10
+  - sleep 30
 script:
   - cd test
   - cp ../src/cli/pssst.py .
