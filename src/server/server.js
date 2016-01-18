@@ -34,6 +34,7 @@
  */
 try {
   var fs = require('fs');
+  var os = require('os');
 
   if (process.argv.length <= 2) {
     var CONFIG = __dirname + '/config.json';
@@ -50,33 +51,52 @@ try {
       }, null, 2));
     }
 
-    var server = require('./lib/index.js');
+    var cluster = require('cluster');
     var config = require('./config.json');
+    var server = require('./lib/index.js');
 
-    server(config, function ready(err, server) {
-      if (err) {
-        console.error(err.stack || err);
+    // Start node cluster
+    if (cluster.isMaster) {
+      if (process.env.DYNO) {
+        var cpus = process.env.WEB_CONCURRENCY || 1;
       } else {
-
-        // Handle error events
-        process.on('uncaughtException', function error(err) {
-          server.close(function close() {
-            console.error(err.stack || err);
-            process.exit(1);
-          });
-        });
-
-        // Handle exit events
-        process.on('SIGTERM', function exit() {
-          server.close(function close() {
-            console.log('Exit');
-            process.exit(0);
-          });
-        });
-
-        console.log('Ready');
+        var cpus = os.cpus().length;
       }
-    });
+
+      for (var cpu = 0; cpu < cpus; cpu++) {
+        cluster.fork();
+      }
+
+      // Handle exit events
+      cluster.on('exit', function exit() {
+        cluster.fork();
+      });
+    } else {
+      server(config, function ready(err, server) {
+        if (err) {
+          console.error(err.stack || err);
+        } else {
+
+          // Handle error events
+          process.on('uncaughtException', function error(err) {
+            server.close(function close() {
+              console.error(err.stack || err);
+              process.exit(1);
+            });
+          });
+
+          // Handle exit events
+          process.on('SIGTERM', function exit() {
+            server.close(function close() {
+              console.log('Exit');
+              process.exit(0);
+            });
+          });
+
+          console.log('Ready');
+        }
+      });
+    }
   } else {
     switch (process.argv[2].toLowerCase()) {
 

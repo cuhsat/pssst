@@ -46,7 +46,7 @@ except ImportError:
     sys.exit("Requires PyCrypto (https://github.com/dlitz/pycrypto)")
 
 
-__all__, __version__ = ["Pssst"], "2.6.10"
+__all__, __version__ = ["Pssst"], "2.6.11"
 
 
 def _encode(data): # Utility shortcut
@@ -670,7 +670,7 @@ def main(script, command="--help", username=None, receiver=None, *message):
 
         else:
             print("Unknown command or username not given: " + command)
-            print("Please use --help for help on commands.")
+            print("Please use --help for help on usage.")
             return 2 # Incorrect usage
 
     except KeyboardInterrupt:
