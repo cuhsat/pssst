@@ -13,13 +13,14 @@ install:
   - "pip install pycrypto requests"
 before_script:
   - export PYTHON=`which python2`
+  - export DYNO="Travis CI"
   - cd src/server
   - nvm install 4.2
   - nvm use 4.2
   - npm install
   - npm start &
   - cd ../..
-  - sleep 30
+  - sleep 10
 script:
   - cd test
   - cp ../src/cli/pssst.py .
