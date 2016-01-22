@@ -20,7 +20,7 @@ securitySchemes:
             maxLength: 696
             example: |
               1234567890; ABCDEFGHIJKLMNOPQRSTUVWXYZ...
-/
+/:
   displayName: Version
   description: Server version
   get:
@@ -29,7 +29,7 @@ securitySchemes:
       200:
         body:
           application/text
-/key
+/key:
   displayName: Key
   description: Server public key
   get:
@@ -45,62 +45,6 @@ securitySchemes:
     hash:
       displayName: Hashed user name
       type: string
-  get:
-    description: This method will pull a message
-    responses:
-      200:
-        body:
-          application/json:
-            schema: |
-              {
-                "$schema": "http://json-schema.org/schema",
-                "properties": {
-                  "nonce": {
-                    "required": true,
-                    "type": "string"
-                  },
-                  "data": {
-                    "required": true,
-                    "type": "string"
-                  }
-                },
-                "required": true,
-                "type": "object"
-              }
-      404:
-        body:
-          application/json:
-            schema: |
-              {
-                "$schema": "http://json-schema.org/schema",
-                "required": true,
-                "type": "object"
-              }
-  put:
-    description: This method will push a message
-    body:
-      application/json:
-        schema: |
-          {
-            "$schema": "http://json-schema.org/schema",
-            "properties": {
-              "nonce": {
-                "required": true,
-                "type": "string"
-              },
-              "data": {
-                "required": true,
-                "type": "string"
-              }
-            },
-            "required": true,
-            "type": "object"
-          }
-    responses:
-      200:
-        body:
-          application/text:
-            Message pushed
   post:
     description: This method will create this user
     body:
@@ -129,7 +73,66 @@ securitySchemes:
         body:
           application/text:
             User disabled
-  /key
+  /box:
+    displayName: box
+    description: The users message box
+    get:
+      description: This method will pull a message
+      responses:
+        200:
+          body:
+            application/json:
+              schema: |
+                {
+                  "$schema": "http://json-schema.org/schema",
+                  "properties": {
+                    "nonce": {
+                      "required": true,
+                      "type": "string"
+                    },
+                    "data": {
+                      "required": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": true,
+                  "type": "object"
+                }
+        404:
+          body:
+            application/json:
+              schema: |
+                {
+                  "$schema": "http://json-schema.org/schema",
+                  "required": true,
+                  "type": "object"
+                }
+    put:
+      description: This method will push a message
+      body:
+        application/json:
+          schema: |
+            {
+              "$schema": "http://json-schema.org/schema",
+              "properties": {
+                "nonce": {
+                  "required": true,
+                  "type": "string"
+                },
+                "data": {
+                  "required": true,
+                  "type": "string"
+                }
+              },
+              "required": true,
+              "type": "object"
+            }
+      responses:
+        200:
+          body:
+            application/text:
+              Message pushed
+  /key:
     displayName: Key
     description: Public key
     get:
