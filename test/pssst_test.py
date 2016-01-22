@@ -230,8 +230,8 @@ class TestPsssstKeyStorage:
         pssst2 = Pssst(username2, password2)
         pssst2.create()
 
-        pssst1.push([username1], "Hello World !")
-        pssst1.push([username2], "Hello World !")
+        pssst1.push(username1, "Hello World !")
+        pssst1.push(username2, "Hello World !")
 
         keys = ["id_rsa", username1, username2]
 
@@ -250,8 +250,7 @@ class TestPssst:
     * User find failed, user was deleted
     * User find failed, user not found
     * User push self
-    * User push single user
-    * User push multiple users
+    * User push user
     * User pull empty before
     * User pull empty after
     * Password wrong
@@ -272,12 +271,10 @@ class TestPssst:
         Tests if an user was deleted.
     test_find_user_not_found()
         Tests if an user is not found.
-    test_push_user()
+    test_push_self()
         Tests if a message could be pushed to sender.
-    test_push_single_user()
-        Tests if a message could be pushed to a single receiver.
-    test_push_multiple_users()
-        Tests if a message could be pushed to multiple receivers.
+    test_push_user()
+        Tests if a message could be pushed to receiver.
     test_pull_empty_before()
         Tests if an user box is empty before pulling.
     test_pull_empty_after()
@@ -365,7 +362,7 @@ class TestPssst:
 
         assert str(ex.value) == "User not found"
 
-    def test_push_user(self):
+    def test_push_self(self):
         """
         Tests if a message could be pushed to sender.
 
@@ -375,13 +372,13 @@ class TestPssst:
 
         pssst = Pssst(username, password)
         pssst.create()
-        pssst.push([username], message)
+        pssst.push(username, message)
 
         assert pssst.pull() == message
 
-    def test_push_single_user(self):
+    def test_push_user(self):
         """
-        Tests if a message could be pushed to a single receiver.
+        Tests if a message could be pushed to receiver.
 
         """
         username1, password1 = create_profile()
@@ -392,30 +389,9 @@ class TestPssst:
         pssst1.create()
 
         pssst2 = Pssst(username2, password2)
-        pssst2.push([username1], message)
+        pssst2.push(username1, message)
 
         assert pssst1.pull() == message
-
-    def test_push_multiple_users(self):
-        """
-        Tests if a message could be pushed to multiple receivers.
-
-        """
-        message = b"Hello World!"
-
-        users = [create_profile() for i in range(5)]
-        names = [username for username, password in users]
-
-        for user in users:
-            Pssst(*user).create()
-
-        pssst = Pssst(*create_profile())
-        pssst.push(names, message)
-
-        for user in users:
-            pssst = Pssst(*user)
-
-            assert pssst.pull() == message
 
     def test_pull_empty_before(self):
         """
@@ -437,7 +413,7 @@ class TestPssst:
 
         pssst = Pssst(username, password)
         pssst.create()
-        pssst.push([username], message)
+        pssst.push(username, message)
         pssst.pull()
 
         assert pssst.pull() == None
@@ -480,7 +456,7 @@ class TestFuzzy:
             blob = os.urandom(size)
             pssst = Pssst(username, password)
             pssst.create()
-            pssst.push([username], blob)
+            pssst.push(username, blob)
 
             assert blob == pssst.pull()
 

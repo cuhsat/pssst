@@ -46,7 +46,7 @@ except ImportError:
     sys.exit("Requires PyCrypto (https://github.com/dlitz/pycrypto)")
 
 
-__all__, __version__ = ["Pssst"], "2.6.11"
+__all__, __version__ = ["Pssst"], "2.7.0"
 
 
 def _encode(data): # Utility shortcut
@@ -464,7 +464,7 @@ class Pssst:
         Parameters
         ----------
         param user : string
-            Name of the user.
+            The user name.
 
         Returns
         -------
@@ -492,72 +492,31 @@ class Pssst:
 
             return self.keys.key.decrypt(data, nonce)
 
-    def push(self, receivers, data):
+    def push(self, user, data):
         """
         Pushes a message into a box.
 
         Parameters
         ----------
-        param receivers : list of strings
-            List of user names.
+        param user : string
+            The user name.
         param data : byte string
             The message data.
 
         """
-        for name in [Pssst.Name(receiver) for receiver in receivers]:
+        name = Pssst.Name(user)
 
-            # Cache user public key
-            if name.user not in self.keys.list():
-                self.keys.save(name.user, self.find(name.user))
+        # Cache user public key
+        if name.user not in self.keys.list():
+            self.keys.save(name.user, self.find(name.user))
 
-            body, nonce = Pssst._Key(self.keys.load(name.user)).encrypt(data)
-            body = {
-                "nonce": _encode(nonce),
-                "data": _encode(body),
-                "key": self.keys.key.public()
-            }
+        body, nonce = Pssst._Key(self.keys.load(name.user)).encrypt(data)
+        body = {
+            "nonce": _encode(nonce),
+            "data": _encode(body)
+        }
 
-            self.__request_api("PUT", name.hash, body)
-
-
-def upgrade(script):
-    """
-    Upgrades the script to the latest version.
-
-    Parameters
-    ----------
-    param script : string
-        Absolute script path.
-
-    Notes
-    -----
-    Warning: The upgrade will overwrite the current file!
-
-    """
-    API = "https://api.github.com/repos/cuhsat/pssst/tags"
-    RAW = "https://raw.github.com/cuhsat/pssst/master/src/cli/pssst.py"
-
-    def fetch(url):
-        response = request("GET", url)
-
-        if response.status_code != 200:
-            raise Exception("Response invalid")
-
-        return response
-
-    try:
-        version = fetch(API).json()[0]["name"][1:]
-
-        if (version != __version__):
-            print("Upgrade to version " + version)
-
-            content = fetch(RAW).text
-            compile(content, "<string>", "exec")
-
-            with io.open(script, "w") as file:
-                file.write(content)
-    except Exception as ex:
-        return "Upgrade failed: %s" % ex
+        self.__request_api("PUT", name.hash, body)
 
 
 def usage(text, *args):
@@ -612,9 +571,9 @@ def main(script, command="--help", username=None, receiver=None, *message):
       %s [option|command] [-|username:password@server] [receiver message...]
 
     Options:
+      -h, --help      Shows the usage
       -l, --license   Shows the license
       -v, --version   Shows the version
-      -u, --upgrade   Upgrades the script
 
     Available commands:
       create   Create an user
@@ -641,9 +600,6 @@ def main(script, command="--help", username=None, receiver=None, *message):
         if command in ("/?", "-h", "--help", "help"):
             usage(main.__doc__, __version__, os.path.basename(script))
 
-        elif command in ("-u", "--upgrade"):
-            upgrade(os.path.abspath(script))
-
         elif command in ("-l", "--license"):
             print(__doc__.strip())
 
@@ -665,7 +621,7 @@ def main(script, command="--help", username=None, receiver=None, *message):
                 print(data.decode("utf-8"))
 
         elif command in ("--push", "push") and username and receiver:
-            pssst.push([receiver], " ".join(message))
+            pssst.push(receiver, " ".join(message))
             print("Message send")
 
         else:

@@ -2,9 +2,8 @@ API
 ===
 Our REST API is based on HTTP and designed to be lean and mean. All messages
 will be stored protocol agnostic. You can also add more fields to the HTTP
-body. The only fields required by the server are `nonce`, `data` and `key`.
-All clients are requested to send an unique `user-agent` header per
-implementation.
+body. The only fields required by the server are `nonce` and `data`. All
+clients are requested to send an unique `user-agent` header per version.
 
 A [RAML](http://raml.org) specification of the API is available under
 [`api.raml`](api.raml).
@@ -263,8 +262,7 @@ x-pssst-hash: <timestamp>; <signature>
 
 ### Push
 
-Pushes a message into the users box. The sender will be authenticated with the
-senders public key in the `key` field.
+Pushes a message into the users box. The sender will not be authenticated.
 
 #### Request
 
@@ -275,7 +273,7 @@ user-agent: <app>
 content-type: application/json
 x-pssst-hash: <timestamp>; <signature>
 
-{"nonce":"<nonce>","data":"<data>","key":"<key>"}
+{"nonce":"<nonce>","data":"<data>"}
 ```
 
 #### Response

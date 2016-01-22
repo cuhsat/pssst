@@ -14,8 +14,6 @@ Show usage
 Show license
 .IP "-v, --version"
 Show version
-.IP "-u, --upgrade"
-Upgrades script
 .SH COMMANDS
 .B create
 .RS
