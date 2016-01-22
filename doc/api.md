@@ -244,7 +244,7 @@ from first to last.
 #### Request
 
 ```
-GET /2/<hash>/ HTTP/1.1
+GET /2/<hash>/box HTTP/1.1
 host: <api>
 user-agent: <app>
 x-pssst-hash: <timestamp>; <signature>
@@ -267,7 +267,7 @@ Pushes a message into the users box. The sender will not be authenticated.
 #### Request
 
 ```
-PUT /2/<hash>/ HTTP/1.1
+PUT /2/<hash>/box HTTP/1.1
 host: <api>
 user-agent: <app>
 content-type: application/json
