@@ -56,7 +56,7 @@ module.exports = function Crypto() {
   }
 
   if (key.getKeySize() < RSA_SIZE) {
-    throw new Error('Key size too small');
+    throw new Error('Key size too small: ' + key.getKeySize());
   }
 
   /**
