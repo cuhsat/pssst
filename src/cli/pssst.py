@@ -46,7 +46,7 @@ except ImportError:
     sys.exit("Requires PyCrypto (https://github.com/dlitz/pycrypto)")
 
 
-__all__, __version__ = ["Pssst"], "2.7.0"
+__all__, __version__ = ["Pssst"], "2.7.1"
 
 
 def _encode(data): # Utility shortcut
@@ -484,7 +484,7 @@ class Pssst:
             The message data, None if empty.
 
         """
-        data = self.__request_api("GET", self.name.hash)
+        data = self.__request_api("GET", self.name.hash + "/box")
 
         if data:
             nonce = _decode(data["nonce"])
@@ -516,7 +516,7 @@ class Pssst:
             "data": _encode(body)
         }
 
-        self.__request_api("PUT", name.hash, body)
+        self.__request_api("PUT", name.hash + "/box", body)
 
 
 def usage(text, *args):
