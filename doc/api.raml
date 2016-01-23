@@ -73,6 +73,15 @@ securitySchemes:
         body:
           application/text:
             User disabled
+  /key:
+    displayName: Key
+    description: Public key
+    get:
+      description: This method will return this users public key
+      responses:
+        200:
+          body:
+            application/text
   /box:
     displayName: box
     description: The users message box
@@ -132,12 +141,3 @@ securitySchemes:
           body:
             application/text:
               Message pushed
-  /key:
-    displayName: Key
-    description: Public key
-    get:
-      description: This method will return this users public key
-      responses:
-        200:
-          body:
-            application/text
