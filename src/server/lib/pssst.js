@@ -155,7 +155,7 @@ module.exports = function Pssst(app, db) {
    * @summary signed request
    * @summary signed response
    */
-  app.put('/2/:hash', function push(req, res) {
+  app.put('/2/:hash/box', function push(req, res) {
     api.request(req, res, function request(user) {
 
       // Assert the user is within the limit
@@ -175,7 +175,7 @@ module.exports = function Pssst(app, db) {
    * @summary signed request
    * @summary signed response
    */
-  app.get('/2/:hash', function pull(req, res) {
+  app.get('/2/:hash/box', function pull(req, res) {
     api.request(req, res, function request(user) {
       var message = user.box.shift();
 
