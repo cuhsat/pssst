@@ -39,6 +39,7 @@ try:
     from Crypto import Random
     from Crypto.Cipher import AES, PKCS1_OAEP
     from Crypto.Hash import HMAC, SHA256
+    from Crypto.Protocol.KDF import PBKDF2
     from Crypto.PublicKey import RSA
     from Crypto.Signature import PKCS1_v1_5
     from Crypto.Util.py3compat import bchr, bord, tobytes
@@ -46,7 +47,7 @@ except ImportError:
     sys.exit("Requires PyCrypto (https://github.com/dlitz/pycrypto)")
 
 
-__all__, __version__ = ["Pssst"], "2.7.1"
+__all__, __version__ = ["Pssst"], "2.8.0"
 
 
 def _encode(data): # Utility shortcut
@@ -109,7 +110,7 @@ class Pssst:
                 user, password = user.split(":", 1)
 
             self.user = user.lower()
-            self.hash = SHA256.new(repr(self).encode("ascii")).hexdigest()
+            self.hash = PBKDF2(repr(self), "[Pssst!]", 32).encode("hex")
             self.profile = (self.user, password, server)
 
         def __repr__(self):

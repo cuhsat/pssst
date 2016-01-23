@@ -35,11 +35,15 @@ All data are encoded in UTF-8 and exchanged in either JSON or plain text
 format with HTTPS requests / responses. Please refer to the mime type in the
 HTTP `content-type` header to decide which format is returned. Server errors
 will always be returned in plain text. Line endings must only consists of a
-`Line Feed` character.
+`Line Feed` character. Binary data is converted with RFC 3548 Base64.
 
-All user names will be hashed in the canonical form using SHA-256 before
-communicated to the server. At no point, the server will process or know
-any plaintext user name.
+### Hashing
+
+All user names will be hashed in the canonical form before communicated to the
+server. At no point, the server will process or know any plaintext user name.
+
+Hashing of the user name is done with PKCS#5 v2.0 PBKDF2 (SHA1, 1000 rounds, 
+32 bytes) and the fix salt `[Pssst!]`. The hashed user name is encoded in hex.
 
 ### Encryption
 
@@ -289,5 +293,6 @@ Message pushed
 Appendix
 --------
 * [RFC 2313 (PKCS#1)](https://tools.ietf.org/html/rfc2313)
+* [RFC 2898 (PKCS#5)](https://tools.ietf.org/html/rfc2898)
 * [RFC 2315 (PKCS#7)](https://tools.ietf.org/html/rfc2315)
 * [RFC 5208 (PKCS#8)](https://tools.ietf.org/html/rfc5208)
