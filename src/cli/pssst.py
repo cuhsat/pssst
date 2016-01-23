@@ -16,6 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
+import binascii
 import base64
 import io
 import json
@@ -47,7 +48,11 @@ except ImportError:
     sys.exit("Requires PyCrypto (https://github.com/dlitz/pycrypto)")
 
 
-__all__, __version__ = ["Pssst"], "2.8.0"
+__all__, __version__ = ["Pssst"], "2.8.1"
+
+
+def _hexlify(data): # Utility shortcut
+    return binascii.hexlify(data).decode("utf-8")
 
 
 def _encode(data): # Utility shortcut
@@ -110,7 +115,7 @@ class Pssst:
                 user, password = user.split(":", 1)
 
             self.user = user.lower()
-            self.hash = PBKDF2(repr(self), "[Pssst!]", 32).encode("hex")
+            self.hash = _hexlify(PBKDF2(repr(self), b"[Pssst!]", 32))
             self.profile = (self.user, password, server)
 
         def __repr__(self):
