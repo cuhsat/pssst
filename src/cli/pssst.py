@@ -48,7 +48,7 @@ except ImportError:
     sys.exit("Requires PyCrypto (https://github.com/dlitz/pycrypto)")
 
 
-__all__, __version__ = ["Pssst"], "2.8.1"
+__all__, __version__ = ["Pssst"], "2.8.2"
 
 
 def _hexlify(data): # Utility shortcut
