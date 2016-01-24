@@ -9,8 +9,6 @@ encryption. Pssst comes with a [cli](doc/cli.md) and [server](doc/server.md).
 $ pssst push me you "Hello"
 ```
 
-![](https://www.dropbox.com/s/zy15kqh30tzq552/pssst.png?preview=pssst.png)
-
 API
 ---
 The full [API](/doc/api.md) specification can be found under [`doc`](doc/).
