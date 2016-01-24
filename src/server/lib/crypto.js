@@ -55,10 +55,6 @@ module.exports = function Crypto() {
     throw new Error('Key has no public part');
   }
 
-  if (key.getKeySize() < RSA_SIZE) {
-    throw new Error('Key size too small: ' + key.getKeySize());
-  }
-
   /**
    * Returns the current timestamp (EPOCH).
    *
