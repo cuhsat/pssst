@@ -5,11 +5,11 @@ services by our self, but we provide you with the tools to start your own
 service. These tools build upon open-source software and use strong end-to-end
 encryption. Pssst comes with a [cli](doc/cli.md) and [server](doc/server.md).
 
-![Pssst CLI](/doc/cli.png)
-
 ```
 $ pssst push me you "Hello"
 ```
+
+![Pssst CLI](/doc/cli.png)
 
 API
 ---
