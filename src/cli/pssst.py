@@ -48,7 +48,7 @@ except ImportError:
     sys.exit("Requires PyCrypto (https://github.com/dlitz/pycrypto)")
 
 
-__all__, __version__ = ["Pssst"], "2.8.3"
+__all__, __version__ = ["Pssst"], "2.8.4"
 
 
 def _hexlify(data): # Utility shortcut
@@ -563,6 +563,43 @@ def usage(text, *args):
         print(line)
 
 
+def profile(username="-"):
+    """
+    Returns the profile properties.
+
+    Parameters
+    ----------
+    param username : string, optional (default is -)
+        The username.
+
+    Returns
+    -------
+    tuple
+        The username, password and server.
+
+    Raises
+    ------
+    Exception
+        Because the profile is invalid.
+
+    """
+    path = os.path.join(os.path.expanduser("~"), ".pssst")
+
+    if username == "-" and os.path.exists(path):
+        with io.open(path) as file:
+            username = file.read()
+
+    if username == "-" or not username:
+        raise Exception("Profile invalid")
+
+    username, password, server = Pssst.Name(username).profile
+
+    if not password:
+        password = getpass("Password (hidden): ")
+
+    return (username, password, server)
+
+
 def main(script, command="--help", username=None, receiver=None, *message):
     """
           __________                  ___
@@ -590,18 +627,8 @@ def main(script, command="--help", username=None, receiver=None, *message):
     Report bugs to <christian@uhsat.de>
     """
     try:
-        profile = os.path.join(os.path.expanduser("~"), ".pssst")
-
-        if username == "-" and os.path.exists(profile):
-            username = io.open(profile).read()
-
         if username:
-            user, password, server = Pssst.Name(username).profile
-
-            if not password:
-                password = getpass("Password (hidden): ")
-
-            pssst = Pssst(user, password, server)
+            pssst = Pssst(*profile(username))
 
         if command in ("/?", "-h", "--help", "help"):
             usage(main.__doc__, __version__, os.path.basename(script))

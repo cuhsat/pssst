@@ -22,7 +22,7 @@ import string
 import sys
 
 
-from pssst import Pssst
+from pssst import Pssst, profile
 
 
 try:
@@ -242,6 +242,7 @@ class TestPssst:
     """
     Tests Pssst user commands with this test cases:
 
+    * User profile invalid
     * User create
     * User create failed, already exists
     * User delete
@@ -253,10 +254,12 @@ class TestPssst:
     * User push user
     * User pull empty before
     * User pull empty after
-    * Password wrong
+    * User password wrong
 
     Methods
     -------
+    test_profile_invalid()
+        Tests if the profile is invalid.
     test_create_profile()
         Tests if an user can be created.
     test_create_profile_already_exists()
@@ -283,6 +286,16 @@ class TestPssst:
         Tests if a password is wrong.
 
     """
+    def test_profile_invalid(self):
+        """
+        Tests if the profile is invalid.
+
+        """
+        with pytest.raises(Exception) as ex:
+            profile(None)
+
+        assert str(ex.value) == "Profile invalid"
+
     def test_create_profile(self):
         """
         Tests if an user can be created.
