@@ -24,7 +24,7 @@ module.exports = function Crypto() {
   var rsa = require('node-rsa');
   var crypto = require('crypto');
 
-  var GRACE = 30;
+  var GRACE = 5;
   var FORMAT = 'base64';
 
   var RSA_SIZE = 2048;

@@ -94,27 +94,22 @@ securitySchemes:
               schema: |
                 {
                   "$schema": "http://json-schema.org/schema",
-                  "properties": {
-                    "nonce": {
-                      "required": true,
-                      "type": "string"
+                  "items": {
+                    "properties": {
+                      "nonce": {
+                        "required": true,
+                        "type": "string"
+                      },
+                      "data": {
+                        "required": true,
+                        "type": "string"
+                      }
                     },
-                    "data": {
-                      "required": true,
-                      "type": "string"
-                    }
+                    "required": false,
+                    "type": "object"
                   },
                   "required": true,
-                  "type": "object"
-                }
-        404:
-          body:
-            application/json:
-              schema: |
-                {
-                  "$schema": "http://json-schema.org/schema",
-                  "required": true,
-                  "type": "object"
+                  "type": "array"
                 }
     put:
       description: This method will push a message

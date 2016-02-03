@@ -42,7 +42,7 @@ will always be returned in plain text. Line endings must only consists of a
 All user names will be hashed in the canonical form before communicated to the
 server. At no point, the server will process or know any plaintext user name.
 
-Hashing of the user name is done with PKCS#5 v2.0 PBKDF2 (SHA1, 1000 rounds, 
+Hashing of the user name is done with PKCS#5 v2.0 PBKDF2 (SHA1, 1000 rounds,
 32 bytes) and the fix salt `[Pssst!]`. The hashed user name is encoded in hex.
 
 ### Encryption
@@ -92,9 +92,8 @@ steps:
 To verify a request / response, calculate its hash as described above in the
 steps 1 and 2. And verify it with the senders public key using PKCS#1 v1.5.
 
-The grace period for requests / responses to be verified is 30 seconds. Which
-derives to -30 or +30 seconds from the actual EPOCH at the time of
-processing.
+The grace period for requests / responses to be verified is 10 seconds. Which
+derives to -5 or +5 seconds from the actual EPOCH at the time of processing.
 
 For further information about the used cryptographical methods, please consult
 the RFCs listed in the appendix.
@@ -159,8 +158,8 @@ List of implemented actions:
 * Create user
 * Delete user
 * Find user key
-* Pull a message
-* Push a message
+* Pull messages
+* Push message
 
 All user actions, except `find`, must be signed with the senders private key.
 For user referencing, only the hashed user name is used, real user names must
@@ -242,8 +241,8 @@ x-pssst-hash: <timestamp>; <signature>
 
 ### Pull
 
-Returns the next message from the users box. Messages will be pulled in order
-from first to last.
+Returns a list of all messages from the users box. Messages will be ordered
+from first to last (`FIFO`).
 
 #### Request
 
@@ -261,7 +260,7 @@ HTTP/1.1 200 OK
 content-type: application/json
 x-pssst-hash: <timestamp>; <signature>
 
-{"nonce":"<nonce>","data":"<data>"}
+[{"nonce":"<nonce>","data":"<data>"}]
 ```
 
 ### Push

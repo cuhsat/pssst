@@ -170,16 +170,16 @@ module.exports = function Pssst(app, db) {
   });
 
   /**
-   * Pulls a message from the box.
+   * Pulls all messages from the box.
    *
    * @summary signed request
    * @summary signed response
    */
   app.get('/2/:hash/box', function pull(req, res) {
     api.request(req, res, function request(user) {
-      var message = user.box.shift();
+      var box = user.box.splice(0, user.box.length);
 
-      return api.respond(req, res, user, message);
+      return api.respond(req, res, user, box);
     });
   });
 

@@ -22,7 +22,7 @@ import string
 import sys
 
 
-from pssst import Pssst, profile
+from pssst import Pssst, CLI
 
 
 try:
@@ -89,9 +89,9 @@ def create_profile(length=16):
     return (username, password)
 
 
-class TestPssstName:
+class TestPssstUser:
     """
-    Tests Pssst name parsing with the test cases:
+    Tests Pssst user name parsing with the test cases:
 
     * User name parse minimum
     * User name parse maximum
@@ -99,41 +99,41 @@ class TestPssstName:
 
     Methods
     -------
-    test_name_minimum()
+    test_user_name_minimum()
         Tests if a minimum name is parsed correctly.
-    test_name_maximum()
+    test_user_name_maximum()
         Tests if a maximum name is parsed correctly.
-    test_name_invalid()
+    test_user_name_invalid()
         Tests if a name is invalid.
 
     """
-    def test_name_minimum(self):
+    def test_user_name_minimum(self):
         """
-        Tests if name is parsed correctly.
-
-        """
-        name = Pssst.Name("me")
-
-        assert name.profile == ("me", None, None)
-        assert str(name) == "pssst.me"
-
-    def test_name_maximum(self):
-        """
-        Tests if name is parsed correctly.
+        Tests if user name is parsed correctly.
 
         """
-        name = Pssst.Name(" pssst.Test:Pa55w0rd!@http://server.org:8080 ")
+        user = Pssst._User("me")
 
-        assert name.profile == ("test", "Pa55w0rd!", "http://server.org:8080")
-        assert str(name) == "pssst.test"
+        assert user.profile == ("me", None, None)
+        assert str(user) == "pssst.me"
 
-    def test_name_invalid(self):
+    def test_user_name_maximum(self):
         """
-        Tests if name is invalid.
+        Tests if user name is parsed correctly.
+
+        """
+        user = Pssst._User(" pssst.Test:Pa55w0rd!@http://server.org:8080 ")
+
+        assert user.profile == ("test", "Pa55w0rd!", "http://server.org:8080")
+        assert str(user) == "pssst.test"
+
+    def test_user_name_invalid(self):
+        """
+        Tests if user name is invalid.
 
         """
         with pytest.raises(Exception) as ex:
-            Pssst.Name("Invalid.User.Name")
+            Pssst._User("Invalid.User.Name")
 
         assert str(ex.value) == "User name invalid"
 
@@ -292,7 +292,7 @@ class TestPssst:
 
         """
         with pytest.raises(Exception) as ex:
-            profile(None)
+            CLI.profile(None)
 
         assert str(ex.value) == "Profile invalid"
 
@@ -387,7 +387,7 @@ class TestPssst:
         pssst.create()
         pssst.push(username, message)
 
-        assert pssst.pull() == message
+        assert pssst.pull() == [message]
 
     def test_push_user(self):
         """
@@ -404,7 +404,7 @@ class TestPssst:
         pssst2 = Pssst(username2, password2)
         pssst2.push(username1, message)
 
-        assert pssst1.pull() == message
+        assert pssst1.pull() == [message]
 
     def test_pull_empty_before(self):
         """
@@ -414,7 +414,7 @@ class TestPssst:
         pssst = Pssst(*create_profile())
         pssst.create()
 
-        assert pssst.pull() == None
+        assert pssst.pull() == []
 
     def test_push_empty_after(self):
         """
@@ -429,7 +429,7 @@ class TestPssst:
         pssst.push(username, message)
         pssst.pull()
 
-        assert pssst.pull() == None
+        assert pssst.pull() == []
 
     def test_password_wrong(self):
         """
@@ -471,7 +471,7 @@ class TestFuzzy:
             pssst.create()
             pssst.push(username, blob)
 
-            assert blob == pssst.pull()
+            assert pssst.pull() == [blob]
 
 
 def main(*args):
