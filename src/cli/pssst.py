@@ -48,7 +48,7 @@ except ImportError:
     sys.exit("Requires PyCrypto (https://github.com/dlitz/pycrypto)")
 
 
-__all__, __version__ = ["Pssst", "CLI"], "2.9.0"
+__all__, __version__ = ["Pssst", "CLI"], "2.9.1"
 
 
 def _hexlify(data): # Utility shortcut
@@ -371,7 +371,7 @@ class Pssst:
 
         Notes
         -----
-        Please see __init__ method.
+        Please see the __init__ method.
 
         """
         if not self.keys:
@@ -431,7 +431,7 @@ class Pssst:
 
         Notes
         -----
-        Please see __init__ method.
+        Please see the __init__ method.
 
         """
         response = request("GET", "%s/%s" % (self.api, path),

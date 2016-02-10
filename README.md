@@ -1,11 +1,12 @@
 Pssst ![](https://img.shields.io/travis/cuhsat/pssst.svg)
 =====
-Pssst is a simple and secure way to exchange information. We do not provide
-services by our self, but we provide you with the tools to start your own
-service. These tools build upon open-source software and use strong end-to-end
-encryption. Pssst comes with a [cli](doc/cli.md) and [server](doc/server.md).
+This is a metadata free fork of [Pssst](https://github.com/pssst/pssst).
 
-![Pssst CLI](/doc/cli.png)
+> Pssst is a simple and secure way to exchange information. We do not provide
+> services by our self, but we provide you with the tools to start your own
+> service. These tools build upon open-source software and use strong
+> end-to-end encryption. Pssst comes with a [cli](doc/cli.md) and a
+> [server](doc/server.md).
 
 API
 ---
