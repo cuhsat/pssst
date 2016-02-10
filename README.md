@@ -1,6 +1,6 @@
 Pssst ![](https://img.shields.io/travis/cuhsat/pssst.svg)
 =====
-This is a metadata free fork of [Pssst](https://github.com/pssst/pssst).
+This is a _metadata free_ fork of [Pssst](https://github.com/pssst/pssst).
 
 > Pssst is a simple and secure way to exchange information. We do not provide
 > services by our self, but we provide you with the tools to start your own
