@@ -3,7 +3,7 @@ API
 Our REST API is based on HTTP and designed to be lean and mean. All messages
 will be stored protocol agnostic. You can also add more fields to the HTTP
 body. The only fields required by the server are `nonce` and `data`. All
-clients are requested to send an unique `user-agent` header per version.
+clients are requested to send an unique `user-agent` header.
 
 A [RAML](http://raml.org) specification of the API is available under
 [`api.raml`](api.raml).
@@ -75,8 +75,8 @@ encoded in standard Base64 with padding and omitted line breaks.
 ### Authentication
 
 Authentication for client and server is done via the HTTP `x-pssst-hash`
-header. This header must be set for all client API request, except `find`.
-The format of this header is specified as:
+header. This header must be set for all client API request, except `find`
+and `push`. The format of this header is specified as:
 
 `x-pssst-hash: <timestamp>; <signature>`
 
@@ -265,7 +265,8 @@ x-pssst-hash: <timestamp>; <signature>
 
 ### Push
 
-Pushes a message into the users box. The sender will not be authenticated.
+Pushes a message into the users box. The sender will not be authenticated in
+any way.
 
 #### Request
 
@@ -274,7 +275,6 @@ PUT /2/<hash>/box HTTP/1.1
 host: <api>
 user-agent: <app>
 content-type: application/json
-x-pssst-hash: <timestamp>; <signature>
 
 {"nonce":"<nonce>","data":"<data>"}
 ```

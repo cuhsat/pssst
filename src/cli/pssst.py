@@ -48,7 +48,7 @@ except ImportError:
     sys.exit("Requires PyCrypto (https://github.com/dlitz/pycrypto)")
 
 
-__all__, __version__ = ["Pssst", "CLI"], "2.9.1"
+__all__, __version__ = ["Pssst", "CLI"], "2.9.2"
 
 
 def _hexlify(data): # Utility shortcut
@@ -338,9 +338,9 @@ class Pssst:
             The client identifier.
 
         """
-        return "Pssst CLI " + __version__
+        return "Pssst CLI"
 
-    def __request_api(self, method, path, data=None):
+    def __request_api(self, method, path, data=None, auth=True):
         """
         Returns the result of an API request (signed and verified).
 
@@ -352,6 +352,8 @@ class Pssst:
             Request path.
         param data : JSON, optional (default is None)
             Request data.
+        param auth : bool
+            Request authentication.
 
         Returns
         -------
@@ -377,17 +379,20 @@ class Pssst:
         if not self.keys:
             raise Exception("User was deleted")
 
+        url = "%s/2/%s" % (self.api, path)
         body = str(json.dumps(data, separators=(",", ":"))) if data else ""
+        headers = {
+            "content-type": "application/json" if data else "text/plain",
+            "user-agent": repr(self)
+        }
 
-        timestamp, signature = self.keys.key.sign(body)
+        if auth:
+            timestamp, signature = self.keys.key.sign(body)
+            timestamp, signature = str(timestamp), _encode(signature)
 
-        response = request(method, "%s/2/%s" % (self.api, path), data=body,
-            headers={
-                "x-pssst-hash": "%s; %s" % (timestamp, _encode(signature)),
-                "content-type": "application/json" if data else "text/plain",
-                "user-agent": repr(self)
-            }
-        )
+            headers["x-pssst-hash"] = "%s; %s" % (timestamp, signature)
+
+        response = request(method, url=url, data=body, headers=headers)
 
         mime = response.headers.get("content-type", "text/plain")
         head = response.headers.get("x-pssst-hash")
@@ -434,11 +439,12 @@ class Pssst:
         Please see the __init__ method.
 
         """
-        response = request("GET", "%s/%s" % (self.api, path),
-            headers={
-                "user-agent": repr(self)
-            }
-        )
+        url = "%s/%s" % (self.api, path)
+        headers = {
+            "user-agent": repr(self)
+        }
+
+        response = request("GET", url=url, headers=headers)
 
         if response.status_code not in [200, 204]:
             raise ConnectionError("Not Found")
@@ -523,7 +529,7 @@ class Pssst:
         self.__request_api("PUT", user.hash + "/box", {
             "nonce": _encode(nonce),
             "data": _encode(data)
-        })
+        }, False)
 
 
 class CLI:
