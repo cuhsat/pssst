@@ -20,15 +20,9 @@
  *
  * Start script. Available config values:
  *
- *   Pssst
- *
- *   port  = pssst server port
- *   debug = pssst server debug level (0 to 3)
- *
- *   Redis
- *
- *   source = redis database socket or port
- *   number = redis database number
+ *   port  = pssst port
+ *   redis = redis port/socket
+ *   debug = debug level (0 to 3)
  *
  * @return {Number} exit code
  */
@@ -43,11 +37,8 @@ try {
     if (!fs.existsSync(CONFIG)) {
       fs.writeFileSync(CONFIG, JSON.stringify({
         "port": 62221,
-        "debug": 0,
-        "db": {
-          "source": 6379,
-          "number": 0
-        }
+        "redis": 6379,
+        "debug": 0
       }, null, 2));
     }
 

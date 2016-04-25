@@ -19,20 +19,18 @@
  *
  * Simple Redis wrapper with Heroku support.
  *
- * @param {Object} the config
+ * @param {Object} source
  * @param {Function} callback
  */
-module.exports = function Redis(config, callback) {
+module.exports = function Redis(source, callback) {
   var url = require('url');
   var redis = require('redis');
-
-  var that = this;
 
   // Heroku support
   if (process.env.REDIS_URL) {
     var client = redis.createClient(process.env.REDIS_URL);
   } else {
-    var client = redis.createClient(config.source);
+    var client = redis.createClient(source);
   }
 
   // Client error
@@ -42,37 +40,31 @@ module.exports = function Redis(config, callback) {
 
   // Client ready
   client.on('ready', function ready(err) {
-    if (err) {
-      return callback(err);
-    }
+    return callback(err, {
+      /**
+       * Gets the value of a key (Redis GET).
+       *
+       * @param {String} the key
+       * @param {Function} callback
+       */
+      get: function get(key, callback) {
+        client.GET(key, function get(err, val) {
+          callback(err, JSON.parse(val));
+        });
+      },
 
-    client.select(config.number, function select(err) {
-      return callback(err, that);
+      /**
+       * Sets the value of a key (Redis SET).
+       *
+       * @param {String} the key
+       * @param {Object} the value
+       * @param {Function} callback
+       */
+      set: function set(key, val, callback) {
+        client.SET(key, JSON.stringify(val, null, 0), function set(err) {
+          callback(err);
+        });
+      }
     });
   });
-
-  /**
-   * Gets the value of a key (Redis GET).
-   *
-   * @param {String} the key
-   * @param {Function} callback
-   */
-  this.get = function get(key, callback) {
-    client.GET(key, function get(err, val) {
-      callback(err, JSON.parse(val));
-    });
-  };
-
-  /**
-   * Sets the value of a key (Redis SET).
-   *
-   * @param {String} the key
-   * @param {Object} the value
-   * @param {Function} callback
-   */
-  this.set = function set(key, val, callback) {
-    client.SET(key, JSON.stringify(val, null, 0), function set(err) {
-      callback(err);
-    });
-  };
 }

@@ -157,7 +157,7 @@ module.exports = function Server(config, callback) {
   app = express();
   app.set('json spaces', 0);
 
-  redis(config.db, function redis(err, db) {
+  redis(config.redis, function redis(err, db) {
     if (!err) {
       app.use(parser.json({limit: '1MB'}));
 

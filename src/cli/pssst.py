@@ -48,7 +48,7 @@ except ImportError:
     sys.exit("Requires PyCrypto (https://github.com/dlitz/pycrypto)")
 
 
-__all__, __version__ = ["Pssst", "CLI"], "2.9.2"
+__all__, __version__ = ["Pssst", "CLI"], "2.10.0"
 
 
 def _hexlify(data): # Utility shortcut
@@ -545,13 +545,13 @@ class CLI:
 
     """
     @staticmethod
-    def profile(username="-"):
+    def profile(username="~"):
         """
         Returns the profile properties.
 
         Parameters
         ----------
-        param username : string, optional (default is -)
+        param username : string, optional (default is ~)
             The username.
 
         Returns
@@ -567,11 +567,11 @@ class CLI:
         """
         path = os.path.join(os.path.expanduser("~"), ".pssst")
 
-        if username == "-" and os.path.exists(path):
+        if username == "~" and os.path.exists(path):
             with io.open(path) as file:
                 username = file.read()
 
-        if username == "-" or not username:
+        if username == "~" or not username:
             raise Exception("Profile invalid")
 
         username, password, server = Pssst._User(username).profile
@@ -631,7 +631,7 @@ def main(script, command="--help", username="-", receiver=None, *message):
       CLI version %s
 
     Usage:
-      %s [option|command] [-|username:password@server] [receiver message...]
+      %s [option|command] [~|username:password@server] [receiver message...]
 
     Options:
       -h, --help      Shows the usage
