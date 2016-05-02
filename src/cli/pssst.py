@@ -48,7 +48,7 @@ except ImportError:
     sys.exit("Requires PyCrypto (https://github.com/dlitz/pycrypto)")
 
 
-__all__, __version__ = ["Pssst", "CLI"], "2.11.2"
+__all__, __version__ = ["Pssst", "CLI"], "2.11.3"
 
 
 def _hexlify(data): # Utility shortcut
@@ -559,25 +559,17 @@ class CLI:
         tuple
             The username, password and server.
 
-        Raises
-        ------
-        Exception
-            Because the profile is invalid.
-
         """
-        if re.match("^[/|\.]", username):
+        if re.match("^[\/|\.]", username):
             path = os.path.join(os.path.abspath(username), ".pssst")
         elif username == "~":
             path = os.path.join(os.path.expanduser("~"), ".pssst")
         else:
             path = None
 
-        if path and os.path.exists(path):
+        if path:
             with io.open(path) as file:
                 username = file.read()
-
-        if path or not username:
-            raise Exception("Profile invalid")
 
         username, password, server = Pssst._User(username).profile
 
