@@ -292,7 +292,7 @@ class TestPssst:
 
         """
         with pytest.raises(Exception) as ex:
-            CLI.profile(None)
+            CLI.profile("")
 
         assert str(ex.value) == "Profile invalid"
 
