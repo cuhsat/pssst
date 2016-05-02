@@ -1,8 +1,8 @@
 CLI
 ===
-If the user profile file `~/.pssst` exists, its contents will be used by
-the `~` user shortcut as username and password. All generated files will
-be stored in the users home directory.
+If an user profile file named `.pssst` exists, the path to this file can be 
+used instead of the username and password as a shortcut. All generated files
+will be stored in the users home directory.
 
 Usage
 -----

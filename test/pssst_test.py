@@ -260,9 +260,9 @@ class TestPssst:
     -------
     test_profile_invalid()
         Tests if the profile is invalid.
-    test_create_profile()
+    test_create_user()
         Tests if an user can be created.
-    test_create_profile_already_exists()
+    test_create_user_already_exists()
         Tests if an user already exists.
     test_delete_user()
         Tests if an user can be deleted.
@@ -296,7 +296,7 @@ class TestPssst:
 
         assert str(ex.value) == "Profile invalid"
 
-    def test_create_profile(self):
+    def test_create_user(self):
         """
         Tests if an user can be created.
 
@@ -304,7 +304,7 @@ class TestPssst:
         pssst = Pssst(*create_profile())
         pssst.create()
 
-    def test_create_profile_already_exists(self):
+    def test_create_user_already_exists(self):
         """
         Tests if an user already exists.
 
