@@ -3,7 +3,7 @@ branches:
   only:
     - master
 python:
-  - "3.4"
+  - "3.5"
   - "2.7"
 node_js:
   - "4.2"
