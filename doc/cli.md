@@ -14,5 +14,5 @@ The server address must be specified with the user name or set via the `PSSST`
 environment variable.
 
 ----
-[Requirements](../src/cli/pssst.pip) | Please use the `--help` option for 
-further help.
+[Requirements](../src/cli/requirements.txt) | Please use the `--help` option 
+for further help.

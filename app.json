@@ -12,7 +12,7 @@
   ],
   "env": {
     "PSSST_KEY": {
-      "description": "Private key (PEM format, Base64 encoded)."
+      "description": "Base64 encoded private key in PEM format."
     }
   }
 }

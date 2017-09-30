@@ -3,20 +3,26 @@ branches:
   only:
     - master
 python:
-  - "3.5"
+  - "2.6"
   - "2.7"
+  - "3.3"
+  - "3.4"
+  - "3.5"
+  - "3.6"
+  - "pypy"
+  - "pypy3"
 node_js:
-  - "4.2"
+  - "8.6"
 services:
   - redis-server
 install:
-  - "pip install pycrypto requests"
+  - "pip install -r src/cli/requirements.txt"
 before_script:
   - export PYTHON=`which python2`
   - export DYNO="Travis CI"
   - cd src/server
-  - nvm install 4.2
-  - nvm use 4.2
+  - nvm install 8.6
+  - nvm use 8.6
   - npm install
   - npm start &
   - cd ../..

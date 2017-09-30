@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 Copyright (C) 2013-2015  Christian & Christian <hello@pssst.name>
-Copyright (C) 2015-2016  Christian Uhsat <christian@uhsat.de>
+Copyright (C) 2015-2017  Christian Uhsat <christian@uhsat.de>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ try:
     from Crypto import Random
     from Crypto.Cipher import AES, PKCS1_OAEP
     from Crypto.Hash import HMAC, SHA256
-    from Crypto.Protocol.KDF import PBKDF2
+    from Crypto.Protocol.KDF import scrypt
     from Crypto.PublicKey import RSA
     from Crypto.Signature import PKCS1_v1_5
     from Crypto.Util.py3compat import bchr, bord, tobytes
@@ -48,7 +48,7 @@ except ImportError:
     sys.exit("Requires PyCrypto (https://github.com/dlitz/pycrypto)")
 
 
-__all__, __version__ = ["Pssst", "CLI"], "2.11.3"
+__all__, __version__ = ["Pssst", "CLI"], "2.12.0"
 
 
 def _hexlify(data): # Utility shortcut
@@ -119,7 +119,7 @@ class Pssst:
                 username, password = username.split(":", 1)
 
             self.name = username.lower()
-            self.hash = _hexlify(PBKDF2(repr(self), b"[Pssst!]", 32))
+            self.hash = _hexlify(scrypt(repr(self), b"[Pssst!]", 32, 16384, 8, 1, 1))
             self.profile = (self.name, password, server)
 
         def __repr__(self):

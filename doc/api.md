@@ -42,8 +42,8 @@ will always be returned in plain text. Line endings must only consists of a
 All user names will be hashed in the canonical form before communicated to the
 server. At no point, the server will process or know any plaintext user name.
 
-Hashing of the user name is done with PKCS#5 v2.0 PBKDF2 (SHA1, 1000 rounds,
-32 bytes) and the fix salt `[Pssst!]`. The hashed user name is encoded in hex.
+Hashing of the user name is done with RFC 7915 scrypt (32 bytes, N=16384, r=8, p=1) 
+and the fix salt `[Pssst!]`. The hashed user name is encoded in hex.
 
 ### Encryption
 
@@ -292,6 +292,6 @@ Message pushed
 Appendix
 --------
 * [RFC 2313 (PKCS#1)](https://tools.ietf.org/html/rfc2313)
-* [RFC 2898 (PKCS#5)](https://tools.ietf.org/html/rfc2898)
 * [RFC 2315 (PKCS#7)](https://tools.ietf.org/html/rfc2315)
 * [RFC 5208 (PKCS#8)](https://tools.ietf.org/html/rfc5208)
+* [RFC 7914 (scrypt)](https://tools.ietf.org/html/rfc7914)
