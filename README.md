@@ -10,7 +10,7 @@ An _anonym and metadata free_ fork of [Pssst](https://github.com/pssst/pssst).
 
 API
 ---
-The full specification can be found under [`API`](doc/api.md).
+The full specification can be found under [API](doc/api.md).
 
 CVE
 ---
