@@ -1,3 +1,2 @@
-python >= 2.7
-pycrypto >= 2.6
+pycryptodome >= 3.4
 requests >= 2.0
