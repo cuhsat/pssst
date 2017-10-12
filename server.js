@@ -44,7 +44,7 @@ try {
 
     var cluster = require('cluster');
     var config = require('./config.json');
-    var server = require('./lib/index.js');
+    var server = require('./server/index.js');
 
     // Start node cluster
     if (cluster.isMaster) {
