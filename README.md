@@ -30,14 +30,14 @@ Server
 $ npm start [option]
 ```
 
+The default server TCP port is `62221` and can be changed via `config.json`.
+
 If you are using Heroku, the server can easily be deployed using this custom
 [buildpack](https://github.com/cuhsat/heroku-buildpack-pssst) by clicking
 [here](https://heroku.com/deploy?template=https://github.com/cuhsat/pssst).
 
 > Please note, if running on Heroku, the servers private key (`PEM` format) 
 > must be set via the `PSSST_KEY` config variable as Base64 encoded string.
-
-The default server TCP port is `62221` and can be changed via `config.json`.
 
 API
 ===
