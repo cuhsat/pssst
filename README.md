@@ -18,6 +18,8 @@ $ pssst [option|command] [~|username:password@server] [receiver message...]
 The server address must be specified with the user name or set via the `PSSST`
 environment variable.
 
+### Profile
+
 If an user profile file named `.pssst` exists, the path to this file can be 
 used instead of the username and password as a shortcut. All generated files
 will be stored in the users home directory.
@@ -31,6 +33,8 @@ $ npm start [option]
 ```
 
 The default server TCP port is `62221` and can be changed via `config.json`.
+
+### Heroku
 
 If you are using Heroku, the server can easily be deployed using this custom
 [buildpack](https://github.com/cuhsat/heroku-buildpack-pssst) by clicking
