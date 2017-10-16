@@ -50,9 +50,6 @@ will be stored protocol agnostic. You can also add more fields to the HTTP
 body. The only fields required by the server are `nonce` and `data`. All
 clients are requested to send an unique `user-agent` header.
 
-A [RAML](http://raml.org) specification of the API is available under
-[api.raml](api.raml).
-
 Constraints
 -----------
 ### User Names

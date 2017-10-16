@@ -11,7 +11,7 @@ python:
   - "pypy"
   - "pypy3"
 node_js:
-  - "8.6"
+  - "8.7"
 services:
   - redis-server
 install:
@@ -19,8 +19,8 @@ install:
 before_script:
   - export PYTHON=`which python2`
   - export DYNO="Travis CI"
-  - nvm install 8.6
-  - nvm use 8.6
+  - nvm install 8.7
+  - nvm use 8.7
   - npm install
   - npm start &
   - sleep 30

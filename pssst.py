@@ -33,7 +33,7 @@ try:
     from requests import request
     from requests.exceptions import ConnectionError, Timeout
 except ImportError:
-    sys.exit("Requires Requests (https://github.com/kennethreitz/requests)")
+    sys.exit("Requires Requests")
 
 
 try:
@@ -45,10 +45,10 @@ try:
     from Crypto.Signature import PKCS1_v1_5
     from Crypto.Util.py3compat import bchr, bord, tobytes
 except ImportError:
-    sys.exit("Requires PyCrypto (https://github.com/dlitz/pycrypto)")
+    sys.exit("Requires PyCrypto")
 
 
-__all__, __version__ = ["Pssst", "CLI"], "2.13.0"
+__all__, __version__ = ["Pssst", "CLI"], "2.14.0"
 
 
 def _hexlify(data): # Utility shortcut

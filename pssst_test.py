@@ -28,7 +28,7 @@ from pssst import Pssst
 try:
     import pytest
 except ImportError:
-    sys.exit("Requires pytest (https://pytest.org)")
+    sys.exit("Requires pytest")
 
 
 def setup_module(module):
