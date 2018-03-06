@@ -1,11 +1,48 @@
-Pssst ![](https://img.shields.io/travis/cuhsat/pssst.svg)
+Pssst
 =====
-An _anonym and metadata free_ fork of [Pssst](https://github.com/pssst/pssst).
+![Build](https://img.shields.io/travis/cuhsat/pssst.svg)
+![Release](https://img.shields.io/github/release/cuhsat/pssst.svg)
+![License](https://img.shields.io/github/license/cuhsat/pssst.svg)
 
-> Pssst is a simple and secure way to exchange information. We do not provide
-> services by our self, but we provide you with the tools to start your own
-> service. These tools build upon open-source software and use strong
-> end-to-end encryption. Pssst comes with a CLI and Server.
+This is an anonymous and metadata free fork of the original
+[Pssst](https://github.com/pssst/pssst) project.
+
+* [Pssst](#pssst)
+  * [About](#about)
+  * [CLI](#cli)
+    * [Usage](#usage)
+    * [Profile](#profile)
+  * [Server](#server)
+    * [Usage](#usage)
+    * [Heroku](#heroku)
+* [API](#api)
+  * [Constraints](#constraints)
+    * [User Names](#user-names)
+    * [User Limit](#user-limit)
+  * [Cryptography](#cryptography)
+    * [Encoding](#encoding)
+    * [Hashing](#hashing)
+    * [Encryption](#encryption)
+    * [Decryption](#decryption)
+    * [Authentication](#authentication)
+  * [General Actions](#general-actions)
+    * [Key](#key)
+    * [Version](#version)
+  * [User Actions](#user-actions)
+    * [Create](#create)
+    * [Delete](#delete)
+    * [Find](#find)
+    * [Pull](#pull)
+    * [Push](#push)
+* [Appendix](#appendix)
+* [License](#license)
+
+About
+-----
+Pssst is a simple and secure way to exchange information. We do not provide
+services by our self, but we provide you with the tools to start your own
+service. These tools build upon open-source software and use strong
+end-to-end encryption. Pssst comes with a CLI and Server.
 
 CLI
 ---
@@ -20,7 +57,7 @@ environment variable.
 
 ### Profile
 
-If an user profile file named `.pssst` exists, the path to this file can be 
+If an user profile file named `.pssst` exists, the path to this file can be
 used instead of the username and password as a shortcut. All generated files
 will be stored in the users home directory.
 
@@ -40,7 +77,7 @@ If you are using Heroku, the server can easily be deployed using this custom
 [buildpack](https://github.com/cuhsat/heroku-buildpack-pssst) by clicking
 [here](https://heroku.com/deploy?template=https://github.com/cuhsat/pssst).
 
-> Please note, if running on Heroku, the servers private key (`PEM` format) 
+> Please note, if running on Heroku, the servers private key (`PEM` format)
 > must be set via the `PSSST_KEY` config variable as Base64 encoded string.
 
 API
@@ -84,7 +121,7 @@ will always be returned in plain text. Line endings must only consists of a
 All user names will be hashed in the canonical form before communicated to the
 server. At no point, the server will process or know any plaintext user name.
 
-Hashing of the user name is done with RFC 7915 scrypt (32 bytes, N=16384, r=8, p=1) 
+Hashing of the user name is done with RFC 7915 scrypt (32 bytes, N=16384, r=8, p=1)
 and the fix salt `[Pssst!]`. The hashed user name is encoded in hex.
 
 ### Encryption
@@ -140,36 +177,14 @@ derives to -5 or +5 seconds from the actual EPOCH at the time of processing.
 For further information about the used cryptographical methods, please consult
 the RFCs listed in the appendix.
 
-Independent Actions
--------------------
+General Actions
+---------------
 List of implemented actions:
 
-* Get server version
 * Get server key
+* Get server version
 
 All server action must never be signed. Only required HTTP headers are listed.
-
-### Version
-
-Returns the servers protocol version.
-
-#### Request
-
-```
-GET / HTTP/1.1
-host: <api>
-user-agent: <app>
-```
-
-#### Response
-
-```
-HTTP/1.1 200 OK
-content-type: text/plain
-x-pssst-hash: <timestamp>; <signature>
-
-Pssst <version>
-```
 
 ### Key
 
@@ -193,8 +208,30 @@ x-pssst-hash: <timestamp>; <signature>
 <key>
 ```
 
-User Specific Actions
----------------------
+### Version
+
+Returns the servers protocol version.
+
+#### Request
+
+```
+GET / HTTP/1.1
+host: <api>
+user-agent: <app>
+```
+
+#### Response
+
+```
+HTTP/1.1 200 OK
+content-type: text/plain
+x-pssst-hash: <timestamp>; <signature>
+
+Pssst <version>
+```
+
+User Actions
+------------
 List of implemented actions:
 
 * Create user
@@ -332,7 +369,7 @@ Message pushed
 ```
 
 Appendix
---------
+========
 * [RFC 2313 (PKCS#1)](https://tools.ietf.org/html/rfc2313)
 * [RFC 2315 (PKCS#7)](https://tools.ietf.org/html/rfc2315)
 * [RFC 5208 (PKCS#8)](https://tools.ietf.org/html/rfc5208)
@@ -341,4 +378,3 @@ Appendix
 License
 =======
 Released under the terms of the [GPLv3](LICENSE) license.
-Based on [Pssst](https://github.com/pssst/pssst) by Christian & Christian.
