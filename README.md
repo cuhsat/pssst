@@ -1,9 +1,5 @@
-Pssst
+Pssst ![Build](https://img.shields.io/travis/cuhsat/pssst.svg)
 =====
-![Build](https://img.shields.io/travis/cuhsat/pssst.svg)
-![Release](https://img.shields.io/github/release/cuhsat/pssst.svg)
-![License](https://img.shields.io/github/license/cuhsat/pssst.svg)
-
 This is an anonymous and metadata free fork of the original
 [Pssst](https://github.com/pssst/pssst) project.
 
